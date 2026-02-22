@@ -1,6 +1,6 @@
 import { Formik, Form } from "formik";
-import Input from "../../components/Form/Input";
-import Textarea from "../../components/Form/Textarea";
+import Input from "../../../components/Form/Input";
+import Textarea from "../../../components/Form/Textarea";
 import { Camera, User, Mail, Phone, MapPin } from "lucide-react";
 
 const Profile = () => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Download, FileText, Activity } from "lucide-react";
-import Table from "../../components/UI/Table";
+import Table from "../../../components/UI/Table";
 
 const mockReports = [
   {
@@ -51,11 +51,10 @@ const Reports = () => {
       render: (row) => (
         <div className="flex items-center gap-3">
           <div
-            className={`p-2 rounded-lg ${
-              row.type === "Lab Report"
+            className={`p-2 rounded-lg ${row.type === "Lab Report"
                 ? "bg-indigo-50 text-indigo-600"
                 : "bg-teal-50 text-teal-600"
-            }`}
+              }`}
           >
             {row.type === "Lab Report" ? (
               <Activity className="w-4 h-4" />
@@ -101,11 +100,10 @@ const Reports = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-              activeTab === tab
+            className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === tab
                 ? "border-teal-600 text-teal-600"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-            }`}
+              }`}
           >
             {tab}
           </button>

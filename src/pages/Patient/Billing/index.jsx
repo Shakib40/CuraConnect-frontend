@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Table from "../../components/UI/Table";
-import Modal from "../../components/UI/Modal";
+import Table from "../../../components/UI/Table";
+import Modal from "../../../components/UI/Modal";
 import { CreditCard, FileText, CheckCircle2, Clock } from "lucide-react";
 
 const mockInvoices = [
@@ -60,11 +60,10 @@ const Billing = () => {
       header: "Status",
       render: (row) => (
         <span
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium w-fit ${
-            row.status === "Paid"
-              ? "bg-green-100 text-green-700"
-              : "bg-amber-100 text-amber-700"
-          }`}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium w-fit ${row.status === "Paid"
+            ? "bg-green-100 text-green-700"
+            : "bg-amber-100 text-amber-700"
+            }`}
         >
           {row.status === "Paid" ? (
             <CheckCircle2 className="w-4 h-4" />

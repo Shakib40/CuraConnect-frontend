@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Table from "../../components/UI/Table";
-import Modal from "../../components/UI/Modal";
+import Table from "../../../components/UI/Table";
+import Modal from "../../../components/UI/Modal";
 import { Pill, Download, Eye, Calendar as CalendarIcon } from "lucide-react";
 
 const mockPrescriptions = [

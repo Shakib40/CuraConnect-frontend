@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PatientRoutes from "./pages/Patient";
 import DoctorRoutes from "./pages/Doctor";
 import AdminRoutes from "./pages/HospitalAdmin";
+import SuperAdminRoutes from "./pages/SuperAdmin";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -53,6 +54,12 @@ const Login = () => {
         >
           Login as Admin (Demo)
         </button>
+        <button
+          onClick={() => handleLogin("superadmin")}
+          className="px-4 py-3 bg-teal-800 hover:bg-teal-900 text-white rounded-lg shadow transition-colors font-medium"
+        >
+          Login as SuperAdmin (Demo)
+        </button>
       </div>
     </div>
   );
@@ -99,6 +106,16 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <AdminRoutes />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* SuperAdmin Routes */}
+      <Route
+        path="/superadmin/*"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <SuperAdminRoutes />
           </ProtectedRoute>
         }
       />

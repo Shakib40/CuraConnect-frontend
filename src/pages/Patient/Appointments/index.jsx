@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Table from "../../components/UI/Table";
-import Modal from "../../components/UI/Modal";
+import Table from "components/UI/Table";
+import Modal from "components/UI/Modal";
 import {
   Pencil,
   Trash2,
@@ -9,10 +9,10 @@ import {
   Clock,
 } from "lucide-react";
 import { Formik, Form } from "formik";
-import Input from "../../components/Form/Input";
-import Select from "../../components/Form/Select";
-import DatePicker from "../../components/Form/DatePicker";
-import Textarea from "../../components/Form/Textarea";
+import Input from "../../../components/Form/Input";
+import Select from "../../../components/Form/Select";
+import DatePicker from "../../../components/Form/DatePicker";
+import Textarea from "../../../components/Form/Textarea";
 
 const mockAppointments = [
   {
@@ -73,13 +73,12 @@ const Appointments = () => {
       header: "Status",
       render: (row) => (
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            row.status === "Confirmed"
-              ? "bg-green-100 text-green-700"
-              : row.status === "Pending"
-                ? "bg-amber-100 text-amber-700"
-                : "bg-slate-100 text-slate-700"
-          }`}
+          className={`px-2 py-1 rounded-full text-xs font-medium ${row.status === "Confirmed"
+            ? "bg-green-100 text-green-700"
+            : row.status === "Pending"
+              ? "bg-amber-100 text-amber-700"
+              : "bg-slate-100 text-slate-700"
+            }`}
         >
           {row.status}
         </span>
