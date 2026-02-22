@@ -13,11 +13,13 @@ const Table = ({ columns, data, currentPage, totalPages, onPageChange }) => {
     <div className="overflow-x-auto shadow-sm rounded-lg border border-slate-200 bg-white">
       <FlowbiteTable hoverable>
         <TableHead>
-          {columns.map((col, index) => (
-            <TableHeadCell key={index} className="bg-slate-50 text-slate-700">
-              {col.header}
-            </TableHeadCell>
-          ))}
+          <TableRow>
+            {columns.map((col, index) => (
+              <TableHeadCell key={index} className="bg-slate-50 text-slate-700">
+                {col.header}
+              </TableHeadCell>
+            ))}
+          </TableRow>
         </TableHead>
         <TableBody className="divide-y">
           {data.map((row, rowIndex) => (

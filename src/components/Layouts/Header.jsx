@@ -1,6 +1,6 @@
 import { Bell, Search, User, LogOut, ChevronDown } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/slices/authSlice";
+import { logout } from "store/slices/authSlice";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

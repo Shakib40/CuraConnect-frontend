@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Table from "components/UI/Table";
 import RegistrationWizard from "./RegistrationWizard";
+import Button from "components/UI/Button";
 
 const mockHospitals = [
     { id: 1, name: "City General Hospital", location: "New York, NY", plan: "Enterprise", status: "Active", joinedDate: "2025-01-15" },
@@ -95,12 +96,12 @@ const HospitalManagement = ({ defaultTab = "List" }) => {
             header: "Actions",
             render: () => (
                 <div className="flex gap-2">
-                    <button className="px-3 py-1.5 bg-teal-600 text-white rounded text-xs font-bold hover:bg-teal-700 transition-colors flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Approve
-                    </button>
-                    <button className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded text-xs font-bold hover:bg-slate-50 transition-colors flex items-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Reject
-                    </button>
+                    <Button variant="primary" size="sm" icon={CheckCircle2}>
+                        Approve
+                    </Button>
+                    <Button variant="outline" size="sm" icon={XCircle}>
+                        Reject
+                    </Button>
                 </div>
             )
         }
@@ -113,12 +114,13 @@ const HospitalManagement = ({ defaultTab = "List" }) => {
                     <h1 className="text-2xl font-bold text-slate-800">Hospital Management</h1>
                     <p className="text-slate-500 mt-1">Manage platform participants and subscriptions.</p>
                 </div>
-                <button
+                <Button
+                    variant="primary"
+                    icon={Plus}
                     onClick={() => setActiveTab("Add")}
-                    className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all font-medium shadow-sm active:scale-95"
                 >
-                    <Plus className="w-4 h-4" /> Register Hospital
-                </button>
+                    Register Hospital
+                </Button>
             </div>
 
             {/* Tabs */}
@@ -135,7 +137,7 @@ const HospitalManagement = ({ defaultTab = "List" }) => {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`pb-3 px-2 flex items-center gap-2 text-sm font-semibold border-b-2 transition-all duration-200 ${isActive
-                                ? "border-teal-600 text-teal-600"
+                                ? "border-primary text-primary"
                                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
                                 }`}
                         >

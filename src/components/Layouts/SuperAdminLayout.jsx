@@ -7,11 +7,15 @@ import {
     CreditCard,
     UserCircle,
     Clock,
+    ShieldCheck,
+    Truck,
 } from "lucide-react";
 
 const superAdminMenuItems = [
     { label: "Dashboard", path: "/superadmin/dashboard", icon: LayoutGrid },
     { label: "Hospitals", path: "/superadmin/hospitals", icon: Building2 },
+    { label: "Ins. Providers", path: "/superadmin/insurance", icon: ShieldCheck },
+    { label: "Med. Suppliers", path: "/superadmin/suppliers", icon: Truck },
     { label: "Subscriptions", path: "/superadmin/subscriptions", icon: CreditCard },
     { label: "Profile", path: "/superadmin/profile", icon: UserCircle },
 ];
