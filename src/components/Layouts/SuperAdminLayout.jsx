@@ -12,7 +12,6 @@ import {
 const superAdminMenuItems = [
     { label: "Dashboard", path: "/superadmin/dashboard", icon: LayoutGrid },
     { label: "Hospitals", path: "/superadmin/hospitals", icon: Building2 },
-    { label: "Join Requests", path: "/superadmin/requests", icon: Clock },
     { label: "Subscriptions", path: "/superadmin/subscriptions", icon: CreditCard },
     { label: "Profile", path: "/superadmin/profile", icon: UserCircle },
 ];
