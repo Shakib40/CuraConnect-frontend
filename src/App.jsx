@@ -68,10 +68,20 @@ const Login = () => {
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
+  const { theme } = useSelector((state) => state.theme);
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [theme]);
 
   if (loading) return null; // Or a global loading spinner
 
