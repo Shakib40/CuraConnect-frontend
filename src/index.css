@@ -1,17 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite-react/**/*.js";
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme {
+  --color-primary: #0f766e; /* Teal 700 */
+  --color-primary-hover: #115e59; /* Teal 800 */
+  --color-primary-light: #ccfbf1; /* Teal 50 */
+
+  --color-secondary: #0ea5e9; /* Sky 500 */
+
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc; /* Slate 50 */
+
+  --color-text-main: #0f172a; /* Slate 900 */
+  --color-text-muted: #64748b; /* Slate 500 */
+
+  --color-border: #e2e8f0; /* Slate 200 */
+
+  --color-error: #ef4444; /* Red 500 */
+  --color-success: #22c55e; /* Green 500 */
+  --color-warning: #f59e0b; /* Amber 500 */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Base styles for premium look */
+html,
+body {
+  @apply bg-slate-50 text-slate-900 antialiased h-full;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Micro-animations and utility classes */
+.glass-panel {
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+}
+
+.transition-bounce {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
