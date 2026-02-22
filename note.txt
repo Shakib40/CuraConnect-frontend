@@ -1,0 +1,372 @@
+1. DISCOVER
+http://localhost:8761/
+
+
+
+#auth-service  
+ -user
+ -blocked_users
+ -otp
+ -login_history  // is active also store in redis
+ 
+
+
+#user-service  
+-role // SUPER_ADMIN, HOSPITAL_ADMIN, DOCTOR, PATIENT, NURSE, RECEPTIONIST, STAFF, PHARMACIST, LAB_TECHNICIAN, ACCOUNTANT, INSURANCE_AGENT, SYSTEM_ADMINISTRATOR
+
+-user
+-address
+
+-staff_details
+id (UUID)
+user_id
+employee_id
+department_id
+joining_date
+salary
+employment_type (FULL_TIME, PART_TIME, CONTRACT)
+role_type 
+
+
+-qualification_document
+id (UUID)
+user_id
+document_type
+file_url
+verified_status
+uploaded_at
+
+
+ 
+
+#hospital
+-department  hospital_type: HOSPITAL, CLINIC, LAB, PHARMACY, NURSING_HOME, AMBULANCE, BLOOD_BANK, VETERINARY_CLINIC
+-hospital   
+
+-appointment 
+ id (UUID) – PK
+hospital_id – FK
+doctor_id (UUID)  // from user-service
+patient_id (UUID)
+appointment_date (date)
+start_time (time)
+end_time (time)
+status (BOOKED, CANCELLED, COMPLETED, NO_SHOW)
+consultation_type (IN_PERSON, VIDEO)
+reason
+created_at
+
+
+
+
+-bed_type
+id (UUID)
+name (ICU, GENERAL, PRIVATE, SEMI_PRIVATE)
+description
+
+
+-bed
+id (UUID)
+hospital_id – FK
+bed_type_id – FK
+bed_number
+status (AVAILABLE, OCCUPIED, MAINTENANCE)
+current_patient_id
+
+-admission
+id (UUID)
+hospital_id – FK
+patient_id – FK
+doctor_id – FK
+bed_id – FK
+admission_date (timestamp)
+discharge_date (timestamp)
+reason
+status (ADMITTED, DISCHARGED, TRANSFERRED)
+created_at
+
+
+
+-doctor_schedule
+id (UUID)
+doctor_id
+hospital_id
+day_of_week
+start_time
+end_time
+slot_duration_minutes
+is_available
+
+
+-nurse_assignment
+id (UUID)
+nurse_id
+patient_id
+assigned_from
+assigned_to
+
+
+
+
+#clinical-records
+
+-medical_record
+id (UUID)
+patient_id
+doctor_id
+hospital_id
+visit_id
+diagnosis
+treatment_plan
+notes
+created_at
+
+-vitals
+id (UUID)
+medical_record_id
+temperature
+blood_pressure
+pulse
+oxygen_level
+recorded_at
+
+-prescription
+id (UUID)
+prescription_item_list
+doctor_id
+hospital_id
+patient_id
+created_at
+
+-prescription_item
+id (UUID)
+prescription_id
+medication_name
+dosage
+frequency
+duration
+instructions
+created_at
+
+
+#lab-service
+
+-lab_test
+id (UUID)
+hospital_id
+test_name
+category
+price
+description
+
+-lab_order
+id (UUID)
+patient_id
+doctor_id
+lab_test_id
+status (ORDERED, IN_PROGRESS, COMPLETED)
+ordered_at
+
+-lab_report
+id (UUID)
+lab_order_id
+result_value
+normal_range
+remarks
+file_url
+verified_by
+verified_at
+
+
+#Pharmacy
+
+-medicine
+id (UUID)
+name
+brand
+manufacturer
+category
+price
+
+-medicine_stock
+id (UUID)
+hospital_id
+medicine_id
+quantity
+expiry_date
+
+
+-medicine_order
+id (UUID)
+hospital_id
+medicine_id
+quantity
+
+-pharmacy_sale
+id (UUID)
+patient_id
+total_amount
+discount_percentage
+gst_percentage
+final_amount
+sold_at
+created_at
+
+-pharmacy_sale_item
+id (UUID)
+sale_id
+medicine_id
+quantity
+price
+expiry_date
+
+
+#payment-service  
+-payment
+id (UUID)
+user_id
+hospital_id
+appointment_id (nullable)
+admission_id (nullable)
+amount (decimal)
+currency
+payment_method (CASH, CARD, UPI, INSURANCE)
+transaction_id
+status (PENDING, SUCCESS, FAILED, REFUNDED)
+paid_at
+created_at
+
+
+-insurance_policy
+id (UUID)
+user_id
+provider_name
+policy_number
+coverage_percentage
+valid_from
+valid_to
+
+-insurance_claim
+id (UUID)
+policy_id
+patient_id
+hospital_id
+admission_id
+claim_amount
+approved_amount
+status (SUBMITTED, APPROVED, REJECTED)
+submitted_at
+
+-refund
+id (UUID)
+payment_id
+amount
+reason
+status
+processed_at
+
+
+#notification-service  
+ -notification
+ -activity-log
+ 
+ -notification_preference
+ id (UUID)
+ user_id
+ email_enabled
+ sms_enabled
+push_enabled
+
+
+
+#report-service  
+ -report
+ -scheduled_report
+ id (UUID)
+report_id
+schedule_type (DAILY, WEEKLY, MONTHLY)
+email_to
+last_sent_at
+
+
+-report_log
+id (UUID)
+report_id
+generated_at
+file_url
+
+ 
+
+
+
+
+ 
+
+#invoice-service
+
+-invoice
+id (UUID)
+payment_id
+invoice_number
+subtotal
+tax
+discount
+total_amount
+pdf_url
+created_at
+
+
+
+#ICU / Emergency
+
+-emergency_case
+id (UUID)
+patient_id
+arrival_time
+severity_level
+assigned_doctor
+status
+
+
+-icu_bed
+id (UUID)
+hospital_id
+bed_number
+status (AVAILABLE, OCCUPIED, MAINTENANCE)
+current_patient_id
+
+-icu_monitoring
+id (UUID)
+patient_id
+heart_rate
+oxygen_level
+bp
+recorded_at
+
+
+#ambulance-service
+
+-ambulance
+id (UUID)
+hospital_id
+vehicle_number
+status (AVAILABLE, ON_TRIP, MAINTENANCE)
+current_location
+
+
+#Inventory & Assets
+
+-inventory_item
+
+
+-supplier
+id (UUID)
+name
+contact_person
+phone
+email
+address
+
+
+-purchase_order
+-purchase_order_item
