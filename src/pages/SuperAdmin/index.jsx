@@ -11,6 +11,7 @@ import DocumentVerification from "./DocumentVerification";
 import PatientList from "./PatientList";
 import ActivityLogs from "./ActivityLogs";
 import Chat from "./Chat";
+import Cases from "./Cases";
 
 const SuperAdminRoutes = () => {
     return (
@@ -23,6 +24,7 @@ const SuperAdminRoutes = () => {
                 <Route path="document-verification/*" element={<DocumentVerification />} />
                 <Route path="patients" element={<PatientList />} />
                 <Route path="chat" element={<Chat />} />
+                <Route path="cases" element={<Cases />} />
                 <Route path="activity-logs" element={<ActivityLogs />} />
                 <Route path="subscriptions" element={<Subscriptions />} />
                 <Route path="profile" element={<Profile />} />
