@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Truck,
     Search,
     Filter,
-    MoreVertical,
     MapPin,
     Package,
-    ShieldCheck
+    ShieldCheck,
+    Eye,
+    Pencil
 } from "lucide-react";
 import Table from "components/UI/Table";
 import Button from "components/UI/Button";
@@ -40,6 +42,7 @@ const mockSuppliers = [
 
 const MedicineSupplierList = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
 
     const columns = [
         {
@@ -80,8 +83,8 @@ const MedicineSupplierList = () => {
             header: "Status",
             render: (row) => (
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${row.status === 'Active'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-slate-100 text-text-muted'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-slate-100 text-text-muted'
                     }`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Active' ? 'bg-success' : 'bg-text-light'}`} />
                     {row.status}
@@ -90,10 +93,21 @@ const MedicineSupplierList = () => {
         },
         {
             header: "Actions",
-            render: () => (
-                <Button variant="ghost" size="icon">
-                    <MoreVertical className="w-5 h-5 px-0" />
-                </Button>
+            render: (row) => (
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => navigate(`/superadmin/suppliers/${row.id}`)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors"
+                    >
+                        <Eye className="w-3.5 h-3.5" /> View
+                    </button>
+                    <button
+                        onClick={() => navigate(`/superadmin/suppliers/${row.id}/edit`)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                    >
+                        <Pencil className="w-3.5 h-3.5" /> Edit
+                    </button>
+                </div>
             )
         }
     ];

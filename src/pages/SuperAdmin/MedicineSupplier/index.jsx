@@ -3,6 +3,8 @@ import { Truck, Plus, Clock } from "lucide-react";
 import MedicineSupplierList from "./MedicineSupplierList";
 import AddMedicineSupplier from "./AddMedicineSupplier";
 import MedicineSupplierRequests from "./MedicineSupplierRequests";
+import SupplierDetails from "./SupplierDetails";
+import EditMedicineSupplier from "./EditMedicineSupplier";
 
 const MedicineSupplier = () => {
     const location = useLocation();
@@ -53,6 +55,8 @@ const MedicineSupplier = () => {
                     <Route path="list" element={<MedicineSupplierList />} />
                     <Route path="add" element={<AddMedicineSupplier />} />
                     <Route path="requests" element={<MedicineSupplierRequests />} />
+                    <Route path=":id" element={<SupplierDetails />} />
+                    <Route path=":id/edit" element={<EditMedicineSupplier />} />
                 </Routes>
             </div>
         </div>
