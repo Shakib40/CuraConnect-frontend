@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import InsuranceProviders from "./InsuranceProviders";
 import MedicineSupplier from "./MedicineSupplier";
 import DocumentVerification from "./DocumentVerification";
+import PatientList from "./PatientList";
 
 const SuperAdminRoutes = () => {
     return (
@@ -18,6 +19,7 @@ const SuperAdminRoutes = () => {
                 <Route path="insurance/*" element={<InsuranceProviders />} />
                 <Route path="suppliers/*" element={<MedicineSupplier />} />
                 <Route path="document-verification/*" element={<DocumentVerification />} />
+                <Route path="patients" element={<PatientList />} />
                 <Route path="subscriptions" element={<Subscriptions />} />
                 <Route path="profile" element={<Profile />} />
             </Route>

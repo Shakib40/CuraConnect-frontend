@@ -10,6 +10,7 @@ import {
     ShieldCheck,
     Truck,
     FileText,
+    Users,
 } from "lucide-react";
 
 const superAdminMenuItems = [
@@ -18,6 +19,7 @@ const superAdminMenuItems = [
     { label: "Ins. Providers", path: "/superadmin/insurance", icon: ShieldCheck },
     { label: "Med. Suppliers", path: "/superadmin/suppliers", icon: Truck },
     { label: "Document Verification", path: "/superadmin/document-verification", icon: FileText },
+    { label: "Patients", path: "/superadmin/patients", icon: Users },
     { label: "Subscriptions", path: "/superadmin/subscriptions", icon: CreditCard },
     { label: "Profile", path: "/superadmin/profile", icon: UserCircle },
 ];
