@@ -1,24 +1,16 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
 import {
-    Building2,
-    Globe,
-    Mail,
-    Phone,
-    MapPin,
-    CheckCircle2,
-    CheckCircle,
-    Shield,
-    ArrowLeft,
-    FileText,
-    Info
+    Building2, Globe, Mail, Phone, MapPin,
+    CheckCircle2, CheckCircle, Shield, ArrowLeft, FileText, Info
 } from "lucide-react";
 import Input from "components/Form/Input";
 import Select from "components/Form/Select";
 import Checkbox from "components/Form/Checkbox";
 import Button from "components/UI/Button";
 import { steps, registrationSchema } from "./constants";
+import { mockProviders } from "./InsuranceProviderDetails";
 
 const docsList = [
     { id: "shareGst", label: "CuraConnect GST Certificate", desc: "Standard tax compliance document for operations." },
@@ -28,9 +20,21 @@ const docsList = [
     { id: "shareIso", label: "ISO 27001 Security Certification", desc: "Data protection and information security guarantee." },
 ];
 
-const AddInsuranceProvider = () => {
+const EditInsuranceProvider = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
     const [step, setStep] = useState(0);
+
+    const provider = mockProviders.find((p) => p.id === Number(id));
+
+    if (!provider) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 text-slate-400">
+                <p className="font-bold text-lg">Provider not found</p>
+                <button onClick={() => navigate(-1)} className="mt-4 text-sm text-teal-600 font-semibold hover:underline">← Go back</button>
+            </div>
+        );
+    }
 
     const handleBack = () => setStep((s) => s - 1);
 
@@ -39,17 +43,26 @@ const AddInsuranceProvider = () => {
             setStep((s) => s + 1);
             setSubmitting(false);
         } else {
-            console.log("Adding Insurance Provider:", values);
+            console.log("Updating Provider:", values);
             setTimeout(() => {
-                alert("Insurance Provider registered successfully!");
+                alert("Insurance Provider updated successfully!");
                 setSubmitting(false);
-                navigate("/superadmin/insurance/list");
-            }, 1000);
+                navigate(`/superadmin/insurance/${id}`);
+            }, 800);
         }
     };
 
     return (
         <div className="bg-white">
+            {/* Breadcrumb */}
+            <div className="px-8 pt-6 pb-0 border-b border-slate-100 flex items-center gap-3">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 font-semibold transition-colors">
+                    <ArrowLeft className="w-4 h-4" /> Back
+                </button>
+                <span className="text-slate-300">/</span>
+                <h2 className="text-sm font-bold text-slate-800">Editing: <span className="text-teal-600">{provider.name}</span></h2>
+            </div>
+
             <div className="p-8 lg:p-10 border-b border-slate-100">
                 {/* Stepper */}
                 <div className="mb-10 max-w-4xl mx-auto">
@@ -71,28 +84,7 @@ const AddInsuranceProvider = () => {
                 </div>
 
                 <Formik
-                    initialValues={{
-                        name: "",
-                        licenseNo: "",
-                        website: "",
-                        planType: "global",
-                        email: "",
-                        phone: "",
-                        street: "",
-                        road: "",
-                        city: "",
-                        state: "",
-                        pincode: "",
-                        country: "",
-                        shareGst: true,
-                        shareLegal: true,
-                        shareTax: false,
-                        shareBusiness: true,
-                        shareIso: true,
-                        acceptTerms: false,
-                        docSign1: false,
-                        docSign2: false,
-                    }}
+                    initialValues={{ ...provider, acceptTerms: true, docSign1: true, docSign2: true }}
                     validationSchema={registrationSchema[step]}
                     validateOnBlur={true}
                     validateOnChange={true}
@@ -136,7 +128,6 @@ const AddInsuranceProvider = () => {
                                         <Input name="email" label="Contact Email" type="email" placeholder="partners@provider.com" icon={Mail} />
                                         <Input name="phone" label="Support Phone" placeholder="+1 (555) 000-0000" icon={Phone} />
                                     </div>
-
                                     <div className="flex items-center gap-2 text-primary border-b border-primary-light pb-2">
                                         <MapPin className="w-4 h-4" />
                                         <h3 className="text-xs font-black uppercase tracking-widest">Physical Address</h3>
@@ -153,17 +144,12 @@ const AddInsuranceProvider = () => {
                                             <Input name="country" label="Country" placeholder="United States" icon={MapPin} />
                                         </div>
                                     </div>
-
-                                    {/* Map Picker */}
                                     <div className="p-6 bg-slate-50 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center text-center">
                                         <MapPin className="w-10 h-10 text-teal-600 mb-3" />
                                         <h4 className="font-bold text-slate-700">Pin Your Location</h4>
-                                        <p className="text-xs text-slate-500 max-w-xs mt-1">Select your exact HQ location on the map for GPS accuracy.</p>
-                                        <button
-                                            type="button"
-                                            onClick={() => alert("Interactive Map Picker Opened")}
-                                            className="mt-4 px-6 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2"
-                                        >
+                                        <p className="text-xs text-slate-500 max-w-xs mt-1">Select the exact HQ location on the map for GPS accuracy.</p>
+                                        <button type="button" onClick={() => alert("Interactive Map Picker Opened")}
+                                            className="mt-4 px-6 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
                                             <MapPin className="w-4 h-4 text-teal-600" /> Select on Map
                                         </button>
                                     </div>
@@ -183,9 +169,7 @@ const AddInsuranceProvider = () => {
                                             <span className="text-[10px] font-bold text-amber-700 uppercase">SuperAdmin Control</span>
                                         </div>
                                     </div>
-                                    <p className="text-sm text-slate-500">
-                                        Select the platform documents you wish to share with this insurance provider during their onboarding.
-                                    </p>
+                                    <p className="text-sm text-slate-500">Select the platform documents to share with this insurance provider.</p>
                                     <div className="grid grid-cols-1 gap-3 mt-4">
                                         {docsList.map((doc) => (
                                             <div key={doc.id} className="p-4 rounded-2xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50/20 transition-all cursor-pointer group">
@@ -219,7 +203,7 @@ const AddInsuranceProvider = () => {
                                     <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
                                         <h5 className="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2">Verification & Compliance</h5>
                                         <p className="text-sm text-slate-600 mb-4">
-                                            By checking the boxes below, you confirm all information is accurate. New providers undergo a security and compliance audit before activation.
+                                            By checking the boxes below, you confirm the updated information is accurate and meets all platform compliance requirements.
                                         </p>
                                         <Checkbox name="acceptTerms" label="I acknowledge the verification process and accuracy of information provided." />
                                         <Checkbox name="docSign1" label="E-Sign: Insurance Provider Service Addendum" />
@@ -230,20 +214,12 @@ const AddInsuranceProvider = () => {
 
                             {/* Actions */}
                             <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
-                                <button
-                                    type="button"
-                                    onClick={step === 0 ? () => navigate("/superadmin/insurance/list") : handleBack}
-                                    className={`px-6 py-2.5 text-slate-600 font-semibold rounded-xl transition-colors flex items-center gap-2 ${step > 0 ? "hover:bg-slate-50" : "invisible"}`}
-                                >
-                                    <ArrowLeft className="w-4 h-4" /> Go Back
+                                <button type="button" onClick={step === 0 ? () => navigate(-1) : handleBack}
+                                    className="flex items-center gap-2 px-6 py-2.5 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
+                                    <ArrowLeft className="w-4 h-4" /> {step === 0 ? "Cancel" : "Go Back"}
                                 </button>
-                                <Button
-                                    type="submit"
-                                    loading={isSubmitting}
-                                    icon={step === steps.length - 1 ? CheckCircle2 : undefined}
-                                    className="px-10 py-3 rounded-xl"
-                                >
-                                    {step === steps.length - 1 ? "Register Provider" : "Save & Continue"}
+                                <Button type="submit" loading={isSubmitting} icon={step === steps.length - 1 ? CheckCircle2 : undefined} className="px-10 py-3 rounded-xl">
+                                    {step === steps.length - 1 ? "Update Provider" : "Save & Continue"}
                                 </Button>
                             </div>
                         </Form>
@@ -251,7 +227,6 @@ const AddInsuranceProvider = () => {
                 </Formik>
             </div>
 
-            {/* Footer Note */}
             <div className="flex items-center gap-4 p-8 bg-slate-50 border-t border-slate-100">
                 <div className="w-12 h-12 rounded-2xl bg-primary-light flex items-center justify-center text-primary shrink-0">
                     <Shield className="w-6 h-6" />
@@ -259,7 +234,7 @@ const AddInsuranceProvider = () => {
                 <div>
                     <h4 className="font-bold text-text-main text-sm">Verification Process</h4>
                     <p className="text-xs text-text-muted mt-1 leading-relaxed max-w-2xl">
-                        By registering this provider, you authorize them to sync their policy databases with CuraConnect. They will be required to pass a 2FA security check upon first login. The verification process typically takes 2-3 business days.
+                        All changes are reviewed before being applied. The verification process typically takes 1-2 business days.
                     </p>
                 </div>
             </div>
@@ -267,4 +242,4 @@ const AddInsuranceProvider = () => {
     );
 };
 
-export default AddInsuranceProvider;
+export default EditInsuranceProvider;

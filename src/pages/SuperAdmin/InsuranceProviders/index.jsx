@@ -3,6 +3,8 @@ import { ShieldCheck, Plus, Clock } from "lucide-react";
 import InsuranceProviderList from "./InsuranceProviderList";
 import AddInsuranceProvider from "./AddInsuranceProvider";
 import InsuranceRequests from "./InsuranceRequests";
+import InsuranceProviderDetails from "./InsuranceProviderDetails";
+import EditInsuranceProvider from "./EditInsuranceProvider";
 
 const InsuranceProviders = () => {
     const location = useLocation();
@@ -54,6 +56,8 @@ const InsuranceProviders = () => {
                     <Route path="list" element={<InsuranceProviderList />} />
                     <Route path="add" element={<AddInsuranceProvider onComplete={() => { }} />} />
                     <Route path="requests" element={<InsuranceRequests />} />
+                    <Route path=":id" element={<InsuranceProviderDetails />} />
+                    <Route path=":id/edit" element={<EditInsuranceProvider />} />
                 </Routes>
             </div>
         </div>
