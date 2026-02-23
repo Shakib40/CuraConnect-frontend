@@ -11,6 +11,7 @@ import {
     Truck,
     FileText,
     Users,
+    Activity,
 } from "lucide-react";
 
 const superAdminMenuItems = [
@@ -20,6 +21,7 @@ const superAdminMenuItems = [
     { label: "Med. Suppliers", path: "/superadmin/suppliers", icon: Truck },
     { label: "Document Verification", path: "/superadmin/document-verification", icon: FileText },
     { label: "Patients", path: "/superadmin/patients", icon: Users },
+    { label: "Activity Logs", path: "/superadmin/activity-logs", icon: Activity },
     { label: "Subscriptions", path: "/superadmin/subscriptions", icon: CreditCard },
     { label: "Profile", path: "/superadmin/profile", icon: UserCircle },
 ];
