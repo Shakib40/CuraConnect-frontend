@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuth, initializeAuth } from "./store/slices/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
+import GlobalStickyNotes from "./components/StickyNotes";
 import PatientRoutes from "./pages/Patient";
 import DoctorRoutes from "./pages/Doctor";
 import AdminRoutes from "./pages/HospitalAdmin";
@@ -86,50 +87,53 @@ function App() {
   if (loading) return null; // Or a global loading spinner
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
+    <>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
 
-      {/* Patient Routes */}
-      <Route
-        path="/patient/*"
-        element={
-          <ProtectedRoute allowedRoles={["patient"]}>
-            <PatientRoutes />
-          </ProtectedRoute>
-        }
-      />
+        {/* Patient Routes */}
+        <Route
+          path="/patient/*"
+          element={
+            <ProtectedRoute allowedRoles={["patient"]}>
+              <PatientRoutes />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Doctor Routes */}
-      <Route
-        path="/doctor/*"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <DoctorRoutes />
-          </ProtectedRoute>
-        }
-      />
+        {/* Doctor Routes */}
+        <Route
+          path="/doctor/*"
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <DoctorRoutes />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin/*"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminRoutes />
-          </ProtectedRoute>
-        }
-      />
+        {/* Admin Routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminRoutes />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* SuperAdmin Routes */}
-      <Route
-        path="/superadmin/*"
-        element={
-          <ProtectedRoute allowedRoles={["superadmin"]}>
-            <SuperAdminRoutes />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        {/* SuperAdmin Routes */}
+        <Route
+          path="/superadmin/*"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperAdminRoutes />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <GlobalStickyNotes />
+    </>
   );
 }
 
