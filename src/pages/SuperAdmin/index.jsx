@@ -12,6 +12,7 @@ import PatientList from "./PatientList";
 import ActivityLogs from "./ActivityLogs";
 import Chat from "./Chat";
 import Cases from "./Cases";
+import Notifications from "./Notifications";
 
 const SuperAdminRoutes = () => {
     return (
@@ -25,6 +26,7 @@ const SuperAdminRoutes = () => {
                 <Route path="patients" element={<PatientList />} />
                 <Route path="chat" element={<Chat />} />
                 <Route path="cases" element={<Cases />} />
+                <Route path="notifications" element={<Notifications />} />
                 <Route path="activity-logs" element={<ActivityLogs />} />
                 <Route path="subscriptions" element={<Subscriptions />} />
                 <Route path="profile" element={<Profile />} />
