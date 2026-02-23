@@ -1,11 +1,13 @@
-import { Bell, Search, User, LogOut, ChevronDown } from "lucide-react";
+import { Bell, Search, User, LogOut, ChevronDown, Sun, Moon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "store/slices/authSlice";
+import { toggleTheme } from "store/slices/themeSlice";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Header = ({ title, showSearch = false, showEarnings = false }) => {
   const { user } = useSelector((state) => state.auth);
+  const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -41,6 +43,13 @@ const Header = ({ title, showSearch = false, showEarnings = false }) => {
             <span>$12,450</span>
           </div>
         )}
+
+        <button
+          onClick={() => dispatch(toggleTheme())}
+          className="p-2 text-slate-500 hover:bg-slate-100 rounded-full relative transition-colors"
+        >
+          {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
 
         <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-full relative transition-colors">
           <Bell className="w-5 h-5" />

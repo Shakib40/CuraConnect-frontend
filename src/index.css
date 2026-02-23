@@ -71,22 +71,21 @@
   }
 
   .dark {
-    --color-bg-app: #020617;
-    /* Slate 950 */
-    --color-surface: #0f172a;
-    /* Slate 900 */
-    --color-surface-muted: #1e293b;
-    /* Slate 800 */
-    --color-text-main: #f8fafc;
-    /* Slate 50 */
-    --color-text-muted: #94a3b8;
-    /* Slate 400 */
-    --color-text-light: #64748b;
-    /* Slate 500 */
-    --color-border: #1e293b;
-    /* Slate 800 */
+    --color-bg-app: #000000;
+    --color-surface: #000000;
+    --color-surface-muted: #111111;
+    --color-text-main: #ffffff;
+    --color-text-muted: #a3a3a3;
+    --color-text-light: #737373;
+    --color-border: #333333;
     --color-primary-light: #134e4a;
-    /* Teal 900-ish */
+
+    --color-white: #000000;
+    --color-slate-50: #000000;
+    --color-slate-100: #111111;
+    --color-slate-200: #222222;
+    --color-slate-800: #ffffff;
+    --color-slate-900: #ffffff;
   }
 
   html,

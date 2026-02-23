@@ -17,25 +17,10 @@ const themeSlice = createSlice({
         toggleTheme: (state) => {
             state.theme = state.theme === "light" ? "dark" : "light";
             localStorage.setItem("theme", state.theme);
-
-            // Secondary effect: update the document class
-            const root = window.document.documentElement;
-            if (state.theme === "dark") {
-                root.classList.add("dark");
-            } else {
-                root.classList.remove("dark");
-            }
         },
         setTheme: (state, action) => {
             state.theme = action.payload;
             localStorage.setItem("theme", state.theme);
-
-            const root = window.document.documentElement;
-            if (state.theme === "dark") {
-                root.classList.add("dark");
-            } else {
-                root.classList.remove("dark");
-            }
         },
     },
 });
