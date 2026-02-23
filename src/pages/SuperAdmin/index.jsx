@@ -7,6 +7,7 @@ import Subscriptions from "./Subscriptions";
 import Profile from "./Profile";
 import InsuranceProviders from "./InsuranceProviders";
 import MedicineSupplier from "./MedicineSupplier";
+import DocumentVerification from "./DocumentVerification";
 
 const SuperAdminRoutes = () => {
     return (
@@ -16,6 +17,7 @@ const SuperAdminRoutes = () => {
                 <Route path="hospitals/*" element={<HospitalList />} />
                 <Route path="insurance/*" element={<InsuranceProviders />} />
                 <Route path="suppliers/*" element={<MedicineSupplier />} />
+                <Route path="document-verification/*" element={<DocumentVerification />} />
                 <Route path="subscriptions" element={<Subscriptions />} />
                 <Route path="profile" element={<Profile />} />
             </Route>
