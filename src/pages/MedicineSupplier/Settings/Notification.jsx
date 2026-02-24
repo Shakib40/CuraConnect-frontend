@@ -1,6 +1,7 @@
 import { Bell, Mail, Smartphone } from "lucide-react";
 import Checkbox from "components/Form/ToogleCheckbox";
 
+// Distribution of Notification based on category settings
 const NotificationSettings = ({ notificationSettings, setNotificationSettings }) => {
     return (
         <div className="space-y-6">

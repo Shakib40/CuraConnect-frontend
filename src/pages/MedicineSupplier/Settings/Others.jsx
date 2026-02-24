@@ -55,8 +55,7 @@ const OthersSettings = ({ othersSettings, setOthersSettings }) => {
                 Technical Settings
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <Select
+                <Select
                         name="dataExport"
                         value={othersSettings.dataExport}
                         onChange={(e) => setOthersSettings({...othersSettings, dataExport: e.target.value})}
@@ -68,9 +67,7 @@ const OthersSettings = ({ othersSettings, setOthersSettings }) => {
                             { value: "YEARLY", label: "Yearly" }
                         ]}
                     />
-                </div>
-                <div>
-                    <Select
+               <Select
                         name="reportFormat"
                         value={othersSettings.reportFormat}
                         onChange={(e) => setOthersSettings({...othersSettings, reportFormat: e.target.value})}
@@ -81,7 +78,17 @@ const OthersSettings = ({ othersSettings, setOthersSettings }) => {
                             { value: "PDF", label: "PDF" },
                         ]}
                     />
-                </div>
+                    <Select
+                        name="reportFormat"
+                        value={othersSettings.reportFormat}
+                        onChange={(e) => setOthersSettings({...othersSettings, reportFormat: e.target.value})}
+                        label="Currency Display Format"
+                        options={[
+                            { value: "DOLLAR", label: "Dollar" },
+                            { value: "RUPEE", label: "Rupee" },
+                            { value: "EURO", label: "Euro" },
+                        ]}
+                    />
             </div>
 
             <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
