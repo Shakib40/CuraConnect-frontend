@@ -33,7 +33,7 @@ const ReportsPage = () => {
     const [showGenerateModal, setShowGenerateModal] = useState(false);
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
-
+    
     // Formik initial values
     const formValues = {
         searchTerm,
@@ -296,7 +296,6 @@ const ReportsPage = () => {
                         variant="primary"
                         icon={FileText}
                         onClick={() => {
-                            console.log('Button clicked, current state:', showGenerateModal);
                             setShowGenerateModal(true);
                         }}
                     >
@@ -411,7 +410,7 @@ const ReportsPage = () => {
                 show={showGenerateModal}
                 onClose={() => setShowGenerateModal(false)}
                 title="Generate Report"
-                icon={FileText}
+                icon={<FileText className="w-5 h-5 text-purple-600" />}
                 iconClassName="bg-purple-50"
                 size="md"
                 footer={
@@ -466,7 +465,7 @@ const ReportsPage = () => {
                         </Form>
                     )}
                 </Formik>
-            </CustomModal>
+            </CustomModal> 
         </div>
     );
 };

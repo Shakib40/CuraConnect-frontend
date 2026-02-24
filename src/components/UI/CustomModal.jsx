@@ -46,12 +46,10 @@ const CustomModal = ({
           </button>
         </div>
 
-        {/* Body */}
         <div className="px-6 py-5">
           {children}
         </div>
 
-        {/* Footer */}
         {footer && (
           <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
             {footer}
