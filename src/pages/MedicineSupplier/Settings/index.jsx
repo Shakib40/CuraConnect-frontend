@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Formik, Form } from "formik";
 import {
     Settings,
     Bell,
@@ -19,6 +20,12 @@ import {
     CheckCircle,
     AlertTriangle
 } from "lucide-react";
+import GeneralSettings from "./General";
+import NotificationSettings from "./Notification";
+import SecuritySettings from "./Security";
+import PaymentSettings from "./Payment";
+import IntegrationSettings from "./Integrations";
+import Tabs from "components/UI/Tabs";
 
 const SettingsPage = () => {
     const [activeTab, setActiveTab] = useState("general");
@@ -75,11 +82,11 @@ const SettingsPage = () => {
     });
 
     const tabs = [
-        { id: "general", label: "General", icon: <Settings className="w-4 h-4" /> },
-        { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" /> },
-        { id: "security", label: "Security", icon: <Shield className="w-4 h-4" /> },
-        { id: "payment", label: "Payment", icon: <CreditCard className="w-4 h-4" /> },
-        { id: "integration", label: "Integration", icon: <Database className="w-4 h-4" /> }
+        { id: "general", label: "General", icon: <Settings className="w-4 h-4" />, component: <GeneralSettings generalSettings={generalSettings} setGeneralSettings={setGeneralSettings} /> },
+        { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" />, component: <NotificationSettings notificationSettings={notificationSettings} setNotificationSettings={setNotificationSettings} /> },
+        { id: "security", label: "Security", icon: <Shield className="w-4 h-4" />, component: <SecuritySettings securitySettings={securitySettings} setSecuritySettings={setSecuritySettings} /> },
+        { id: "payment", label: "Payment", icon: <CreditCard className="w-4 h-4" />, component: <PaymentSettings paymentSettings={paymentSettings} setPaymentSettings={setPaymentSettings} /> },
+        { id: "integration", label: "Integration", icon: <Database className="w-4 h-4" />, component: <IntegrationSettings integrationSettings={integrationSettings} setIntegrationSettings={setIntegrationSettings} /> }
     ];
 
     const handleSave = async () => {
@@ -159,268 +166,36 @@ const SettingsPage = () => {
                 </div>
             )}
 
-            <div className="bg-white rounded-lg border border-slate-200">
-                {/* Tabs */}
-                <div className="border-b border-slate-200">
-                    <nav className="flex space-x-8 px-6">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
-                                    activeTab === tab.id
-                                        ? "border-purple-600 text-purple-600"
-                                        : "border-transparent text-slate-500 hover:text-slate-700"
-                                }`}
-                            >
-                                {tab.icon}
-                                {tab.label}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-
-                {/* Tab Content */}
-                <div className="p-6">
-                    {/* General Settings */}
-                    {activeTab === "general" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Building className="w-5 h-5 text-purple-600" />
-                                Company Information
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Company Name</label>
-                                    <input
-                                        type="text"
-                                        value={generalSettings.companyName}
-                                        onChange={(e) => setGeneralSettings({...generalSettings, companyName: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Company Email</label>
-                                    <input
-                                        type="email"
-                                        value={generalSettings.companyEmail}
-                                        onChange={(e) => setGeneralSettings({...generalSettings, companyEmail: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Company Phone</label>
-                                    <input
-                                        type="tel"
-                                        value={generalSettings.companyPhone}
-                                        onChange={(e) => setGeneralSettings({...generalSettings, companyPhone: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Website</label>
-                                    <input
-                                        type="url"
-                                        value={generalSettings.website}
-                                        onChange={(e) => setGeneralSettings({...generalSettings, website: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Company Address</label>
-                                    <textarea
-                                        rows={2}
-                                        value={generalSettings.companyAddress}
-                                        onChange={(e) => setGeneralSettings({...generalSettings, companyAddress: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Notification Settings */}
-                    {activeTab === "notifications" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Bell className="w-5 h-5 text-purple-600" />
-                                Notification Preferences
-                            </h3>
-                            <div className="space-y-4">
-                                {Object.entries(notificationSettings).map(([key, value]) => (
-                                    <div key={key} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
-                                        <div className="flex items-center gap-3">
-                                            {key.includes("email") && <Mail className="w-5 h-5 text-slate-400" />}
-                                            {key.includes("sms") && <Smartphone className="w-5 h-5 text-slate-400" />}
-                                            {key.includes("push") && <Bell className="w-5 h-5 text-slate-400" />}
-                                            <div>
-                                                <p className="text-sm font-medium text-slate-800">
-                                                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}
-                                                </p>
-                                                <p className="text-xs text-slate-500">
-                                                    {key === "emailNotifications" && "Receive email notifications"}
-                                                    {key === "smsNotifications" && "Receive SMS notifications"}
-                                                    {key === "pushNotifications" && "Receive push notifications"}
-                                                    {key === "orderAlerts" && "Alerts for new orders"}
-                                                    {key === "lowStockAlerts" && "Low stock inventory alerts"}
-                                                    {key === "paymentAlerts" && "Payment status notifications"}
-                                                    {key === "systemUpdates" && "System update notifications"}
-                                                    {key === "marketingEmails" && "Marketing and promotional emails"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                checked={value}
-                                                onChange={(e) => setNotificationSettings({...notificationSettings, [key]: e.target.checked})}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Security Settings */}
-                    {activeTab === "security" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-purple-600" />
-                                Security Settings
-                            </h3>
-                            <div className="space-y-4">
-                                <div className="p-4 border border-slate-200 rounded-lg">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-3">
-                                            <Lock className="w-5 h-5 text-slate-400" />
-                                            <div>
-                                                <p className="text-sm font-medium text-slate-800">Two-Factor Authentication</p>
-                                                <p className="text-xs text-slate-500">Add an extra layer of security</p>
-                                            </div>
-                                        </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                checked={securitySettings.twoFactorAuth}
-                                                onChange={(e) => setSecuritySettings({...securitySettings, twoFactorAuth: e.target.checked})}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-2">Session Timeout</label>
-                                        <select
-                                            value={securitySettings.sessionTimeout}
-                                            onChange={(e) => setSecuritySettings({...securitySettings, sessionTimeout: e.target.value})}
-                                            className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        >
-                                            <option value="15 minutes">15 minutes</option>
-                                            <option value="30 minutes">30 minutes</option>
-                                            <option value="1 hour">1 hour</option>
-                                            <option value="4 hours">4 hours</option>
-                                            <option value="8 hours">8 hours</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-2">Password Expiry</label>
-                                        <select
-                                            value={securitySettings.passwordExpiry}
-                                            onChange={(e) => setSecuritySettings({...securitySettings, passwordExpiry: e.target.value})}
-                                            className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        >
-                                            <option value="30 days">30 days</option>
-                                            <option value="60 days">60 days</option>
-                                            <option value="90 days">90 days</option>
-                                            <option value="180 days">180 days</option>
-                                            <option value="never">Never</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Payment Settings */}
-                    {activeTab === "payment" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <CreditCard className="w-5 h-5 text-purple-600" />
-                                Payment Configuration
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Tax Rate</label>
-                                    <input
-                                        type="text"
-                                        value={paymentSettings.taxRate}
-                                        onChange={(e) => setPaymentSettings({...paymentSettings, taxRate: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Invoice Terms</label>
-                                    <select
-                                        value={paymentSettings.invoiceTerms}
-                                        onChange={(e) => setPaymentSettings({...paymentSettings, invoiceTerms: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    >
-                                        <option value="Net 15">Net 15</option>
-                                        <option value="Net 30">Net 30</option>
-                                        <option value="Net 60">Net 60</option>
-                                        <option value="Due on Receipt">Due on Receipt</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Integration Settings */}
-                    {activeTab === "integration" && (
-                        <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Database className="w-5 h-5 text-purple-600" />
-                                Third-Party Integrations
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Accounting Software</label>
-                                    <select
-                                        value={integrationSettings.accountingSoftware}
-                                        onChange={(e) => setIntegrationSettings({...integrationSettings, accountingSoftware: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    >
-                                        <option value="quickbooks">QuickBooks</option>
-                                        <option value="xero">Xero</option>
-                                        <option value="sage">Sage</option>
-                                        <option value="none">None</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Shipping Provider</label>
-                                    <select
-                                        value={integrationSettings.shippingProvider}
-                                        onChange={(e) => setIntegrationSettings({...integrationSettings, shippingProvider: e.target.value})}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    >
-                                        <option value="fedex">FedEx</option>
-                                        <option value="ups">UPS</option>
-                                        <option value="dhl">DHL</option>
-                                        <option value="usps">USPS</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
+            <Formik
+                initialValues={{
+                    generalSettings,
+                    notificationSettings,
+                    securitySettings,
+                    paymentSettings,
+                    integrationSettings
+                }}
+                onSubmit={async (values) => {
+                    // Update all settings
+                    setGeneralSettings(values.generalSettings);
+                    setNotificationSettings(values.notificationSettings);
+                    setSecuritySettings(values.securitySettings);
+                    setPaymentSettings(values.paymentSettings);
+                    setIntegrationSettings(values.integrationSettings);
+                    
+                    // Trigger save
+                    await handleSave();
+                }}
+                enableReinitialize
+            >
+                <Tabs 
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
+            </Formik>
         </div>
     );
 };
 
 export default SettingsPage;
+
