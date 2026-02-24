@@ -15,7 +15,7 @@ const Table = ({ columns, data, currentPage, totalPages, onPageChange }) => {
         <TableHead>
           <TableRow>
             {columns.map((col, index) => (
-              <TableHeadCell key={index} className="bg-slate-50 text-slate-700">
+              <TableHeadCell key={index} className="!bg-slate-50 !text-slate-700">
                 {col.header}
               </TableHeadCell>
             ))}
@@ -25,7 +25,7 @@ const Table = ({ columns, data, currentPage, totalPages, onPageChange }) => {
           {data.map((row, rowIndex) => (
             <TableRow
               key={rowIndex}
-              className="bg-white hover:bg-slate-50 transition-colors"
+              className="bg-white hover:bg-white transition-colors"
             >
               {columns.map((col, colIndex) => (
                 <TableCell key={colIndex} className="text-slate-800">
