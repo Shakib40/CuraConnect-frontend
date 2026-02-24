@@ -23,7 +23,9 @@ import DatePicker from "components/Form/DatePicker";
 import Select from "components/Form/Select";
 import Input from "components/Form/Input";
 import CustomModal from "components/UI/CustomModal";
+import Button from "components/UI/Button";
 import {Save} from "lucide-react";
+import options from "utils/options";
 
 const OrdersList = () => {
     const navigate = useNavigate();
@@ -255,11 +257,7 @@ const OrdersList = () => {
 
     const statuses = [
         { value: "all", label: "All Status" },
-        { value: "pending", label: "Pending" },
-        { value: "processing", label: "Processing" },
-        { value: "shipped", label: "Shipped" },
-        { value: "delivered", label: "Delivered" },
-        { value: "cancelled", label: "Cancelled" }
+        ...options.orderStatus
     ];
 
     const dateRanges = [
@@ -573,8 +571,7 @@ const OrdersList = () => {
                 data={filteredOrders}
             />
 
-            {/* Status Change Modal */}
-            <CustomModal
+             <CustomModal
                 show={showStatusModal}
                 onClose={() => setShowStatusModal(false)}
                 title="Change Order Status"
@@ -583,48 +580,55 @@ const OrdersList = () => {
                 iconClassName="bg-blue-50"
                 footer={
                     <>
-                        <button
+                        <Button
+                            variant="outline"
+                            size="md"
                             onClick={() => setShowStatusModal(false)}
-                            className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="primary"
+                            size="md"
                             onClick={handleStatusUpdate}
-                            className="flex items-center gap-2 px-5 py-2 text-white text-sm font-bold bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+                            icon={Save}
+                            iconPosition="left"
                         >
-                            <Save className="w-4 h-4" />
                             Update Status
-                        </button>
+                        </Button>
                     </>
                 }
             >
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">New Status</label>
-                        <select
-                            value={newStatus}
-                            onChange={(e) => setNewStatus(e.target.value)}
-                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Update Notes</label>
-                        <textarea
-                            value={statusNotes}
-                            onChange={(e) => setStatusNotes(e.target.value)}
-                            rows={4}
-                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Add any notes about this status update..."
-                        />
-                    </div>
-                </div>
+                <Formik
+                initialValues={{
+                    status: newStatus,
+                    notes: statusNotes
+                }}
+                onSubmit={(values) => {
+                    setNewStatus(values.status);
+                    setStatusNotes(values.notes);
+                    handleStatusUpdate();
+                }}
+            >
+                {() => (
+                    <Form>
+                        <div className="space-y-4">
+                            <Select
+                                name="status"
+                                label="New Status"
+                                options={options.orderStatus}
+                            />
+                            <Input
+                                name="notes"
+                                label="Update Notes"
+                                type="textarea"
+                                rows={4}
+                                placeholder="Add any notes about this status update..."
+                            />
+                        </div>
+                    </Form>
+                )}
+            </Formik>
             </CustomModal>
         </div>
     );
