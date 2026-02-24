@@ -30,12 +30,13 @@ const Input = ({
           rows={type === "textarea" ? rows : undefined}
           as={type === "textarea" ? "textarea" : "input"}
           className={`
-            block w-full rounded-lg border border-slate-300 bg-white
+            block w-full rounded-[10px] border border-slate-300 bg-white
             ${Icon ? "pl-10" : "pl-3"} pr-3 py-2 text-sm text-slate-900
             focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500
             disabled:bg-slate-50 disabled:text-slate-500
             transition-colors
             ${type === "textarea" ? "resize-y" : ""}
+            h-[48px]
           `}
         />
       </div>

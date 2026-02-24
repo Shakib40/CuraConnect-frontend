@@ -23,7 +23,7 @@ import Table from "components/UI/Table";
 import Select from "components/Form/Select";
 import Input from "components/Form/Input";
 import Button from "components/UI/Button";
-import Modal from "components/UI/CustomModal";
+import CustomModal from "components/UI/CustomModal";
 import options from "utils/options";
 
 const ReportsPage = () => {
@@ -407,12 +407,7 @@ const ReportsPage = () => {
                 data={filteredReports}
             />
             
-            {/* Debug: Modal State */}
-            <div className="mt-4 p-4 bg-yellow-100 rounded text-sm">
-                Modal State: {showGenerateModal ? 'OPEN' : 'CLOSED'}
-            </div>
-            
-            <Modal
+            <CustomModal
                 show={showGenerateModal}
                 onClose={() => setShowGenerateModal(false)}
                 title="Generate Report"
@@ -471,7 +466,7 @@ const ReportsPage = () => {
                         </Form>
                     )}
                 </Formik>
-            </Modal>
+            </CustomModal>
         </div>
     );
 };

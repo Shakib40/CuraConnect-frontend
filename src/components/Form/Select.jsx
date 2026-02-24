@@ -14,7 +14,7 @@ const Select = ({
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
-      borderRadius: "0.5rem",
+      borderRadius: "10px",
       borderColor: state.isFocused ? "#14b8a6" : "#cbd5e1",
       boxShadow: state.isFocused ? "0 0 0 1px #14b8a6" : "none",
       padding: "2px",
@@ -39,6 +39,15 @@ const Select = ({
         backgroundColor: "#0f766e",
         color: "white",
       },
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      padding: "8px",
+      height: "42px",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      padding: "8px",
     }),
   };
 

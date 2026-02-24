@@ -17,7 +17,7 @@ const DatePicker = ({ label, name, className = "" }) => {
           type="date"
           name={name}
           id={name}
-          className="block w-full pl-10 pr-3 py-2 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-colors"
+          className="block w-full pl-10 pr-3 py-2 h-[48px] rounded-[10px] border border-slate-300 bg-white text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-colors"
         />
       </div>
       <ErrorMessage
