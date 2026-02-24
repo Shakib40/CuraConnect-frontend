@@ -9,7 +9,7 @@ const Checkbox = ({ label, name, className = "", description }) => {
                         type="checkbox"
                         name={name}
                         id={name}
-                        className="peer h-5 w-5 cursor-pointer appearance-none rounded-lg border border-slate-300 bg-white shadow transition-all checked:bg-teal-600 checked:border-teal-600 focus:outline-none"
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded-lg border border-slate-300 bg-white shadow transition-all checked:bg-teal-600 checked:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                     <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                         <svg

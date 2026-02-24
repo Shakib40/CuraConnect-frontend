@@ -1,5 +1,5 @@
 import { Bell, Mail, Smartphone } from "lucide-react";
-import Checkbox from "components/Form/Checkbox";
+import Checkbox from "components/Form/ToogleCheckbox";
 
 const NotificationSettings = ({ notificationSettings, setNotificationSettings }) => {
     return (

@@ -10,7 +10,7 @@ const Tabs = ({ tabs, activeTab, setActiveTab }) => {
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
                                 activeTab === tab.id
-                                    ? "border-purple-600 text-purple-600"
+                                    ? "border-teal-600 text-teal-600"
                                     : "border-transparent text-slate-500 hover:text-slate-700"
                             }`}
                         >

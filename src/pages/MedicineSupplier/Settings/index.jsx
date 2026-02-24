@@ -26,6 +26,7 @@ import SecuritySettings from "./Security";
 import PaymentSettings from "./Payment";
 import IntegrationSettings from "./Integrations";
 import Tabs from "components/UI/Tabs";
+import Button from "components/UI/Button";
 
 const SettingsPage = () => {
     const [activeTab, setActiveTab] = useState("general");
@@ -129,30 +130,20 @@ const SettingsPage = () => {
                     <p className="text-slate-500 mt-1">Manage your account and system preferences.</p>
                 </div>
                 <div className="flex gap-2">
-                    <button
+                    <Button
                         onClick={handleReset}
-                        className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2"
+                        variant="outline"
+                        icon={RefreshCw}
                     >
-                        <RefreshCw className="w-4 h-4" />
                         Reset
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handleSave}
-                        disabled={isSaving}
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        loading={isSaving}
+                        icon={Save}
                     >
-                        {isSaving ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                Saving...
-                            </>
-                        ) : (
-                            <>
-                                <Save className="w-4 h-4" />
-                                Save Changes
-                            </>
-                        )}
-                    </button>
+                        {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
                 </div>
             </div>
 
