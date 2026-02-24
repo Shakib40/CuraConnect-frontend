@@ -48,8 +48,8 @@ const ReportsPage = () => {
     };
 
     // Mock reports data
-    const salesData = useMemo(() => options.reports.sales, []);
-    const inventoryData = useMemo(() => options.reports.inventory, []);
+    const salesData = useMemo(() => options?.reports?.sales, []);
+    const inventoryData = useMemo(() => options?.reports?.inventory, []);
     const customerData = useMemo(() => [
         {
             id: "CUST-001",
@@ -276,14 +276,14 @@ const ReportsPage = () => {
                                     <Select
                                         name="selectedReport"
                                         label="Report Type"
-                                        options={options.reportTypes}
+                                        options={options?.reportTypes}
                                     />
                                 </div>
                                 <div className="md:col-span-1">
                                     <Select
                                         name="dateRange"
                                         label="Date Range"
-                                        options={options.dateRanges}
+                                        options={options?.dateRanges}
                                     />
                                 </div>
                             </div>
