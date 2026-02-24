@@ -305,6 +305,76 @@ const MedicineSupplierDashboard = () => {
                 </div>
             </div>
 
+            {/* Revenue & Order Analysis Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <DollarSign className="w-5 h-5 text-green-600" />
+                        Revenue Breakdown
+                    </h3>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="text-center">
+                                <p className="text-sm text-slate-500">This Month</p>
+                                <p className="text-2xl font-bold text-green-600">$45,280</p>
+                                <p className="text-xs text-green-600">+12.5%</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-sm text-slate-500">Last Month</p>
+                                <p className="text-2xl font-bold text-slate-800">$40,250</p>
+                            </div>
+                        </div>
+                        <div className="h-48">
+                            <Line data={{
+                                labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                                datasets: [{
+                                    label: "Weekly Revenue",
+                                    data: [11280, 11890, 12450, 13070],
+                                    borderColor: "rgb(34, 197, 94)",
+                                    backgroundColor: "rgba(34, 197, 94, 0.1)",
+                                    tension: 0.3,
+                                    fill: true,
+                                }]
+                            }} options={options} />
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <ShoppingCart className="w-5 h-5 text-blue-600" />
+                        Order Analytics
+                    </h3>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p className="text-sm text-slate-500">Total Orders</p>
+                                <p className="text-2xl font-bold text-slate-800">289</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-slate-500">Pending</p>
+                                <p className="text-2xl font-bold text-yellow-600">47</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-slate-500">Completed</p>
+                                <p className="text-2xl font-bold text-green-600">242</p>
+                            </div>
+                        </div>
+                        <div className="h-48">
+                            <Bar data={{
+                                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                                datasets: [{
+                                    label: "Monthly Orders",
+                                    data: [245, 267, 289, 312, 289],
+                                    backgroundColor: "rgba(59, 130, 246, 0.8)",
+                                    borderColor: "rgb(59, 130, 246)",
+                                    borderWidth: 2,
+                                }]
+                            }} options={options} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Top Products */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
