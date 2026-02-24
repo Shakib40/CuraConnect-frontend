@@ -3,7 +3,7 @@ import MedicineSupplierLayout from "../../components/Layouts/MedicineSupplierLay
 
 import Dashboard from "./Dashboard";
 import ProductRoutes from "./Products";
-import Orders from "./Orders";
+import Orders from "./Orders/index";
 import Reports from "./Reports";
 import Settings from "./Settings";
 import Profile from "./Profile";
@@ -16,8 +16,8 @@ const MedicineSupplierRoutes = () => {
             <Route element={<MedicineSupplierLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products/*" element={<ProductRoutes />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/reports" element={<Reports />} />
+                <Route path="/orders/*" element={<Orders />} />
+\                <Route path="/reports" element={<Reports />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
