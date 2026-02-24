@@ -8,6 +8,7 @@ import PatientRoutes from "./pages/Patient";
 import DoctorRoutes from "./pages/Doctor";
 import HospitalAdminRoutes from "./pages/HospitalAdmin";
 import SuperAdminRoutes from "./pages/SuperAdmin";
+import MedicineSupplierRoutes from "./pages/MedicineSupplier";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,12 @@ const Login = () => {
           className="px-4 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-lg shadow transition-colors font-medium"
         >
           Login as Hospital Admin (Demo)
+        </button>
+        <button
+          onClick={() => handleLogin("medicine-supplier")}
+          className="px-4 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-lg shadow transition-colors font-medium"
+        >
+          Login as Medicine Supplier (Demo)
         </button>
         <button
           onClick={() => handleLogin("superadmin")}
@@ -112,12 +119,22 @@ function App() {
           }
         />
 
-        {/* Admin Routes */}
+        {/* Hospital Admin Routes */}
         <Route
           path="/hospital-admin/*"
           element={
             <ProtectedRoute allowedRoles={["hospital-admin"]}>
               <HospitalAdminRoutes />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Medicine Supplier Routes */}
+        <Route
+          path="/medicine-supplier/*"
+          element={
+            <ProtectedRoute allowedRoles={["medicine-supplier"]}>
+              <MedicineSupplierRoutes />
             </ProtectedRoute>
           }
         />
