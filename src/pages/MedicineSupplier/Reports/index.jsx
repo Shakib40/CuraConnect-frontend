@@ -27,7 +27,7 @@ import Modal from "components/UI/CustomModal";
 import options from "utils/options";
 
 const ReportsPage = () => {
-    const [selectedReport, setSelectedReport] = useState("sales");
+    const [selectedReport, setSelectedReport] = useState("all");
     const [dateRange, setDateRange] = useState("month");
     const [searchTerm, setSearchTerm] = useState("");
     const [showGenerateModal, setShowGenerateModal] = useState(false);
@@ -178,111 +178,111 @@ const ReportsPage = () => {
     };
 
     const headers = [
-                    {
-                        header: "Report",
-                        accessor: "reportName",
-                        render: (report) => (
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                                    {getReportIcon(report.type)}
-                                </div>
-                                <div>
-                                    <div className="text-sm font-medium text-slate-900">{report.reportName}</div>
-                                    <div className="text-xs text-slate-500">{report.id}</div>
-                                </div>
-                            </div>
-                        )
-                    },
-                    {
-                        header: "Type",
-                        accessor: "type",
-                        render: (report) => (
-                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(report.type)}`}>
-                                {report.type}
-                            </span>
-                        )
-                    },
-                    {
-                        header: "Period",
-                        accessor: "period",
-                        render: (report) => (
-                            <span className="text-sm text-slate-900">{report.period}</span>
-                        )
-                    },
-                    {
-                        header: "Generated",
-                        accessor: "generatedDate",
-                        render: (report) => (
-                            <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-slate-400" />
-                                <span className="text-sm text-slate-900">{report.generatedDate}</span>
-                            </div>
-                        )
-                    },
-                    {
-                        header: "Key Metrics",
-                        accessor: "metrics",
-                        render: (report) => (
-                            <div className="text-sm text-slate-900">
-                                {report.totalSales && (
-                                    <div className="flex items-center gap-1">
-                                        <DollarSign className="w-3 h-3" />
-                                        <span>${report.totalSales.toLocaleString()}</span>
-                                    </div>
-                                )}
-                                {report.totalProducts && (
-                                    <div className="flex items-center gap-1">
-                                        <Package className="w-3 h-3" />
-                                        <span>{report.totalProducts} products</span>
-                                    </div>
-                                )}
-                                {report.totalCustomers && (
-                                    <div className="flex items-center gap-1">
-                                        <Users className="w-3 h-3" />
-                                        <span>{report.totalCustomers} customers</span>
-                                    </div>
-                                )}
-                                {report.growthRate && (
-                                    <div className={`flex items-center gap-1 ${report.growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        {report.growthRate > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-                                        <span>{Math.abs(report.growthRate)}%</span>
-                                    </div>
-                                )}
-                            </div>
-                        )
-                    },
-                    {
-                        header: "Status",
-                        accessor: "status",
-                        render: (report) => (
-                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(report.status)}`}>
-                                {report.status}
-                            </span>
-                        )
-                    },
-                    {
-                        header: "Actions",
-                        accessor: "id",
-                        render: (report) => (
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => handleDownloadReport(report.id)}
-                                    icon={Download}
-                                    title="Download Report"
-                                />
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => handlePrintReport(report.id)}
-                                    icon={Printer}
-                                    title="Print Report"
-                                />
-                            </div>
-                        )
-                    }
-                ]
+        {
+            header: "Report",
+            accessor: "reportName",
+            render: (report) => (
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                        {getReportIcon(report.type)}
+                    </div>
+                    <div>
+                        <div className="text-sm font-medium text-slate-900">{report.reportName}</div>
+                        <div className="text-xs text-slate-500">{report.id}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            header: "Type",
+            accessor: "type",
+            render: (report) => (
+                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(report.type)}`}>
+                    {report.type}
+                </span>
+            )
+        },
+        {
+            header: "Period",
+            accessor: "period",
+            render: (report) => (
+                <span className="text-sm text-slate-900">{report.period}</span>
+            )
+        },
+        {
+            header: "Generated",
+            accessor: "generatedDate",
+            render: (report) => (
+                <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm text-slate-900">{report.generatedDate}</span>
+                </div>
+            )
+        },
+        {
+            header: "Key Metrics",
+            accessor: "metrics",
+            render: (report) => (
+                <div className="text-sm text-slate-900">
+                    {report.totalSales && (
+                        <div className="flex items-center gap-1">
+                            <DollarSign className="w-3 h-3" />
+                            <span>${report.totalSales.toLocaleString()}</span>
+                        </div>
+                    )}
+                    {report.totalProducts && (
+                        <div className="flex items-center gap-1">
+                            <Package className="w-3 h-3" />
+                            <span>{report.totalProducts} products</span>
+                        </div>
+                    )}
+                    {report.totalCustomers && (
+                        <div className="flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            <span>{report.totalCustomers} customers</span>
+                        </div>
+                    )}
+                    {report.growthRate && (
+                        <div className={`flex items-center gap-1 ${report.growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {report.growthRate > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                            <span>{Math.abs(report.growthRate)}%</span>
+                        </div>
+                    )}
+                </div>
+            )
+        },
+        {
+            header: "Status",
+            accessor: "status",
+            render: (report) => (
+                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(report.status)}`}>
+                    {report.status}
+                </span>
+            )
+        },
+        {
+            header: "Actions",
+            accessor: "id",
+            render: (report) => (
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleDownloadReport(report.id)}
+                        icon={Download}
+                        title="Download Report"
+                    />
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handlePrintReport(report.id)}
+                        icon={Printer}
+                        title="Print Report"
+                    />
+                </div>
+            )
+        }
+    ]
 
     return (
         <div className="space-y-6">
@@ -293,9 +293,12 @@ const ReportsPage = () => {
                 </div>
                 <div className="flex gap-2">
                     <Button
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                        variant="primary"
                         icon={FileText}
-                        onClick={() => setShowGenerateModal(true)}
+                        onClick={() => {
+                            console.log('Button clicked, current state:', showGenerateModal);
+                            setShowGenerateModal(true);
+                        }}
                     >
                         Generate Report
                     </Button>
@@ -361,7 +364,6 @@ const ReportsPage = () => {
                 </div>
             </div>
 
-            {/* Filters */}
             <Formik
                 initialValues={formValues}
                 onSubmit={handleFormChange}
@@ -400,11 +402,15 @@ const ReportsPage = () => {
                 )}
             </Formik>
 
-            {/* Reports Table */}
             <Table
                 columns={headers}
                 data={filteredReports}
             />
+            
+            {/* Debug: Modal State */}
+            <div className="mt-4 p-4 bg-yellow-100 rounded text-sm">
+                Modal State: {showGenerateModal ? 'OPEN' : 'CLOSED'}
+            </div>
             
             <Modal
                 show={showGenerateModal}
@@ -432,10 +438,15 @@ const ReportsPage = () => {
             >
                 <Formik
                     initialValues={{
-                        fromDate,
-                        toDate
+                        fromDate: fromDate || '',
+                        toDate: toDate || ''
                     }}
                     enableReinitialize
+                    onSubmit={(values) => {
+                        setFromDate(values.fromDate);
+                        setToDate(values.toDate);
+                        handleGenerateReport();
+                    }}
                 >
                     {() => (
                         <Form>
@@ -446,8 +457,6 @@ const ReportsPage = () => {
                                         type="date"
                                         label="From Date"
                                         placeholder="Select start date"
-                                        value={fromDate}
-                                        onChange={(e) => setFromDate(e.target.value)}
                                     />
                                 </div>
                                 <div>
@@ -456,8 +465,6 @@ const ReportsPage = () => {
                                         type="date"
                                         label="To Date"
                                         placeholder="Select end date"
-                                        value={toDate}
-                                        onChange={(e) => setToDate(e.target.value)}
                                     />
                                 </div>
                             </div>
