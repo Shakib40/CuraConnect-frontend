@@ -13,7 +13,8 @@ import {
   Truck,
   TrendingUp,
   Users,
-  DollarSign
+  DollarSign,
+  HelpCircle
 } from "lucide-react";
 
 const medicineSupplierMenuItems = [
@@ -24,6 +25,7 @@ const medicineSupplierMenuItems = [
   { label: "Chat", path: "/medicine-supplier/chat", icon: MessageSquare },
   { label: "Notifications", path: "/medicine-supplier/notifications", icon: Bell },
   { label: "Settings", path: "/medicine-supplier/settings", icon: Settings },
+  { label: "Ask Help", path: "/medicine-supplier/ask-help", icon: HelpCircle },
   { label: "Profile", path: "/medicine-supplier/profile", icon: User },
 ];
 

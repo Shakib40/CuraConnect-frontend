@@ -9,6 +9,7 @@ import Settings from "./Settings";
 import Profile from "./Profile";
 import Chat from "./Chat";
 import Notifications from "./Notifications";
+import AskHelpRoutes from "./AskHelp";
 
 const MedicineSupplierRoutes = () => {
     return (
@@ -17,11 +18,12 @@ const MedicineSupplierRoutes = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products/*" element={<ProductRoutes />} />
                 <Route path="/orders/*" element={<Orders />} />
-\                <Route path="/reports" element={<Reports />} />
+                <Route path="/reports" element={<Reports />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/ask-help/*" element={<AskHelpRoutes />} />
             </Route>
         </Routes>
     );
