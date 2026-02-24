@@ -25,6 +25,7 @@ import NotificationSettings from "./Notification";
 import SecuritySettings from "./Security";
 import PaymentSettings from "./Payment";
 import IntegrationSettings from "./Integrations";
+import OthersSettings from "./Others";
 import Tabs from "components/UI/Tabs";
 import Button from "components/UI/Button";
 
@@ -37,12 +38,21 @@ const SettingsPage = () => {
     const [generalSettings, setGeneralSettings] = useState({
         companyName: "MediSupply Solutions",
         companyEmail: "info@medisupply.com",
-        companyPhone: "+1-555-0123",
-        companyAddress: "123 Medical Supply Blvd, Health City, HC 12345",
+        companyPhone: "+1-800-555-0123",
         website: "www.medisupply.com",
-        timezone: "UTC-5 (Eastern Time)",
-        language: "English",
-        currency: "USD"
+        companyGST: "27AAAPL1234C1Z",
+        street: "123 Business Park, Building A",
+        city: "Mumbai",
+        country: "india",
+        state: "maharashtra",
+        pincode: "400001",
+        companyAddress: "123 Business Park, Building A, Mumbai, Maharashtra 400001, India",
+        aboutMe: "Leading medical supply company with 10+ years of experience in pharmaceutical distribution and healthcare equipment supply.",
+        contactPhones: ["+1-800-555-0123", "+1-800-555-0124"],
+        supplyStatus: "active",
+        reportsFrequency: "week",
+        reportsStartDate: "2024-01-01",
+        reportsEndDate: "2024-12-31"
     });
 
     const [notificationSettings, setNotificationSettings] = useState({
@@ -69,7 +79,7 @@ const SettingsPage = () => {
         paymentMethods: ["credit_card", "bank_transfer", "paypal"],
         autoBilling: true,
         invoiceTerms: "Net 30",
-        taxRate: "8.5%",
+        taxRate: "18%",
         currency: "USD"
     });
 
@@ -82,12 +92,34 @@ const SettingsPage = () => {
         crmIntegration: false
     });
 
+    const [othersSettings, setOthersSettings] = useState({
+        companyLogo: "",
+        businessHours: "9:00 AM - 6:00 PM",
+        timezone: "IST",
+        defaultLanguage: "en",
+        linkedin: "https://linkedin.com/company/medisupply",
+        facebook: "https://facebook.com/medisupply",
+        twitter: "@medisupply",
+        instagram: "@medisupply_official",
+        businessRegistration: "ABC123456789",
+        industryType: "Pharmaceutical Distribution",
+        companySize: "51-200",
+        gdprCompliant: true,
+        apiAccess: false,
+        dataBackup: true,
+        dataExport: "csv",
+        emergencyContactName: "John Doe",
+        emergencyContactPhone: "+1-800-555-9999",
+        emergencyContactEmail: "emergency@medisupply.com"
+    });
+
     const tabs = [
         { id: "general", label: "General", icon: <Settings className="w-4 h-4" />, component: <GeneralSettings generalSettings={generalSettings} setGeneralSettings={setGeneralSettings} /> },
         { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" />, component: <NotificationSettings notificationSettings={notificationSettings} setNotificationSettings={setNotificationSettings} /> },
         { id: "security", label: "Security", icon: <Shield className="w-4 h-4" />, component: <SecuritySettings securitySettings={securitySettings} setSecuritySettings={setSecuritySettings} /> },
         { id: "payment", label: "Payment", icon: <CreditCard className="w-4 h-4" />, component: <PaymentSettings paymentSettings={paymentSettings} setPaymentSettings={setPaymentSettings} /> },
-        { id: "integration", label: "Integration", icon: <Database className="w-4 h-4" />, component: <IntegrationSettings integrationSettings={integrationSettings} setIntegrationSettings={setIntegrationSettings} /> }
+        { id: "integration", label: "Integration", icon: <Database className="w-4 h-4" />, component: <IntegrationSettings integrationSettings={integrationSettings} setIntegrationSettings={setIntegrationSettings} /> },
+        { id: "others", label: "Others", icon: <Settings className="w-4 h-4" />, component: <OthersSettings othersSettings={othersSettings} setOthersSettings={setOthersSettings} /> }
     ];
 
     const handleSave = async () => {
