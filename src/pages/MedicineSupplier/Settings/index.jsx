@@ -26,6 +26,8 @@ import SecuritySettings from "./Security";
 import PaymentSettings from "./Payment";
 import IntegrationSettings from "./Integrations";
 import OthersSettings from "./Others";
+import DocumentsSettings from "./Documents";
+import BankDetailsSettings from "./BankDetails";
 import Tabs from "components/UI/Tabs";
 import Button from "components/UI/Button";
 
@@ -113,10 +115,47 @@ const SettingsPage = () => {
         emergencyContactEmail: "emergency@medisupply.com"
     });
 
+    const [documentsSettings, setDocumentsSettings] = useState({
+        documents: [
+            {
+                id: 1,
+                name: "Business License",
+                type: "LICENSE",
+                expiryDate: "2024-12-31",
+                file: null,
+                uploaded: true
+            }
+        ],
+        autoReminders: true,
+        reminderDays: "30"
+    });
+
+    const [bankDetailsSettings, setBankDetailsSettings] = useState({
+        bankAccounts: [
+            {
+                id: 1,
+                accountName: "MediSupply Solutions",
+                accountNumber: "1234567890123456",
+                bankName: "State Bank of India",
+                branchName: "Mumbai Main Branch",
+                ifscCode: "SBIN0001234",
+                accountType: "CURRENT",
+                isDefault: true
+            }
+        ],
+        paymentGateway: "RAZORPAY",
+        autoSettlement: true,
+        settlementThreshold: "50000",
+        twoFactorAuth: true,
+        emailNotifications: true
+    });
+
     const tabs = [
         { id: "general", label: "General", icon: <Settings className="w-4 h-4" />, component: <GeneralSettings generalSettings={generalSettings} setGeneralSettings={setGeneralSettings} /> },
         { id: "notifications", label: "Notifications", icon: <Bell className="w-4 h-4" />, component: <NotificationSettings notificationSettings={notificationSettings} setNotificationSettings={setNotificationSettings} /> },
         { id: "security", label: "Security", icon: <Shield className="w-4 h-4" />, component: <SecuritySettings securitySettings={securitySettings} setSecuritySettings={setSecuritySettings} /> },
+        { id: "documents", label: "Documents", icon: <FileText className="w-4 h-4" />, component: <DocumentsSettings documentsSettings={documentsSettings} setDocumentsSettings={setDocumentsSettings} /> },
+        { id: "bankdetails", label: "Bank Details", icon: <CreditCard className="w-4 h-4" />, component: <BankDetailsSettings bankDetailsSettings={bankDetailsSettings} setBankDetailsSettings={setBankDetailsSettings} /> },
         { id: "payment", label: "Payment", icon: <CreditCard className="w-4 h-4" />, component: <PaymentSettings paymentSettings={paymentSettings} setPaymentSettings={setPaymentSettings} /> },
         { id: "integration", label: "Integration", icon: <Database className="w-4 h-4" />, component: <IntegrationSettings integrationSettings={integrationSettings} setIntegrationSettings={setIntegrationSettings} /> },
         { id: "others", label: "Others", icon: <Settings className="w-4 h-4" />, component: <OthersSettings othersSettings={othersSettings} setOthersSettings={setOthersSettings} /> }
