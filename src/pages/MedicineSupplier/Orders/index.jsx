@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Formik, Form } from "formik";
 import {
     ShoppingCart,
     Search,
@@ -17,12 +18,26 @@ import {
     Download,
     RefreshCw
 } from "lucide-react";
+import Table from "components/UI/Table";
+import StatsCard from "components/UI/StatsCard";
+import DatePicker from "components/Form/DatePicker";
+import Select from "components/Form/Select";
+import Input from "components/Form/Input";
 
 const OrdersPage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedStatus, setSelectedStatus] = useState("all");
-    const [selectedPriority, setSelectedPriority] = useState("all");
-    const [selectedDateRange, setSelectedDateRange] = useState("all");
+    const [filterValues, setFilterValues] = useState({
+        search: "",
+        status: "all",
+        hospital: "all",
+        dateRange: "all",
+        fromDate: "",
+        toDate: ""
+    });
+
+    // Update filterValues when Formik values change (will be called from Formik)
+    const updateFilterValues = (values) => {
+        setFilterValues(values);
+    };
 
     // Mock orders data
     const orders = useMemo(() => [
@@ -200,32 +215,70 @@ const OrdersPage = () => {
         { value: "cancelled", label: "Cancelled" }
     ];
 
-    const priorities = [
-        { value: "all", label: "All Priority" },
-        { value: "high", label: "High" },
-        { value: "medium", label: "Medium" },
-        { value: "low", label: "Low" }
-    ];
-
     const dateRanges = [
         { value: "all", label: "All Time" },
         { value: "today", label: "Today" },
         { value: "week", label: "This Week" },
         { value: "month", label: "This Month" },
-        { value: "quarter", label: "This Quarter" }
+        { value: "quarter", label: "This Quarter" },
+        { value: "custom", label: "Custom Range" }
     ];
+
+    // Get unique hospitals from orders
+    const hospitals = useMemo(() => {
+        const uniqueHospitals = [...new Set(orders.map(order => order.hospitalName))];
+        return [
+            { value: "all", label: "All Hospitals" },
+            ...uniqueHospitals.map(name => ({ value: name, label: name }))
+        ];
+    }, [orders]);
 
     const filteredOrders = useMemo(() => {
         return orders.filter(order => {
-            const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                 order.hospitalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                 order.contactPerson.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
-            const matchesPriority = selectedPriority === "all" || order.priority === selectedPriority;
+            const matchesSearch = order.id.toLowerCase().includes(filterValues.search.toLowerCase()) ||
+                                 order.hospitalName.toLowerCase().includes(filterValues.search.toLowerCase()) ||
+                                 order.contactPerson.toLowerCase().includes(filterValues.search.toLowerCase());
+            const matchesStatus = filterValues.status === "all" || order.status === filterValues.status;
+            const matchesHospital = filterValues.hospital === "all" || order.hospitalName === filterValues.hospital;
             
-            return matchesSearch && matchesStatus && matchesPriority;
+            // Date filtering
+            let matchesDate = true;
+            if (filterValues.dateRange === "custom" && filterValues.fromDate && filterValues.toDate) {
+                const orderDate = new Date(order.orderDate);
+                const from = new Date(filterValues.fromDate);
+                const to = new Date(filterValues.toDate);
+                matchesDate = orderDate >= from && orderDate <= to;
+            } else if (filterValues.dateRange !== "all") {
+                const orderDate = new Date(order.orderDate);
+                const today = new Date();
+                
+                switch (filterValues.dateRange) {
+                    case "today":
+                        matchesDate = orderDate.toDateString() === today.toDateString();
+                        break;
+                    case "week": {
+                        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        matchesDate = orderDate >= weekAgo;
+                        break;
+                    }
+                    case "month": {
+                        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        matchesDate = orderDate >= monthAgo;
+                        break;
+                    }
+                    case "quarter": {
+                        const quarterAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                        matchesDate = orderDate >= quarterAgo;
+                        break;
+                    }
+                    default:
+                        matchesDate = true;
+                }
+            }
+            
+            return matchesSearch && matchesStatus && matchesHospital && matchesDate;
         });
-    }, [orders, searchTerm, selectedStatus, selectedPriority]);
+    }, [orders, filterValues]);
 
     const stats = useMemo(() => {
         const total = orders.length;
@@ -280,209 +333,179 @@ const OrdersPage = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                            <ShoppingCart className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Total Orders</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.total}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-yellow-50 rounded-lg">
-                            <Clock className="w-5 h-5 text-yellow-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Pending</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.pending}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                            <RefreshCw className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Processing</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.processing}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                            <Truck className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Shipped</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.shipped}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-50 rounded-lg">
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Delivered</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.delivered}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                            <DollarSign className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Revenue</p>
-                            <p className="text-xl font-bold text-slate-800">${stats.totalRevenue.toLocaleString()}</p>
-                        </div>
-                    </div>
-                </div>
+                <StatsCard title="Total Orders" value={stats.total} iconType="orders" />
+                <StatsCard title="Pending" value={stats.pending} iconType="pending" />
+                <StatsCard title="Processing" value={stats.processing} iconType="processing" />
+                <StatsCard title="Shipped" value={stats.shipped} iconType="shipped" />
+                <StatsCard title="Delivered" value={stats.delivered} iconType="delivered" />
+                <StatsCard title="Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} iconType="revenue" />
             </div>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-lg border border-slate-200">
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search orders by ID, hospital, or contact person..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                        </div>
-                    </div>
-                    <select
-                        value={selectedStatus}
-                        onChange={(e) => setSelectedStatus(e.target.value)}
-                        className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    >
-                        {statuses.map(status => (
-                            <option key={status.value} value={status.value}>{status.label}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={selectedPriority}
-                        onChange={(e) => setSelectedPriority(e.target.value)}
-                        className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    >
-                        {priorities.map(priority => (
-                            <option key={priority.value} value={priority.value}>{priority.label}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={selectedDateRange}
-                        onChange={(e) => setSelectedDateRange(e.target.value)}
-                        className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    >
-                        {dateRanges.map(range => (
-                            <option key={range.value} value={range.value}>{range.label}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+            <Formik
+                initialValues={filterValues}
+                onSubmit={updateFilterValues}
+                enableReinitialize
+            >
+                {({ values, submitForm }) => {
+                    // Auto-submit form on value changes to update filterValues
+                    const handleFieldChange = () => {
+                        setTimeout(submitForm, 0);
+                    };
+
+                    return (
+                        <Form onChange={handleFieldChange}>
+                            <div className="bg-white p-4 rounded-lg border border-slate-200">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <Input
+                                        name="search"
+                                        type="text"
+                                        placeholder="Search orders by ID, hospital, or contact person..."
+                                        icon={Search}
+                                        label="Search"
+                                    />
+                                    <Select
+                                        name="status"
+                                        label="Status"
+                                        options={statuses}
+                                    />
+                                    <Select
+                                        name="hospital"
+                                        label="Hospital"
+                                        options={hospitals}
+                                    />
+                                    <Select
+                                        name="dateRange"
+                                        label="Date Range"
+                                        options={dateRanges}
+                                    />
+                                </div>
+                                
+                                {/* Custom Date Range */}
+                                {values.dateRange === "custom" && (
+                                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <DatePicker
+                                            name="fromDate"
+                                            label="From Date"
+                                        />
+                                        <DatePicker
+                                            name="toDate"
+                                            label="To Date"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </Form>
+                    );
+                }}
+            </Formik>
 
             {/* Orders Table */}
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Order ID</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Hospital</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Items</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Total</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Priority</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Payment</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {filteredOrders.map((order) => (
-                                <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-slate-900">{order.id}</span>
-                                            {order.trackingNumber && (
-                                                <span className="text-xs text-slate-500 font-mono">{order.trackingNumber}</span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-slate-900">{order.hospitalName}</span>
-                                            <span className="text-xs text-slate-500">{order.contactPerson}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-sm text-slate-900">{order.orderDate}</span>
-                                            <span className="text-xs text-slate-500">Due: {order.deliveryDate}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <Package className="w-4 h-4 text-slate-400" />
-                                            <span className="text-sm text-slate-900">{order.items.length} items</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm font-medium text-slate-900">${order.total.toFixed(2)}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(order.priority)}`}>
-                                            {order.priority}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            {getStatusIcon(order.status)}
-                                            <span className={`text-sm font-medium ${getStatusColor(order.status).split(' ')[0]}`}>
-                                                {order.status}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                                            order.paymentStatus === "paid" ? "text-green-600 bg-green-50" :
-                                            order.paymentStatus === "pending" ? "text-yellow-600 bg-yellow-50" :
-                                            "text-red-600 bg-red-50"
-                                        }`}>
-                                            {order.paymentStatus}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="View Details">
-                                                <Eye className="w-4 h-4" />
-                                            </button>
-                                            <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="Download Invoice">
-                                                <Download className="w-4 h-4" />
-                                            </button>
-                                            <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="Print Order">
-                                                <FileText className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <Table
+                columns={[
+                    {
+                        header: "Order ID",
+                        accessor: "id",
+                        render: (order) => (
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium text-slate-900">{order.id}</span>
+                                {order.trackingNumber && (
+                                    <span className="text-xs text-slate-500 font-mono">{order.trackingNumber}</span>
+                                )}
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Hospital",
+                        accessor: "hospitalName",
+                        render: (order) => (
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium text-slate-900">{order.hospitalName}</span>
+                                <span className="text-xs text-slate-500">{order.contactPerson}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Date",
+                        accessor: "orderDate",
+                        render: (order) => (
+                            <div className="flex flex-col">
+                                <span className="text-sm text-slate-900">{order.orderDate}</span>
+                                <span className="text-xs text-slate-500">Due: {order.deliveryDate}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Items",
+                        accessor: "items",
+                        render: (order) => (
+                            <div className="flex items-center gap-2">
+                                <Package className="w-4 h-4 text-slate-400" />
+                                <span className="text-sm text-slate-900">{order.items.length} items</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Total",
+                        accessor: "total",
+                        render: (order) => (
+                            <span className="text-sm font-medium text-slate-900">${order.total.toFixed(2)}</span>
+                        )
+                    },
+                    {
+                        header: "Priority",
+                        accessor: "priority",
+                        render: (order) => (
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(order.priority)}`}>
+                                {order.priority}
+                            </span>
+                        )
+                    },
+                    {
+                        header: "Status",
+                        accessor: "status",
+                        render: (order) => (
+                            <div className="flex items-center gap-2">
+                                {getStatusIcon(order.status)}
+                                <span className={`text-sm font-medium ${getStatusColor(order.status).split(' ')[0]}`}>
+                                    {order.status}
+                                </span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Payment",
+                        accessor: "paymentStatus",
+                        render: (order) => (
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                order.paymentStatus === "paid" ? "text-green-600 bg-green-50" :
+                                order.paymentStatus === "pending" ? "text-yellow-600 bg-yellow-50" :
+                                "text-red-600 bg-red-50"
+                            }`}>
+                                {order.paymentStatus}
+                            </span>
+                        )
+                    },
+                    {
+                        header: "Actions",
+                        accessor: "id",
+                        render: () => (
+                            <div className="flex items-center gap-2">
+                                <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="View Details">
+                                    <Eye className="w-4 h-4" />
+                                </button>
+                                <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="Download Invoice">
+                                    <Download className="w-4 h-4" />
+                                </button>
+                                <button className="p-1 text-slate-400 hover:text-slate-600 transition-colors" title="Print Order">
+                                    <FileText className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )
+                    }
+                ]}
+                data={filteredOrders}
+            />
         </div>
     );
 };
