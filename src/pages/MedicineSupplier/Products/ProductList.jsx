@@ -22,14 +22,27 @@ import {
     Upload,
     X,
     Save,
-    Users
+    Users,
+    RefreshCw
 } from "lucide-react";
+import Table from "components/UI/Table";
+import CustomModal from "components/UI/CustomModal";
 
 const ProductsPage = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedStatus, setSelectedStatus] = useState("all");
+    const [showQuickUpdateModal, setShowQuickUpdateModal] = useState(false);
+    const [quickUpdateProduct, setQuickUpdateProduct] = useState(null);
+    const [quickUpdateData, setQuickUpdateData] = useState({
+        status: "",
+        stock: "",
+        minStock: ""
+    });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteProduct, setDeleteProduct] = useState(null);
+    const [deleteReason, setDeleteReason] = useState("");
 
     // Mock products data
     const products = useMemo(() => [
@@ -245,23 +258,60 @@ const ProductsPage = () => {
         { value: "diagnostics", label: "Diagnostics" }
     ];
 
-    const handleViewDetails = (productId) => {
-        navigate(`${productId}`);
-    };
-
-    const handleDeleteProduct = (productId) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            console.log("Deleting product:", productId);
-        }
-    };
-
     const statuses = [
-        { value: "all", label: "All Status" },
+        { value: "all", label: "All Statuses" },
         { value: "active", label: "Active" },
         { value: "low_stock", label: "Low Stock" },
         { value: "out_of_stock", label: "Out of Stock" },
         { value: "discontinued", label: "Discontinued" }
     ];
+
+    const handleViewDetails = (productId) => {
+        navigate(`${productId}`);
+    };
+
+    const handleDeleteProduct = (product) => {
+        setDeleteProduct(product);
+        setDeleteReason("");
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (deleteReason.trim()) {
+            console.log("Deleting product:", deleteProduct.id, "Reason:", deleteReason);
+            setShowDeleteModal(false);
+            setDeleteProduct(null);
+            setDeleteReason("");
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setDeleteProduct(null);
+        setDeleteReason("");
+    };
+
+    const handleQuickUpdate = (product) => {
+        setQuickUpdateProduct(product);
+        setQuickUpdateData({
+            status: product.status,
+            stock: product.stock.toString(),
+            minStock: product.minStock.toString()
+        });
+        setShowQuickUpdateModal(true);
+    };
+
+    const handleQuickUpdateSave = () => {
+        // In a real app, this would make an API call
+        console.log("Quick updating product:", quickUpdateProduct.id, quickUpdateData);
+        setShowQuickUpdateModal(false);
+        setQuickUpdateProduct(null);
+    };
+
+    const handleQuickUpdateCancel = () => {
+        setShowQuickUpdateModal(false);
+        setQuickUpdateProduct(null);
+    };
 
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
@@ -423,115 +473,259 @@ const ProductsPage = () => {
             </div>
 
             {/* Products Table */}
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Product</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">SKU</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Price</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sales</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Revenue</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {filteredProducts.map((product) => {
-                                const stockStatus = getStockStatus(product.stock, product.minStock);
-                                return (
-                                    <tr key={product.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                                                    {getCategoryIcon(product.category)}
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-medium text-slate-900">{product.name}</div>
-                                                    <div className="text-xs text-slate-500">{product.manufacturer}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm text-slate-900 capitalize">{product.category}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-mono text-slate-900">{product.sku}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-medium text-slate-900">${product.price.toFixed(2)}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-medium text-slate-900">{product.stock}</span>
-                                                {stockStatus.icon}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm text-slate-900">{product.sales}</span>
-                                                {product.trend === "up" ? (
-                                                    <TrendingUp className="w-4 h-4 text-green-600" />
-                                                ) : product.trend === "down" ? (
-                                                    <TrendingDown className="w-4 h-4 text-red-600" />
-                                                ) : null}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-medium text-slate-900">${product.revenue.toLocaleString()}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col gap-1">
-                                                <div className="flex items-center gap-1">
-                                                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                                    <span className="text-sm font-medium text-slate-900">{product.rating}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2 text-xs text-slate-500">
-                                                    <Users className="w-3 h-3" />
-                                                    <span>{product.patientRating} by patients</span>
-                                                    <span>({product.totalRatings} reviews)</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(product.status)}`}>
-                                                {product.status.replace("_", " ")}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <button 
-                                                    onClick={() => handleViewDetails(product.id)}
-                                                    className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-                                                >
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => navigate(`edit/${product.id}`)}
-                                                    className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-                                                >
-                                                    <Edit className="w-4 h-4" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDeleteProduct(product.id)}
-                                                    className="p-1 text-slate-400 hover:text-red-600 transition-colors"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <Table
+                columns={[
+                    {
+                        header: "Product",
+                        accessor: "product",
+                        render: (product) => (
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                    {getCategoryIcon(product.category)}
+                                </div>
+                                <div>
+                                    <div className="text-sm font-semibold text-slate-800">{product.name}</div>
+                                    <div className="text-xs text-slate-500">{product.manufacturer}</div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Category",
+                        accessor: "category",
+                        render: (product) => (
+                            <span className="text-sm text-slate-800 capitalize">{product.category}</span>
+                        )
+                    },
+                    {
+                        header: "SKU",
+                        accessor: "sku",
+                        render: (product) => (
+                            <span className="text-sm font-semibold text-slate-800">{product.sku}</span>
+                        )
+                    },
+                    {
+                        header: "Price",
+                        accessor: "price",
+                        render: (product) => (
+                            <span className="text-sm font-semibold text-slate-800">${product.price.toFixed(2)}</span>
+                        )
+                    },
+                    {
+                        header: "Stock",
+                        accessor: "stock",
+                        render: (product) => {
+                            const stockStatus = getStockStatus(product.stock, product.minStock);
+                            return (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-semibold text-slate-800">{product.stock}</span>
+                                    <span className={`text-xs ${stockStatus.color}`}>{stockStatus.icon}</span>
+                                </div>
+                            );
+                        }
+                    },
+                    {
+                        header: "Sales",
+                        accessor: "sales",
+                        render: (product) => (
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-slate-800">{product.sales}</span>
+                                {product.trend === "up" ? (
+                                    <TrendingUp className="w-4 h-4 text-green-600" />
+                                ) : product.trend === "down" ? (
+                                    <TrendingDown className="w-4 h-4 text-red-600" />
+                                ) : null}
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Revenue",
+                        accessor: "revenue",
+                        render: (product) => (
+                            <span className="text-sm font-semibold text-slate-800">${product.revenue.toLocaleString()}</span>
+                        )
+                    },
+                    {
+                        header: "Rating",
+                        accessor: "rating",
+                        render: (product) => (
+                            <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                <span className="text-sm font-semibold text-slate-800">{product.rating}</span>
+                                <span className="text-xs text-slate-500">({product.totalRatings})</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Status",
+                        accessor: "status",
+                        render: (product) => (
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(product.status)}`}>
+                                {product.status.replace("_", " ")}
+                            </span>
+                        )
+                    },
+                    {
+                        header: "Actions",
+                        accessor: "actions",
+                        render: (product) => (
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => handleViewDetails(product.id)}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-700"
+                                >
+                                    <Eye className="w-4 h-4" />
+                                </button>
+                                <button 
+                                    onClick={() => navigate(`edit/${product.id}`)}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-700"
+                                >
+                                    <Edit className="w-4 h-4" />
+                                </button>
+                                <button 
+                                    onClick={() => handleQuickUpdate(product)}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 transition-colors text-slate-400 hover:text-blue-600"
+                                    title="Quick Update Status & Quantity"
+                                >
+                                    <RefreshCw className="w-4 h-4" />
+                                </button>
+                                <button 
+                                    onClick={() => handleDeleteProduct(product)}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors text-slate-400 hover:text-red-600"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )
+                    }
+                ]}
+                data={filteredProducts}
+            />
 
-    </div>
+            {/* Quick Update Modal */}
+            <CustomModal
+                show={showQuickUpdateModal && quickUpdateProduct}
+                onClose={handleQuickUpdateCancel}
+                title="Quick Update"
+                subtitle={quickUpdateProduct?.name}
+                icon={<RefreshCw className="w-5 h-5 text-blue-600" />}
+                footer={
+                    <>
+                        <button
+                            onClick={handleQuickUpdateCancel}
+                            className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleQuickUpdateSave}
+                            className="flex items-center gap-2 px-5 py-2 text-white text-sm font-bold bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+                        >
+                            <Save className="w-4 h-4" />
+                            Update
+                        </button>
+                    </>
+                }
+            >
+                <div className="space-y-4">
+                    <p className="text-sm text-slate-600">
+                        Update product status and inventory quantities. Changes will be saved immediately.
+                    </p>
+                    
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700">
+                            Status
+                        </label>
+                        <select
+                            value={quickUpdateData.status}
+                            onChange={(e) => setQuickUpdateData({...quickUpdateData, status: e.target.value})}
+                            className="w-full px-3 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                        >
+                            <option value="active">Active</option>
+                            <option value="low_stock">Low Stock</option>
+                            <option value="out_of_stock">Out of Stock</option>
+                            <option value="discontinued">Discontinued</option>
+                        </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700">
+                            Stock Quantity
+                        </label>
+                        <input
+                            type="number"
+                            value={quickUpdateData.stock}
+                            onChange={(e) => setQuickUpdateData({...quickUpdateData, stock: e.target.value})}
+                            className="w-full px-3 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                            placeholder="Enter stock quantity"
+                            min="0"
+                        />
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700">
+                            Minimum Stock Level
+                        </label>
+                        <input
+                            type="number"
+                            value={quickUpdateData.minStock}
+                            onChange={(e) => setQuickUpdateData({...quickUpdateData, minStock: e.target.value})}
+                            className="w-full px-3 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                            placeholder="Enter minimum stock level"
+                            min="0"
+                        />
+                    </div>
+                </div>
+            </CustomModal>
+
+            {/* Delete Confirmation Modal */}
+            <CustomModal
+                show={showDeleteModal && deleteProduct}
+                onClose={handleDeleteCancel}
+                title="Delete Product"
+                subtitle={deleteProduct?.name}
+                icon={<Trash2 className="w-5 h-5 text-red-600" />}
+                iconClassName="bg-red-50"
+                footer={
+                    <>
+                        <button
+                            onClick={handleDeleteCancel}
+                            className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleDeleteConfirm}
+                            disabled={!deleteReason.trim()}
+                            className="flex items-center gap-2 px-5 py-2 text-white text-sm font-bold bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            Delete Product
+                        </button>
+                    </>
+                }
+            >
+                <div className="space-y-4">
+                    <div className="text-sm text-slate-600">
+                        Are you sure you want to delete this product? This action cannot be undone.
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700">
+                            Reason for deletion <span className="text-red-500">*</span>
+                        </label>
+                        <textarea
+                            value={deleteReason}
+                            onChange={(e) => setDeleteReason(e.target.value)}
+                            className="w-full px-3 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-400 transition-all resize-none"
+                            placeholder="Please provide a reason for deleting this product..."
+                            rows={3}
+                            required
+                        />
+                    </div>
+                </div>
+            </CustomModal>
+        </div>
     );
 };
 

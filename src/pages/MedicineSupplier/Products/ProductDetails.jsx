@@ -26,7 +26,10 @@ import {
     Building,
     ShoppingCart,
     AlertTriangle,
-    CheckCircle
+    CheckCircle,
+    Barcode,
+    CheckSquare,
+    Square
 } from "lucide-react";
 
 const ProductDetailsPage = () => {
@@ -61,6 +64,12 @@ const ProductDetailsPage = () => {
         sideEffects: "",
         storageConditions: "Store in dry, cool place away from direct sunlight",
         activeIngredients: "Non-woven fabric, melt-blown filter, elastic ear loops",
+        barcodeId: "1234567890123",
+        licenses: [
+            { id: "fda", label: "FDA Approved", description: "U.S. Food and Drug Administration approval" },
+            { id: "who", label: "WHO Prequalified", description: "World Health Organization prequalification" },
+            { id: "ce", label: "CE Marked", description: "European Conformity certification" }
+        ],
         specifications: {
             material: "3-ply non-woven fabric",
             filtration: "≥95% bacterial filtration efficiency",
@@ -434,6 +443,40 @@ const ProductDetailsPage = () => {
                                             <span className="text-sm text-slate-600">Price:</span>
                                             <span className="text-sm font-medium text-slate-800">${product.price.toFixed(2)}</span>
                                         </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-slate-600">Barcode ID:</span>
+                                            <span className="text-sm font-medium text-slate-800 flex items-center gap-2">
+                                                {product.barcodeId}
+                                                <Barcode className="w-4 h-4 text-slate-400" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Licenses & Documents */}
+                            <div>
+                                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                                    <ShieldCheck className="w-5 h-5 text-purple-600" />
+                                    Licenses & Certifications
+                                </h3>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {product.licenses.map((license) => (
+                                            <div key={license.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                                <CheckSquare className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                                <div>
+                                                    <h4 className="font-medium text-slate-800 text-sm">{license.label}</h4>
+                                                    <p className="text-xs text-slate-500 mt-1">{license.description}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                                        <p className="text-sm text-green-800 font-medium flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4" />
+                                            Product is fully certified with {product.licenses.length} active licenses
+                                        </p>
                                     </div>
                                 </div>
                             </div>

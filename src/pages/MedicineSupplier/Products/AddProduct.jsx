@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Formik, Form } from "formik";
 import {
     Package,
     Plus,
@@ -12,29 +13,20 @@ import {
     Box,
     Calendar,
     ShieldCheck,
-    FileText
+    FileText,
+    CheckSquare,
+    Square,
+    Barcode
 } from "lucide-react";
+import Input from "components/Form/Input";
+import Select from "components/Form/Select";
+import Textarea from "components/Form/Textarea";
+import FileSelect from "components/Form/FileSelect";
+import Checkbox from "components/Form/Checkbox";
 
 const AddProductPage = () => {
     const navigate = useNavigate();
-    const [productImage, setProductImage] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        sku: "",
-        category: "",
-        price: "",
-        stock: "",
-        minStock: "",
-        description: "",
-        manufacturer: "",
-        expiryDate: "",
-        certification: "",
-        dosage: "",
-        sideEffects: "",
-        storageConditions: "",
-        activeIngredients: ""
-    });
 
     const categories = [
         { value: "pharmaceuticals", label: "Pharmaceuticals" },
@@ -44,28 +36,25 @@ const AddProductPage = () => {
         { value: "diagnostics", label: "Diagnostics" }
     ];
 
-    const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
+    const licenseOptions = [
+        { id: "fda", label: "FDA Approved", description: "U.S. Food and Drug Administration approval" },
+        { id: "who", label: "WHO Prequalified", description: "World Health Organization prequalification" },
+        { id: "ce", label: "CE Marked", description: "European Conformity certification" },
+        { id: "iso", label: "ISO 13485", description: "Medical device quality management system" },
+        { id: "gmp", label: "GMP Certified", description: "Good Manufacturing Practice certification" },
+        { id: "fda_ema", label: "FDA Emergency Use", description: "Emergency Use Authorization" },
+        { id: "health_canada", label: "Health Canada", description: "Health Canada approval" },
+        { id: "tga", label: "TGA Approved", description: "Therapeutic Goods Administration (Australia)" },
+        { id: "pmda", label: "PMDA Approved", description: "Pharmaceuticals and Medical Devices Agency (Japan)" },
+        { id: "nmpa", label: "NMPA Approved", description: "National Medical Products Administration (China)" }
+    ];
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProductImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
-    const handleSave = async () => {
+    const handleSave = async (values) => {
         setIsSaving(true);
         
         // Simulate API call
+        console.log("Saving product:", values);
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         setIsSaving(false);
@@ -77,277 +66,217 @@ const AddProductPage = () => {
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={handleCancel}
-                        className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-800">Add New Product</h1>
-                        <p className="text-slate-500 mt-1">Add a new medical product to your inventory</p>
-                    </div>
-                </div>
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleCancel}
-                        className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                        {isSaving ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                Saving...
-                            </>
-                        ) : (
-                            <>
-                                <Save className="w-4 h-4" />
-                                Save Product
-                            </>
-                        )}
-                    </button>
-                </div>
-            </div>
-
-            {/* Form */}
-            <div className="bg-white rounded-lg border border-slate-200">
-                <div className="p-6 space-y-8">
-                    {/* Basic Information */}
-                    <div>
-                        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                            <Package className="w-5 h-5 text-purple-600" />
-                            Basic Information
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Product Name *</label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="e.g., Surgical Masks (Box of 50)"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">SKU *</label>
-                                <input
-                                    type="text"
-                                    value={formData.sku}
-                                    onChange={(e) => handleInputChange("sku", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="e.g., SMK-50-BX"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Category *</label>
-                                <select
-                                    value={formData.category}
-                                    onChange={(e) => handleInputChange("category", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                >
-                                    <option value="">Select Category</option>
-                                    {categories.map(cat => (
-                                        <option key={cat.value} value={cat.value}>{cat.label}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Price ($) *</label>
-                                <input
-                                    type="number"
-                                    value={formData.price}
-                                    onChange={(e) => handleInputChange("price", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="15.00"
-                                    step="0.01"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Stock Quantity *</label>
-                                <input
-                                    type="number"
-                                    value={formData.stock}
-                                    onChange={(e) => handleInputChange("stock", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="245"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Minimum Stock Level *</label>
-                                <input
-                                    type="number"
-                                    value={formData.minStock}
-                                    onChange={(e) => handleInputChange("minStock", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="50"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Product Details */}
-                    <div>
-                        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-purple-600" />
-                            Product Details
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Manufacturer</label>
-                                <input
-                                    type="text"
-                                    value={formData.manufacturer}
-                                    onChange={(e) => handleInputChange("manufacturer", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="e.g., MediSafe Supplies"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Expiry Date</label>
-                                <input
-                                    type="date"
-                                    value={formData.expiryDate}
-                                    onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Certification</label>
-                                <input
-                                    type="text"
-                                    value={formData.certification}
-                                    onChange={(e) => handleInputChange("certification", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="e.g., FDA Approved"
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-6">
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                            <textarea
-                                rows={4}
-                                value={formData.description}
-                                onChange={(e) => handleInputChange("description", e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                placeholder="Describe the product, its uses, and key features..."
-                            />
-                        </div>
-                    </div>
-
-                    {/* Medical Specific Fields */}
-                    {formData.category === "pharmaceuticals" && (
-                        <div>
-                            <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                                <ShieldCheck className="w-5 h-5 text-purple-600" />
-                                Medical Information
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Dosage</label>
-                                    <input
-                                        type="text"
-                                        value={formData.dosage}
-                                        onChange={(e) => handleInputChange("dosage", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        placeholder="e.g., 10mg, 50ml"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Storage Conditions</label>
-                                    <input
-                                        type="text"
-                                        value={formData.storageConditions}
-                                        onChange={(e) => handleInputChange("storageConditions", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        placeholder="e.g., Store at 2-8°C"
-                                    />
-                                </div>
-                            </div>
-                            <div className="mt-6">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Active Ingredients</label>
-                                <textarea
-                                    rows={3}
-                                    value={formData.activeIngredients}
-                                    onChange={(e) => handleInputChange("activeIngredients", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                    placeholder="List active ingredients..."
-                                />
-                            </div>
-                            <div className="mt-6">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Side Effects</label>
-                                <textarea
-                                    rows={3}
-                                    value={formData.sideEffects}
-                                    onChange={(e) => handleInputChange("sideEffects", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                    placeholder="List potential side effects..."
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Product Image */}
-                    <div>
-                        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                            <Camera className="w-5 h-5 text-purple-600" />
-                            Product Image
-                        </h3>
-                        <div className="flex items-center gap-6">
-                            <div className="flex-1">
-                                {productImage ? (
-                                    <div className="relative inline-block">
-                                        <img 
-                                            src={productImage} 
-                                            alt="Product preview" 
-                                            className="w-48 h-48 object-cover rounded-lg border border-slate-200" 
-                                        />
-                                        <button
-                                            onClick={() => setProductImage(null)}
-                                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="w-48 h-48 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center">
-                                        <Upload className="w-12 h-12 text-slate-400 mb-2" />
-                                        <p className="text-sm text-slate-500">Click to upload product image</p>
-                                        <p className="text-xs text-slate-400">PNG, JPG up to 10MB</p>
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <input
-                                    id="image-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
+        <Formik
+            initialValues={{
+                name: "",
+                sku: "",
+                category: "",
+                price: "",
+                stock: "",
+                minStock: "",
+                description: "",
+                manufacturer: "",
+                expiryDate: "",
+                certification: "",
+                dosage: "",
+                sideEffects: "",
+                storageConditions: "",
+                activeIngredients: "",
+                barcodeId: "",
+                licenses: [],
+                productImage: null
+            }}
+            onSubmit={handleSave}
+        >
+            {({ isSubmitting }) => (
+                <Form>
+                    <div className="space-y-6">
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
                                 <button
-                                    onClick={() => document.getElementById('image-upload')?.click()}
-                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                                    onClick={handleCancel}
+                                    className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                                 >
-                                    <Camera className="w-4 h-4" />
-                                    Choose Image
+                                    <ArrowLeft className="w-5 h-5" />
+                                </button>
+                                <div>
+                                    <h1 className="text-2xl font-bold text-slate-800">Add New Product</h1>
+                                    <p className="text-slate-500 mt-1">Add a new medical product to your inventory</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleCancel}
+                                    className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting || isSaving}
+                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                >
+                                    {isSubmitting || isSaving ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="w-4 h-4" />
+                                            Save Product
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>
+                        
+                        {/* Product Information */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-4">Product Information</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Input
+                                    name="name"
+                                    label="Product Name"
+                                    placeholder="Enter product name"
+                                    required
+                                />
+                                <Input
+                                    name="sku"
+                                    label="SKU"
+                                    placeholder="Enter SKU"
+                                    required
+                                />
+                                <Select
+                                    name="category"
+                                    label="Category"
+                                    options={categories}
+                                    placeholder="Select category"
+                                    required
+                                />
+                                <Input
+                                    name="price"
+                                    label="Price"
+                                    type="number"
+                                    placeholder="0.00"
+                                    prefix="$"
+                                    required
+                                />
+                                <Input
+                                    name="stock"
+                                    label="Current Stock"
+                                    type="number"
+                                    placeholder="0"
+                                    required
+                                />
+                                <Input
+                                    name="minStock"
+                                    label="Minimum Stock Level"
+                                    type="number"
+                                    placeholder="0"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Manufacturer Details */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-4">Manufacturer Details</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Input
+                                    name="manufacturer"
+                                    label="Manufacturer"
+                                    placeholder="Enter manufacturer name"
+                                />
+                                <Input
+                                    name="expiryDate"
+                                    label="Expiry Date"
+                                    type="date"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Medical Details */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-4">Medical Details</h2>
+                            <div className="space-y-4">
+                                <Textarea
+                                    name="description"
+                                    label="Description"
+                                    placeholder="Enter product description"
+                                    rows={3}
+                                />
+                                <Input
+                                    name="dosage"
+                                    label="Dosage Information"
+                                    placeholder="e.g., 500mg, 2 tablets daily"
+                                />
+                                <Textarea
+                                    name="sideEffects"
+                                    label="Side Effects"
+                                    placeholder="List potential side effects"
+                                    rows={2}
+                                />
+                                <Textarea
+                                    name="storageConditions"
+                                    label="Storage Conditions"
+                                    placeholder="e.g., Store at room temperature, keep away from moisture"
+                                    rows={2}
+                                />
+                                <Textarea
+                                    name="activeIngredients"
+                                    label="Active Ingredients"
+                                    placeholder="List active ingredients"
+                                    rows={2}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Certifications */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-4">Certifications & Compliance</h2>
+                            <div className="space-y-4">
+                                <Input
+                                    name="certification"
+                                    label="Certification Number"
+                                    placeholder="Enter certification number"
+                                />
+                                <Input
+                                    name="barcodeId"
+                                    label="Barcode ID"
+                                    placeholder="Enter barcode ID"
+                                />
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Licenses & Approvals</label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {licenseOptions.map((license) => (
+                                            <Checkbox
+                                                key={license.id}
+                                                name="licenses"
+                                                value={license.id}
+                                                label={license.label}
+                                                description={license.description}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Product Image */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-4">Product Image</h2>
+                            <FileSelect
+                                name="productImage"
+                                accept="image/*"
+                                label="Product Image"
+                                description="Upload product image (PNG, JPG up to 10MB)"
+                            />
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </Form>
+            )}
+        </Formik>
     );
 };
 

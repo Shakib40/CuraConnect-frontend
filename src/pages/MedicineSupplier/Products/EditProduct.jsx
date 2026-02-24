@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Formik, Form } from "formik";
 import {
     Package,
     Save,
@@ -15,8 +16,16 @@ import {
     Star,
     Users,
     TrendingUp,
-    TrendingDown
+    TrendingDown,
+    CheckSquare,
+    Square,
+    Barcode
 } from "lucide-react";
+import Input from "components/Form/Input";
+import Select from "components/Form/Select";
+import Textarea from "components/Form/Textarea";
+import FileSelect from "components/Form/FileSelect";
+import Checkbox from "components/Form/Checkbox";
 
 const EditProductPage = () => {
     const navigate = useNavigate();
@@ -44,7 +53,9 @@ const EditProductPage = () => {
         totalRatings: 0,
         sales: 0,
         revenue: 0,
-        trend: "stable"
+        trend: "stable",
+        barcodeId: "",
+        licenses: []
     });
 
     // Mock product data - in real app, this would be fetched from API
@@ -71,7 +82,9 @@ const EditProductPage = () => {
         dosage: "",
         sideEffects: "",
         storageConditions: "Store in dry, cool place",
-        activeIngredients: "Non-woven fabric, melt-blown filter"
+        activeIngredients: "Non-woven fabric, melt-blown filter",
+        barcodeId: "1234567890123",
+        licenses: ["fda", "who", "ce"]
     };
 
     useEffect(() => {
@@ -91,28 +104,24 @@ const EditProductPage = () => {
         { value: "diagnostics", label: "Diagnostics" }
     ];
 
-    const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
+    const licenseOptions = [
+        { id: "fda", label: "FDA Approved", description: "U.S. Food and Drug Administration approval" },
+        { id: "who", label: "WHO Prequalified", description: "World Health Organization prequalification" },
+        { id: "ce", label: "CE Marked", description: "European Conformity certification" },
+        { id: "iso", label: "ISO 13485", description: "Medical device quality management system" },
+        { id: "gmp", label: "GMP Certified", description: "Good Manufacturing Practice certification" },
+        { id: "fda_ema", label: "FDA Emergency Use", description: "Emergency Use Authorization" },
+        { id: "health_canada", label: "Health Canada", description: "Health Canada approval" },
+        { id: "tga", label: "TGA Approved", description: "Therapeutic Goods Administration (Australia)" },
+        { id: "pmda", label: "PMDA Approved", description: "Pharmaceuticals and Medical Devices Agency (Japan)" },
+        { id: "nmpa", label: "NMPA Approved", description: "National Medical Products Administration (China)" }
+    ];
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProductImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSave = async () => {
+    const handleSave = async (values) => {
         setIsSaving(true);
         
         // Simulate API call
+        console.log("Updating product:", values);
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         setIsSaving(false);
@@ -135,7 +144,14 @@ const EditProductPage = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <Formik
+            initialValues={formData}
+            onSubmit={handleSave}
+            enableReinitialize={true}
+        >
+            {({ isSubmitting }) => (
+                <Form>
+                    <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -158,11 +174,11 @@ const EditProductPage = () => {
                         Cancel
                     </button>
                     <button
-                        onClick={handleSave}
-                        disabled={isSaving}
+                        type="submit"
+                        disabled={isSubmitting || isSaving}
                         className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
-                        {isSaving ? (
+                        {isSubmitting || isSaving ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 Updating...
@@ -241,64 +257,66 @@ const EditProductPage = () => {
                             Basic Information
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Product Name *</label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">SKU *</label>
-                                <input
-                                    type="text"
-                                    value={formData.sku}
-                                    onChange={(e) => handleInputChange("sku", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Category *</label>
-                                <select
-                                    value={formData.category}
-                                    onChange={(e) => handleInputChange("category", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                >
-                                    {categories.map(cat => (
-                                        <option key={cat.value} value={cat.value}>{cat.label}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Price ($) *</label>
-                                <input
-                                    type="number"
-                                    value={formData.price}
-                                    onChange={(e) => handleInputChange("price", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    step="0.01"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Stock Quantity *</label>
-                                <input
-                                    type="number"
-                                    value={formData.stock}
-                                    onChange={(e) => handleInputChange("stock", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Minimum Stock Level *</label>
-                                <input
-                                    type="number"
-                                    value={formData.minStock}
-                                    onChange={(e) => handleInputChange("minStock", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
+                            <Input
+                                name="name"
+                                label="Product Name"
+                                required
+                            />
+                            <Input
+                                name="sku"
+                                label="SKU"
+                                required
+                            />
+                            <Select
+                                name="category"
+                                label="Category"
+                                options={categories}
+                                placeholder="Select category"
+                                required
+                            />
+                            <Input
+                                name="price"
+                                label="Price ($)"
+                                type="number"
+                                prefix="$"
+                                required
+                            />
+                            <Input
+                                name="stock"
+                                label="Stock Quantity"
+                                type="number"
+                                required
+                            />
+                            <Input
+                                name="minStock"
+                                label="Minimum Stock Level"
+                                type="number"
+                                required
+                            />
+                            <Input
+                                name="barcodeId"
+                                label="Barcode ID"
+                                placeholder="e.g., 1234567890123"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Manufacturer Details */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <Package className="w-5 h-5 text-purple-600" />
+                            Manufacturer Details
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Input
+                                name="manufacturer"
+                                label="Manufacturer"
+                            />
+                            <Input
+                                name="expiryDate"
+                                label="Expiry Date"
+                                type="date"
+                            />
                         </div>
                     </div>
 
@@ -309,42 +327,39 @@ const EditProductPage = () => {
                             Product Details
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Manufacturer</label>
-                                <input
-                                    type="text"
-                                    value={formData.manufacturer}
-                                    onChange={(e) => handleInputChange("manufacturer", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Expiry Date</label>
-                                <input
-                                    type="date"
-                                    value={formData.expiryDate}
-                                    onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Certification</label>
-                                <input
-                                    type="text"
-                                    value={formData.certification}
-                                    onChange={(e) => handleInputChange("certification", e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                            </div>
+                            <Input
+                                name="certification"
+                                label="Certification"
+                            />
                         </div>
                         <div className="mt-6">
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                            <textarea
+                            <Textarea
+                                name="description"
+                                label="Description"
                                 rows={4}
-                                value={formData.description}
-                                onChange={(e) => handleInputChange("description", e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
                             />
+                        </div>
+                    </div>
+
+                    {/* Licenses & Documents */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <ShieldCheck className="w-5 h-5 text-purple-600" />
+                            Licenses & Documents
+                        </h3>
+                        <div className="space-y-4">
+                            <p className="text-sm text-slate-600">Select all applicable licenses and certifications for this product:</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {licenseOptions.map((license) => (
+                                    <Checkbox
+                                        key={license.id}
+                                        name="licenses"
+                                        value={license.id}
+                                        label={license.label}
+                                        description={license.description}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -356,49 +371,21 @@ const EditProductPage = () => {
                         </h3>
                         <div className="flex items-center gap-6">
                             <div className="flex-1">
-                                {productImage ? (
-                                    <div className="relative inline-block">
-                                        <img 
-                                            src={productImage} 
-                                            alt="Product preview" 
-                                            className="w-48 h-48 object-cover rounded-lg border border-slate-200" 
-                                        />
-                                        <button
-                                            onClick={() => setProductImage(null)}
-                                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="w-48 h-48 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center">
-                                        <Upload className="w-12 h-12 text-slate-400 mb-2" />
-                                        <p className="text-sm text-slate-500">Click to upload product image</p>
-                                        <p className="text-xs text-slate-400">PNG, JPG up to 10MB</p>
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <input
-                                    id="image-upload"
-                                    type="file"
+                                <FileSelect
+                                    name="productImage"
                                     accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
+                                    label="Product Image"
+                                    description="Upload product image (PNG, JPG up to 10MB)"
                                 />
-                                <button
-                                    onClick={() => document.getElementById('image-upload')?.click()}
-                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-                                >
-                                    <Camera className="w-4 h-4" />
-                                    Change Image
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+                </div>
+                </Form>
+            )}
+        </Formik>
     );
 };
 
