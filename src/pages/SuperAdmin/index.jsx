@@ -13,6 +13,8 @@ import ActivityLogs from "./ActivityLogs";
 import Chat from "./Chat";
 import Cases from "./Cases";
 import Notifications from "./Notifications";
+import Offers from "./Offer";
+import AddOffer from "./AddOffer";
 
 const SuperAdminRoutes = () => {
     return (
@@ -27,6 +29,8 @@ const SuperAdminRoutes = () => {
                 <Route path="chat" element={<Chat />} />
                 <Route path="cases" element={<Cases />} />
                 <Route path="notifications" element={<Notifications />} />
+                <Route path="offers" element={<Offers />} />
+                <Route path="offers/add" element={<AddOffer />} />
                 <Route path="activity-logs" element={<ActivityLogs />} />
                 <Route path="subscriptions" element={<Subscriptions />} />
                 <Route path="profile" element={<Profile />} />

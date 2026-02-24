@@ -15,6 +15,7 @@ import {
     MessageSquare,
     AlertTriangle,
     Bell,
+    Gift,
 } from "lucide-react";
 
 const superAdminMenuItems = [
@@ -25,6 +26,7 @@ const superAdminMenuItems = [
     { label: "Document Verification", path: "/superadmin/document-verification", icon: FileText },
     { label: "Patients", path: "/superadmin/patients", icon: Users },
     { label: "Chat", path: "/superadmin/chat", icon: MessageSquare },
+    { label: "Offers", path: "/superadmin/offers", icon: Gift },
     { label: "Cases", path: "/superadmin/cases", icon: AlertTriangle },
     { label: "Notifications", path: "/superadmin/notifications", icon: Bell },
     { label: "Activity Logs", path: "/superadmin/activity-logs", icon: Activity },
