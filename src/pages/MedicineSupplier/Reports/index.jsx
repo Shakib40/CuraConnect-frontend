@@ -23,7 +23,7 @@ import Table from "components/UI/Table";
 import Select from "components/Form/Select";
 import Input from "components/Form/Input";
 import Button from "components/UI/Button";
-import Modal from "components/UI/Modal";
+import Modal from "components/UI/CustomModal";
 import options from "utils/options";
 
 const ReportsPage = () => {
@@ -48,8 +48,8 @@ const ReportsPage = () => {
     };
 
     // Mock reports data
-    const salesData = useMemo(() => options?.reports?.sales, []);
-    const inventoryData = useMemo(() => options?.reports?.inventory, []);
+    const salesData = useMemo(() => options?.reports?.sales || [], []);
+    const inventoryData = useMemo(() => options?.reports?.inventory || [], []);
     const customerData = useMemo(() => [
         {
             id: "CUST-001",
@@ -177,124 +177,7 @@ const ReportsPage = () => {
         setToDate("");
     };
 
-    return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Reports & Analytics</h1>
-                    <p className="text-slate-500 mt-1">Generate and view business reports.</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-                        icon={FileText}
-                        onClick={() => setShowGenerateModal(true)}
-                    >
-                        Generate Report
-                    </Button>
-                </div>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                            <FileText className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Total Reports</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.total}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                            <DollarSign className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Sales</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.sales}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                            <Package className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Inventory</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.inventory}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-50 rounded-lg">
-                            <Users className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Customer</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.customer}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-orange-50 rounded-lg">
-                            <BarChart3 className="w-5 h-5 text-orange-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Financial</p>
-                            <p className="text-xl font-bold text-slate-800">{stats.financial}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Filters */}
-            <Formik
-                initialValues={formValues}
-                onSubmit={handleFormChange}
-                enableReinitialize
-            >
-                {() => (
-                    <Form>
-                        <div className="bg-white p-4 rounded-lg border border-slate-200">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="md:col-span-1">
-                                    <Input
-                                        name="searchTerm"
-                                        type="text"
-                                        placeholder="Search reports by name or ID..."
-                                        icon={Search}
-                                    />
-                                </div>
-                                <div className="md:col-span-1">
-                                    <Select
-                                        name="selectedReport"
-                                        label="Report Type"
-                                        options={options?.reportTypes}
-                                    />
-                                </div>
-                                <div className="md:col-span-1">
-                                    <Select
-                                        name="dateRange"
-                                        label="Date Range"
-                                        options={options?.dateRanges}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </Form>
-                )}
-            </Formik>
-
-            {/* Reports Table */}
-            <Table
-                columns={[
+    const headers = [
                     {
                         header: "Report",
                         accessor: "reportName",
@@ -399,7 +282,127 @@ const ReportsPage = () => {
                             </div>
                         )
                     }
-                ]}
+                ]
+
+    return (
+        <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-800">Reports & Analytics</h1>
+                    <p className="text-slate-500 mt-1">Generate and view business reports.</p>
+                </div>
+                <div className="flex gap-2">
+                    <Button
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                        icon={FileText}
+                        onClick={() => setShowGenerateModal(true)}
+                    >
+                        Generate Report
+                    </Button>
+                </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-50 rounded-lg">
+                            <FileText className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-500">Total Reports</p>
+                            <p className="text-xl font-bold text-slate-800">{stats.total}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-50 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-500">Sales</p>
+                            <p className="text-xl font-bold text-slate-800">{stats.sales}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-purple-50 rounded-lg">
+                            <Package className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-500">Inventory</p>
+                            <p className="text-xl font-bold text-slate-800">{stats.inventory}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-50 rounded-lg">
+                            <Users className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-500">Customer</p>
+                            <p className="text-xl font-bold text-slate-800">{stats.customer}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-orange-50 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-slate-500">Financial</p>
+                            <p className="text-xl font-bold text-slate-800">{stats.financial}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filters */}
+            <Formik
+                initialValues={formValues}
+                onSubmit={handleFormChange}
+                enableReinitialize
+            >
+                {() => (
+                    <Form>
+                        <div className="bg-white p-4 rounded-lg border border-slate-200">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="md:col-span-1">
+                                    <Input
+                                        name="searchTerm"
+                                        type="text"
+                                        label="Search reports by name or ID..."
+                                        placeholder="Search reports by name or ID..."
+                                        icon={Search}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <Select
+                                        name="selectedReport"
+                                        label="Report Type"
+                                        options={options?.reportTypes}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <Select
+                                        name="dateRange"
+                                        label="Date Range"
+                                        options={options?.dateRanges}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </Form>
+                )}
+            </Formik>
+
+            {/* Reports Table */}
+            <Table
+                columns={headers}
                 data={filteredReports}
             />
             
@@ -407,6 +410,9 @@ const ReportsPage = () => {
                 show={showGenerateModal}
                 onClose={() => setShowGenerateModal(false)}
                 title="Generate Report"
+                icon={FileText}
+                iconClassName="bg-purple-50"
+                size="md"
                 footer={
                     <>
                         <Button
@@ -423,32 +429,41 @@ const ReportsPage = () => {
                         </Button>
                     </>
                 }
-                size="md"
             >
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            From Date
-                        </label>
-                        <Input
-                            type="date"
-                            value={fromDate}
-                            onChange={(e) => setFromDate(e.target.value)}
-                            placeholder="Select start date"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            To Date
-                        </label>
-                        <Input
-                            type="date"
-                            value={toDate}
-                            onChange={(e) => setToDate(e.target.value)}
-                            placeholder="Select end date"
-                        />
-                    </div>
-                </div>
+                <Formik
+                    initialValues={{
+                        fromDate,
+                        toDate
+                    }}
+                    enableReinitialize
+                >
+                    {() => (
+                        <Form>
+                            <div className="space-y-4">
+                                <div>
+                                    <Input
+                                        name="fromDate"
+                                        type="date"
+                                        label="From Date"
+                                        placeholder="Select start date"
+                                        value={fromDate}
+                                        onChange={(e) => setFromDate(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <Input
+                                        name="toDate"
+                                        type="date"
+                                        label="To Date"
+                                        placeholder="Select end date"
+                                        value={toDate}
+                                        onChange={(e) => setToDate(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
             </Modal>
         </div>
     );

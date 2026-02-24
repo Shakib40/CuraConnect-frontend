@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Table from "components/UI/Table";
-import Modal from "components/UI/Modal";
+import Modal from "components/UI/CustomModal";
 import {
   Pencil,
   Trash2,

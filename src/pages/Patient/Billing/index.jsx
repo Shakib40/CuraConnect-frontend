@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Table from "../../../components/UI/Table";
-import Modal from "../../../components/UI/Modal";
+import Modal from "../../../components/UI/CustomModal";
 import { CreditCard, FileText, CheckCircle2, Clock } from "lucide-react";
 
 const mockInvoices = [
