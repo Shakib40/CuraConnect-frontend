@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import AdminLayout from "../../components/Layouts/AdminLayout";
+import HospitalAdminLayout from "../../components/Layouts/HospitalAdminLayout";
 
 import Users from "./Users";
 import Doctors from "./Doctors";
@@ -10,7 +10,7 @@ import Settings from "./Settings";
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route element={<AdminLayout />}>
+      <Route element={<HospitalAdminLayout />}>
         <Route
           path="dashboard"
           element={

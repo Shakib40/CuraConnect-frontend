@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import GlobalStickyNotes from "./components/StickyNotes";
 import PatientRoutes from "./pages/Patient";
 import DoctorRoutes from "./pages/Doctor";
-import AdminRoutes from "./pages/HospitalAdmin";
+import HospitalAdminRoutes from "./pages/HospitalAdmin";
 import SuperAdminRoutes from "./pages/SuperAdmin";
 
 const Login = () => {
@@ -50,10 +50,10 @@ const Login = () => {
           Login as Doctor (Demo)
         </button>
         <button
-          onClick={() => handleLogin("admin")}
+          onClick={() => handleLogin("hospital-admin")}
           className="px-4 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-lg shadow transition-colors font-medium"
         >
-          Login as Admin (Demo)
+          Login as Hospital Admin (Demo)
         </button>
         <button
           onClick={() => handleLogin("superadmin")}
@@ -114,10 +114,10 @@ function App() {
 
         {/* Admin Routes */}
         <Route
-          path="/admin/*"
+          path="/hospital-admin/*"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminRoutes />
+            <ProtectedRoute allowedRoles={["hospital-admin"]}>
+              <HospitalAdminRoutes />
             </ProtectedRoute>
           }
         />
