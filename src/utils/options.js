@@ -49,6 +49,13 @@ const options = {
         { value: "last_year", label: "Last Year" },
         { value: "custom", label: "Custom Range" }
     ],
+    reportTypes: [
+        { value: "all", label: "All Reports", },
+        { value: "sales", label: "Sales Reports", },
+        { value: "inventory", label: "Inventory Reports", },
+        { value: "customer", label: "Customer Reports", },
+        { value: "financial", label: "Financial Reports",}
+    ],
     orderTypes: [
         { value: "regular", label: "Regular Order" },
         { value: "urgent", label: "Urgent Order" },

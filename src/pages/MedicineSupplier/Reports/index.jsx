@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Formik, Form } from "formik";
 import {
     FileText,
     Download,
@@ -18,82 +19,48 @@ import {
     ArrowDown,
     Printer
 } from "lucide-react";
+import Table from "components/UI/Table";
+import Select from "components/Form/Select";
+import Input from "components/Form/Input";
+import Button from "components/UI/Button";
+import Modal from "components/UI/Modal";
+import options from "utils/options";
 
 const ReportsPage = () => {
     const [selectedReport, setSelectedReport] = useState("sales");
     const [dateRange, setDateRange] = useState("month");
     const [searchTerm, setSearchTerm] = useState("");
+    const [showGenerateModal, setShowGenerateModal] = useState(false);
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+
+    // Formik initial values
+    const formValues = {
+        searchTerm,
+        selectedReport,
+        dateRange
+    };
+
+    const handleFormChange = (values) => {
+        setSearchTerm(values.searchTerm);
+        setSelectedReport(values.selectedReport);
+        setDateRange(values.dateRange);
+    };
 
     // Mock reports data
-    const salesData = useMemo(() => [
-        {
-            id: "SAL-001",
-            reportName: "Monthly Sales Report",
-            type: "sales",
-            period: "February 2024",
-            generatedDate: "2024-02-24",
-            totalSales: 45280,
-            totalOrders: 89,
-            averageOrderValue: 508.76,
-            topProduct: "Surgical Masks (Box of 50)",
-            growthRate: 12.5,
-            status: "completed"
-        },
-        {
-            id: "SAL-002",
-            reportName: "Weekly Sales Report",
-            type: "sales",
-            period: "Week 8, 2024",
-            generatedDate: "2024-02-24",
-            totalSales: 11250,
-            totalOrders: 22,
-            averageOrderValue: 511.36,
-            topProduct: "Digital Thermometer",
-            growthRate: 8.3,
-            status: "completed"
-        }
-    ], []);
-
-    const inventoryData = useMemo(() => [
-        {
-            id: "INV-001",
-            reportName: "Inventory Status Report",
-            type: "inventory",
-            period: "February 2024",
-            generatedDate: "2024-02-24",
-            totalProducts: 1245,
-            lowStockItems: 12,
-            outOfStockItems: 3,
-            totalValue: 285000,
-            turnoverRate: 4.2,
-            status: "completed"
-        },
-        {
-            id: "INV-002",
-            reportName: "Stock Movement Report",
-            type: "inventory",
-            period: "Q1 2024",
-            generatedDate: "2024-02-24",
-            totalProducts: 1245,
-            itemsReceived: 890,
-            itemsShipped: 567,
-            totalValue: 285000,
-            status: "completed"
-        }
-    ], []);
-
+    const salesData = useMemo(() => options.reports.sales, []);
+    const inventoryData = useMemo(() => options.reports.inventory, []);
     const customerData = useMemo(() => [
         {
             id: "CUST-001",
-            reportName: "Customer Analysis Report",
+            reportName: "Customer Activity Report",
             type: "customer",
-            period: "February 2024",
+            period: "Q1 2024",
             generatedDate: "2024-02-24",
-            totalCustomers: 45,
-            newCustomers: 8,
-            returningCustomers: 37,
-            topCustomer: "City General Hospital",
-            totalRevenue: 45280,
+            totalCustomers: 128,
+            activeCustomers: 95,
+            newCustomers: 33,
+            satisfactionRate: 88.5,
             status: "completed"
         },
         {
@@ -109,7 +76,6 @@ const ReportsPage = () => {
             status: "completed"
         }
     ], []);
-
     const financialData = useMemo(() => [
         {
             id: "FIN-001",
@@ -152,22 +118,6 @@ const ReportsPage = () => {
             return matchesSearch && matchesType;
         });
     }, [allReports, searchTerm, selectedReport]);
-
-    const reportTypes = [
-        { value: "all", label: "All Reports", icon: <FileText className="w-4 h-4" /> },
-        { value: "sales", label: "Sales Reports", icon: <DollarSign className="w-4 h-4" /> },
-        { value: "inventory", label: "Inventory Reports", icon: <Package className="w-4 h-4" /> },
-        { value: "customer", label: "Customer Reports", icon: <Users className="w-4 h-4" /> },
-        { value: "financial", label: "Financial Reports", icon: <BarChart3 className="w-4 h-4" /> }
-    ];
-
-    const dateRanges = [
-        { value: "today", label: "Today" },
-        { value: "week", label: "This Week" },
-        { value: "month", label: "This Month" },
-        { value: "quarter", label: "This Quarter" },
-        { value: "year", label: "This Year" }
-    ];
 
     const stats = useMemo(() => {
         const total = allReports.length;
@@ -219,6 +169,14 @@ const ReportsPage = () => {
         // In a real app, this would trigger print dialog
     };
 
+    const handleGenerateReport = () => {
+        console.log(`Generating report from ${fromDate} to ${toDate}`);
+        // In a real app, this would generate the report
+        setShowGenerateModal(false);
+        setFromDate("");
+        setToDate("");
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -227,10 +185,13 @@ const ReportsPage = () => {
                     <p className="text-slate-500 mt-1">Generate and view business reports.</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2">
-                        <FileText className="w-4 h-4" />
+                    <Button
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                        icon={FileText}
+                        onClick={() => setShowGenerateModal(true)}
+                    >
                         Generate Report
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -294,141 +255,201 @@ const ReportsPage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-lg border border-slate-200">
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search reports by name or ID..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
+            <Formik
+                initialValues={formValues}
+                onSubmit={handleFormChange}
+                enableReinitialize
+            >
+                {() => (
+                    <Form>
+                        <div className="bg-white p-4 rounded-lg border border-slate-200">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="md:col-span-1">
+                                    <Input
+                                        name="searchTerm"
+                                        type="text"
+                                        placeholder="Search reports by name or ID..."
+                                        icon={Search}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <Select
+                                        name="selectedReport"
+                                        label="Report Type"
+                                        options={options.reportTypes}
+                                    />
+                                </div>
+                                <div className="md:col-span-1">
+                                    <Select
+                                        name="dateRange"
+                                        label="Date Range"
+                                        options={options.dateRanges}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <select
-                        value={selectedReport}
-                        onChange={(e) => setSelectedReport(e.target.value)}
-                        className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    >
-                        {reportTypes.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={dateRange}
-                        onChange={(e) => setDateRange(e.target.value)}
-                        className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    >
-                        {dateRanges.map(range => (
-                            <option key={range.value} value={range.value}>{range.label}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+                    </Form>
+                )}
+            </Formik>
 
             {/* Reports Table */}
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Report</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Period</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Generated</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Key Metrics</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {filteredReports.map((report) => (
-                                <tr key={report.id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                                                {getReportIcon(report.type)}
-                                            </div>
-                                            <div>
-                                                <div className="text-sm font-medium text-slate-900">{report.reportName}</div>
-                                                <div className="text-xs text-slate-500">{report.id}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(report.type)}`}>
-                                            {report.type}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm text-slate-900">{report.period}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="w-4 h-4 text-slate-400" />
-                                            <span className="text-sm text-slate-900">{report.generatedDate}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="text-sm text-slate-900">
-                                            {report.totalSales && (
-                                                <div className="flex items-center gap-1">
-                                                    <DollarSign className="w-3 h-3" />
-                                                    <span>${report.totalSales.toLocaleString()}</span>
-                                                </div>
-                                            )}
-                                            {report.totalProducts && (
-                                                <div className="flex items-center gap-1">
-                                                    <Package className="w-3 h-3" />
-                                                    <span>{report.totalProducts} products</span>
-                                                </div>
-                                            )}
-                                            {report.totalCustomers && (
-                                                <div className="flex items-center gap-1">
-                                                    <Users className="w-3 h-3" />
-                                                    <span>{report.totalCustomers} customers</span>
-                                                </div>
-                                            )}
-                                            {report.growthRate && (
-                                                <div className={`flex items-center gap-1 ${report.growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                    {report.growthRate > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-                                                    <span>{Math.abs(report.growthRate)}%</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(report.status)}`}>
-                                            {report.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <button 
-                                                onClick={() => handleDownloadReport(report.id)}
-                                                className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-                                                title="Download Report"
-                                            >
-                                                <Download className="w-4 h-4" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handlePrintReport(report.id)}
-                                                className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-                                                title="Print Report"
-                                            >
-                                                <Printer className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            <Table
+                columns={[
+                    {
+                        header: "Report",
+                        accessor: "reportName",
+                        render: (report) => (
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                    {getReportIcon(report.type)}
+                                </div>
+                                <div>
+                                    <div className="text-sm font-medium text-slate-900">{report.reportName}</div>
+                                    <div className="text-xs text-slate-500">{report.id}</div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Type",
+                        accessor: "type",
+                        render: (report) => (
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(report.type)}`}>
+                                {report.type}
+                            </span>
+                        )
+                    },
+                    {
+                        header: "Period",
+                        accessor: "period",
+                        render: (report) => (
+                            <span className="text-sm text-slate-900">{report.period}</span>
+                        )
+                    },
+                    {
+                        header: "Generated",
+                        accessor: "generatedDate",
+                        render: (report) => (
+                            <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4 text-slate-400" />
+                                <span className="text-sm text-slate-900">{report.generatedDate}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Key Metrics",
+                        accessor: "metrics",
+                        render: (report) => (
+                            <div className="text-sm text-slate-900">
+                                {report.totalSales && (
+                                    <div className="flex items-center gap-1">
+                                        <DollarSign className="w-3 h-3" />
+                                        <span>${report.totalSales.toLocaleString()}</span>
+                                    </div>
+                                )}
+                                {report.totalProducts && (
+                                    <div className="flex items-center gap-1">
+                                        <Package className="w-3 h-3" />
+                                        <span>{report.totalProducts} products</span>
+                                    </div>
+                                )}
+                                {report.totalCustomers && (
+                                    <div className="flex items-center gap-1">
+                                        <Users className="w-3 h-3" />
+                                        <span>{report.totalCustomers} customers</span>
+                                    </div>
+                                )}
+                                {report.growthRate && (
+                                    <div className={`flex items-center gap-1 ${report.growthRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                        {report.growthRate > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                                        <span>{Math.abs(report.growthRate)}%</span>
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    },
+                    {
+                        header: "Status",
+                        accessor: "status",
+                        render: (report) => (
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(report.status)}`}>
+                                {report.status}
+                            </span>
+                        )
+                    },
+                    {
+                        header: "Actions",
+                        accessor: "id",
+                        render: (report) => (
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handleDownloadReport(report.id)}
+                                    icon={Download}
+                                    title="Download Report"
+                                />
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handlePrintReport(report.id)}
+                                    icon={Printer}
+                                    title="Print Report"
+                                />
+                            </div>
+                        )
+                    }
+                ]}
+                data={filteredReports}
+            />
+            
+            <Modal
+                show={showGenerateModal}
+                onClose={() => setShowGenerateModal(false)}
+                title="Generate Report"
+                footer={
+                    <>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowGenerateModal(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleGenerateReport}
+                            disabled={!fromDate || !toDate}
+                        >
+                            Generate
+                        </Button>
+                    </>
+                }
+                size="md"
+            >
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                            From Date
+                        </label>
+                        <Input
+                            type="date"
+                            value={fromDate}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            placeholder="Select start date"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                            To Date
+                        </label>
+                        <Input
+                            type="date"
+                            value={toDate}
+                            onChange={(e) => setToDate(e.target.value)}
+                            placeholder="Select end date"
+                        />
+                    </div>
                 </div>
-            </div>
+            </Modal>
         </div>
     );
 };
