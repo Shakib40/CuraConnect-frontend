@@ -185,8 +185,8 @@ const WelcomePage = () => {
                             <a href="#suppliers" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">For Suppliers</a>
                             <a href="#testimonials" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">Testimonials</a>
                             <a href="#contact" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">Contact</a>
-                            <a 
-                                href="/login" 
+                            <a
+                                href="/login"
                                 className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors font-medium ml-4"
                             >
                                 Login
@@ -207,10 +207,10 @@ const WelcomePage = () => {
                         <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
                             The comprehensive platform for medical suppliers, hospitals, and healthcare facilities
                         </p>
-                        
+
                         {/* Flowbite Carousel */}
-                        <div className="relative max-w-4xl mx-auto h-96">
-                            <Carousel 
+                        <div className="relative mx-auto h-96">
+                            <Carousel
                                 slideInterval={5000}
                                 slide={false}
                                 indicators={true}
@@ -220,8 +220,8 @@ const WelcomePage = () => {
                             >
                                 {carouselImages.map((image, index) => (
                                     <div key={index} className="relative h-96">
-                                        <img 
-                                            src={image.url} 
+                                        <img
+                                            src={image.url}
                                             alt={image.title}
                                             className="w-full h-full object-cover"
                                         />
@@ -233,16 +233,16 @@ const WelcomePage = () => {
                                 ))}
                             </Carousel>
                         </div>
-                        
+
                         <div className="flex justify-center space-x-4 mt-8">
-                            <a 
-                                href="/login" 
+                            <a
+                                href="/login"
                                 className="bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition-colors text-lg font-semibold"
                             >
                                 Get Started
                             </a>
-                            <a 
-                                href="#features" 
+                            <a
+                                href="#features"
                                 className="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-teal-600 transition-colors text-lg font-semibold"
                             >
                                 Learn More
@@ -364,11 +364,10 @@ const WelcomePage = () => {
                                 <button
                                     key={index}
                                     onClick={() => setCurrentTestimonial(index)}
-                                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                        currentTestimonial === index 
-                                            ? 'bg-teal-400 w-8' 
-                                            : 'bg-slate-600 hover:bg-slate-500'
-                                    }`}
+                                    className={`w-3 h-3 rounded-full transition-all duration-300 ${currentTestimonial === index
+                                        ? 'bg-teal-400 w-8'
+                                        : 'bg-slate-600 hover:bg-slate-500'
+                                        }`}
                                     aria-label={`Go to testimonial ${index + 1}`}
                                 />
                             ))}
@@ -382,8 +381,8 @@ const WelcomePage = () => {
                             <div className="flex-shrink-0">
                                 <div className="relative">
                                     <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-700">
-                                        <img 
-                                            src={testimonials[currentTestimonial].image} 
+                                        <img
+                                            src={testimonials[currentTestimonial].image}
                                             alt={testimonials[currentTestimonial].name}
                                             className="w-full h-full object-cover"
                                         />
@@ -397,7 +396,7 @@ const WelcomePage = () => {
                             {/* Testimonial Content */}
                             <div className="flex-1 text-center lg:text-left">
                                 <Quote className="w-12 h-12 text-teal-400 mb-6 mx-auto lg:mx-0" />
-                                
+
                                 <blockquote className="text-2xl lg:text-3xl font-light text-white mb-8 leading-relaxed">
                                     "{testimonials[currentTestimonial].content}"
                                 </blockquote>
@@ -415,13 +414,12 @@ const WelcomePage = () => {
                                     {/* Rating */}
                                     <div className="flex items-center gap-1">
                                         {[...Array(5)].map((_, i) => (
-                                            <Star 
-                                                key={i} 
-                                                className={`w-6 h-6 ${
-                                                    i < testimonials[currentTestimonial].rating 
-                                                        ? 'text-yellow-400 fill-current' 
-                                                        : 'text-slate-600'
-                                                }`} 
+                                            <Star
+                                                key={i}
+                                                className={`w-6 h-6 ${i < testimonials[currentTestimonial].rating
+                                                    ? 'text-yellow-400 fill-current'
+                                                    : 'text-slate-600'
+                                                    }`}
                                             />
                                         ))}
                                     </div>
@@ -465,7 +463,7 @@ const WelcomePage = () => {
                                 Get the latest updates on healthcare innovations, platform features, and industry insights delivered to your inbox
                             </p>
                         </div>
-                        
+
                         <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                             <input
                                 type="email"
@@ -483,7 +481,7 @@ const WelcomePage = () => {
                                 Subscribe
                             </button>
                         </form>
-                        
+
                         {subscribed && (
                             <div className="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
                                 <p className="text-white font-medium">
@@ -491,7 +489,7 @@ const WelcomePage = () => {
                                 </p>
                             </div>
                         )}
-                        
+
                         <p className="text-white/70 text-sm mt-6">
                             By subscribing, you agree to receive our newsletter. You can unsubscribe at any time.
                         </p>

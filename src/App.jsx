@@ -10,7 +10,7 @@ import HospitalAdminRoutes from "./pages/HospitalAdmin";
 import SuperAdminRoutes from "./pages/SuperAdmin";
 import MedicineSupplierRoutes from "./pages/MedicineSupplier";
 import WelcomePage from "pages/WelcomePage";
-import Login from "pages/Auth/Login";
+import AuthRoutes from "pages/Auth";
 
 
 function App() {
@@ -36,9 +36,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
+        {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+        <Route path="/auth" element={<AuthRoutes />} />
         <Route path="/welcome" element={<WelcomePage />} />
 
         {/* Patient Routes */}

@@ -40,7 +40,7 @@ const Login = () => {
                 Connecting Healthcare, Simplifying Supply Chains
               </p>
             </div>
-            
+
             {/* Animated Elements */}
             <div className="relative h-64 flex items-center justify-center">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -57,7 +57,7 @@ const Login = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8 space-y-2">
               <p className="text-white/80">✓ Multi-Role Healthcare Platform</p>
               <p className="text-white/80">✓ Secure & Compliant System</p>
@@ -66,7 +66,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Floating Elements */}
         <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
@@ -87,7 +87,7 @@ const Login = () => {
               Choose your role to access the CuraConnect platform
             </p>
           </div>
-          
+
           <div className="flex flex-col gap-4">
             <button
               onClick={() => handleLogin("patient")}
@@ -125,7 +125,13 @@ const Login = () => {
               <span className="text-teal-200 group-hover:text-teal-100">→</span>
             </button>
           </div>
-          
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500">
+              Register
+            </p>
+          </div>
+
           <div className="mt-8 text-center">
             <p className="text-sm text-slate-500">
               Demo Mode - Click any role to access the dashboard
