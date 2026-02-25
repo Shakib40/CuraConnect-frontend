@@ -6,6 +6,7 @@ import Appointments from "./Appointments";
 import Reports from "./Reports";
 import Prescriptions from "./Prescriptions";
 import Billing from "./Billing";
+import Settings from "./Settings";
 import Profile from "./Profile";
 
 const PatientRoutes = () => {
@@ -17,6 +18,7 @@ const PatientRoutes = () => {
         <Route path="reports/*" element={<Reports />} />
         <Route path="prescriptions/*" element={<Prescriptions />} />
         <Route path="billing" element={<Billing />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />
       </Route>
     </Routes>

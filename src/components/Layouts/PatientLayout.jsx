@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { Home, Calendar, FileText, Pill, CreditCard, User } from "lucide-react";
+import { Home, Calendar, FileText, Pill, CreditCard, User, Settings } from "lucide-react";
 
 const patientMenuItems = [
   { label: "Dashboard", path: "/patient/dashboard", icon: Home },
@@ -9,6 +9,7 @@ const patientMenuItems = [
   { label: "Reports", path: "/patient/reports", icon: FileText },
   { label: "Prescriptions", path: "/patient/prescriptions", icon: Pill },
   { label: "Billing", path: "/patient/billing", icon: CreditCard },
+  { label: "Settings", path: "/patient/settings", icon: Settings },
   { label: "Profile", path: "/patient/profile", icon: User },
 ];
 
