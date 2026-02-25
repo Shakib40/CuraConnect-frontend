@@ -13,7 +13,7 @@ const MedicineDetails = ({ medicine }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-6">
+    <div>
       <div className="flex items-center gap-4 mb-6">
         <div className="p-3 rounded-lg bg-teal-50 text-teal-600">
           <Pill className="w-6 h-6" />
@@ -118,12 +118,6 @@ const MedicineDetails = ({ medicine }) => {
         >
           <Package className="w-4 h-4" />
           Download Prescription
-        </button>
-        <button
-          onClick={() => window.print()}
-          className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors"
-        >
-          Print Details
         </button>
       </div>
     </div>
