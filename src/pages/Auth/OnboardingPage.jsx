@@ -729,10 +729,10 @@ const OnboardingPage = () => {
                             </button>
                         ) : (
                             <Link
-                                to="/dashboard"
+                                to="/auth/onboarding-review"
                                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-center"
                             >
-                                Go to Dashboard
+                                Go to Review
                             </Link>
                         )}
                     </div>
