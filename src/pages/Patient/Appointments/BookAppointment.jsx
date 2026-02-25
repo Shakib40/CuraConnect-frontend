@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Formik, Form } from "formik";
 import { 
@@ -25,7 +25,6 @@ const BookAppointment = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const doctorId = searchParams.get('doctor');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (values) => {
     if (!values.selectedDate || !values.selectedTime) {
@@ -33,13 +32,20 @@ const BookAppointment = () => {
       return;
     }
 
-    setIsLoading(true);
+    // Store appointment details in sessionStorage for payment page
+    const appointmentData = {
+      doctor: doctor,
+      appointment: {
+        date: values.selectedDate,
+        time: values.selectedTime,
+        mode: values.appointmentMode
+      },
+      description: values.description
+    };
+    sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/patient/appointments");
-    }, 2000);
+    // Navigate to payment page
+    navigate(`/patient/appointments/payment?doctor=${doctorId}`);
   };
 
   // Mock doctor data (in real app, this would be fetched based on doctorId)
@@ -331,11 +337,11 @@ const BookAppointment = () => {
                     <div className="flex gap-3">
                       <Button
                         type="submit"
-                        disabled={!values.selectedDate || !values.selectedTime || isLoading}
+                        disabled={!values.selectedDate || !values.selectedTime}
                         variant="primary"
                         className="flex-1"
                       >
-                        {isLoading ? "Booking..." : "Confirm Appointment"}
+                        {"Confirm Appointment"}
                       </Button>
                       <Link to="/patient/appointments/search">
                         <Button type="button" variant="outline">
