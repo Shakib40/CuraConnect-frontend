@@ -1,0 +1,113 @@
+{/* Book Appointment Modal */}
+      <Modal
+        show={isBookModalOpen}
+        onClose={() => setIsBookModalOpen(false)}
+        title="Book New Appointment"
+        size="lg"
+      >
+        <Formik
+          initialValues={{ doctor: "", date: "", notes: "" }}
+          onSubmit={(values, { setSubmitting }) => {
+            console.log("Booking:", values);
+            setTimeout(() => {
+              setSubmitting(false);
+              setIsBookModalOpen(false);
+            }, 1000);
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-4">
+              <Select
+                name="doctor"
+                label="Select Doctor"
+                options={mockDoctors}
+                placeholder="Choose a physician..."
+              />
+              <DatePicker name="date" label="Preferred Date" />
+              <Textarea
+                name="notes"
+                label="Reason for Visit (Optional)"
+                placeholder="Briefly describe your symptoms or reason for visit."
+                rows={3}
+              />
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsBookModalOpen(false)}
+                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                >
+                  {isSubmitting ? "Booking..." : "Confirm Request"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
+
+      {/* Edit Appointment Modal - Similar structure but pre-filled */}
+      <Modal
+        show={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Reschedule Appointment"
+        size="lg"
+      >
+        <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100 mb-4 flex items-start gap-2">
+          <Clock className="w-4 h-4 shrink-0 mt-0.5" />
+          <p>
+            Rescheduling is subject to doctor availability. The clinic will
+            confirm your new request.
+          </p>
+        </div>
+
+        {selectedAppointment && (
+          <Formik
+            initialValues={{ date: selectedAppointment.date }}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log("Rescheduling:", values);
+              setTimeout(() => {
+                setSubmitting(false);
+                setIsEditModalOpen(false);
+              }, 1000);
+            }}
+          >
+            {({ isSubmitting }) => (
+              <Form className="space-y-4">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 mb-2">
+                  <p className="font-medium text-slate-800">
+                    {selectedAppointment.doctor}
+                  </p>
+                  <p className="text-sm text-slate-500">
+                    {selectedAppointment.specialty}
+                  </p>
+                </div>
+
+                <DatePicker name="date" label="New Requested Date" />
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Updating..." : "Request Reschedule"}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        )}
+      </Modal>
