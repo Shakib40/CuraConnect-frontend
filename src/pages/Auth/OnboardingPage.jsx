@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { UserCheck, ArrowRight, Upload, FileText, CreditCard, Camera, Shield } from "lucide-react";
+import { UserCheck, ArrowRight, Upload, FileText, CreditCard, Camera, Shield, AlertCircle, CheckCircle2, Save, X } from "lucide-react";
 
 const OnboardingPage = () => {
     const [currentStep, setCurrentStep] = useState(1);
+    const [errors, setErrors] = useState({});
+    const [showSaveIndicator, setShowSaveIndicator] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState({});
+    const [isValidating, setIsValidating] = useState(false);
     const [bankDetails, setBankDetails] = useState({
         accountNumber: '',
         ifscCode: '',
@@ -38,14 +42,176 @@ const OnboardingPage = () => {
         pharmacyCertificate: null
     });
 
+    // Auto-save functionality
+    useEffect(() => {
+        const saveData = {
+            personalInfo,
+            bankDetails,
+            documents: Object.keys(documents).reduce((acc, key) => {
+                if (documents[key]) {
+                    acc[key] = documents[key].name;
+                }
+                return acc;
+            }, {}),
+            currentStep,
+            timestamp: new Date().toISOString()
+        };
+        
+        localStorage.setItem('onboardingDraft', JSON.stringify(saveData));
+        
+        // Show save indicator
+        setShowSaveIndicator(true);
+        const timer = setTimeout(() => setShowSaveIndicator(false), 2000);
+        
+        return () => clearTimeout(timer);
+    }, [personalInfo, bankDetails, documents, currentStep]);
+
+    // Load saved data on mount
+    useEffect(() => {
+        const savedData = localStorage.getItem('onboardingDraft');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                // Only restore if data is recent (within 24 hours)
+                const dataAge = new Date() - new Date(parsed.timestamp);
+                if (dataAge < 24 * 60 * 60 * 1000) {
+                    // Restore personal info (except verification states)
+                    if (parsed.personalInfo) {
+                        setPersonalInfo(prev => ({
+                            ...prev,
+                            fullName: parsed.personalInfo.fullName || '',
+                            email: parsed.personalInfo.email || '',
+                            address: parsed.personalInfo.address || prev.address,
+                            gstNumber: parsed.personalInfo.gstNumber || ''
+                        }));
+                    }
+                    // Restore bank details
+                    if (parsed.bankDetails) {
+                        setBankDetails(parsed.bankDetails);
+                    }
+                    // Restore step
+                    if (parsed.currentStep) {
+                        setCurrentStep(parsed.currentStep);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+            }
+        }
+    }, []);
+
+    // Validation functions
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validateGST = (gst) => {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+        return !gst || gstRegex.test(gst.toUpperCase());
+    };
+
+    const validatePincode = (pincode) => {
+        const pincodeRegex = /^[1-9][0-9]{5}$/;
+        return !pincode || pincodeRegex.test(pincode);
+    };
+
+    const validateIFSC = (ifsc) => {
+        const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+        return !ifsc || ifscRegex.test(ifsc.toUpperCase());
+    };
+
+    const validateStep = (step) => {
+        const newErrors = {};
+        
+        // if (step === 1) {
+        //     if (!personalInfo.fullName.trim()) {
+        //         newErrors.fullName = 'Full name is required';
+        //     }
+        //     if (!personalInfo.email.trim()) {
+        //         newErrors.email = 'Email is required';
+        //     } else if (!validateEmail(personalInfo.email)) {
+        //         newErrors.email = 'Please enter a valid email address';
+        //     }
+        //     if (!personalInfo.isEmailVerified) {
+        //         newErrors.emailVerified = 'Please verify your email address';
+        //     }
+        //     if (personalInfo.gstNumber && !validateGST(personalInfo.gstNumber)) {
+        //         newErrors.gstNumber = 'Please enter a valid GST number';
+        //     }
+        //     if (personalInfo.address.pincode && !validatePincode(personalInfo.address.pincode)) {
+        //         newErrors.pincode = 'Please enter a valid 6-digit pincode';
+        //     }
+        // }
+        
+        // if (step === 3) {
+        //     if (!bankDetails.accountHolderName.trim()) {
+        //         newErrors.accountHolderName = 'Account holder name is required';
+        //     }
+        //     if (!bankDetails.accountNumber.trim()) {
+        //         newErrors.accountNumber = 'Account number is required';
+        //     } else if (bankDetails.accountNumber.length < 9) {
+        //         newErrors.accountNumber = 'Account number must be at least 9 digits';
+        //     }
+        //     if (!bankDetails.ifscCode.trim()) {
+        //         newErrors.ifscCode = 'IFSC code is required';
+        //     } else if (!validateIFSC(bankDetails.ifscCode)) {
+        //         newErrors.ifscCode = 'Please enter a valid IFSC code';
+        //     }
+        //     if (!bankDetails.bankName.trim()) {
+        //         newErrors.bankName = 'Bank name is required';
+        //     }
+        // }
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleFileUpload = (docType) => (e) => {
         const file = e.target.files[0];
         if (file) {
-            setDocuments(prev => ({
-                ...prev,
-                [docType]: file
-            }));
+            // Simulate upload progress
+            setUploadProgress(prev => ({ ...prev, [docType]: 0 }));
+            
+            // Simulate upload progress
+            const progressInterval = setInterval(() => {
+                setUploadProgress(prev => {
+                    const currentProgress = prev[docType] || 0;
+                    if (currentProgress >= 100) {
+                        clearInterval(progressInterval);
+                        return prev;
+                    }
+                    return { ...prev, [docType]: currentProgress + 20 };
+                });
+            }, 200);
+            
+            // Set file after "upload" completes
+            setTimeout(() => {
+                setDocuments(prev => ({
+                    ...prev,
+                    [docType]: file
+                }));
+                setUploadProgress(prev => ({ ...prev, [docType]: undefined }));
+            }, 1000);
         }
+    };
+
+    const handleRemoveFile = (docType) => {
+        setDocuments(prev => ({
+            ...prev,
+            [docType]: null
+        }));
+    };
+
+    const handleNext = () => {
+        setIsValidating(true);
+        if (validateStep(currentStep)) {
+            if (currentStep < 4) {
+                setCurrentStep(currentStep + 1);
+                setErrors({}); // Clear errors when moving to next step
+            }
+        }
+        setIsValidating(false);
     };
 
     const handleBankDetailsChange = (field) => (e) => {
@@ -98,13 +264,23 @@ const OnboardingPage = () => {
                                 {!personalInfo.showOTPInput ? (
                                     <div className="space-y-3">
                                         <div className="flex gap-3">
-                                            <input 
-                                                type="email" 
-                                                value={personalInfo.email}
-                                                onChange={handlePersonalInfoChange('email')}
-                                                className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all" 
-                                                placeholder="your@email.com" 
-                                            />
+                                            <div className="flex-1">
+                                                <input 
+                                                    type="email" 
+                                                    value={personalInfo.email}
+                                                    onChange={handlePersonalInfoChange('email')}
+                                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 transition-all ${
+                                                        errors.email ? 'border-red-300 focus:border-red-500' : 'border-slate-300 focus:border-teal-500'
+                                                    }`}
+                                                    placeholder="your@email.com" 
+                                                />
+                                                {errors.email && (
+                                                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                                                        <AlertCircle className="w-3 h-3" />
+                                                        {errors.email}
+                                                    </p>
+                                                )}
+                                            </div>
                                             {!personalInfo.isEmailVerified && (
                                                 <button
                                                     type="button"
@@ -121,7 +297,13 @@ const OnboardingPage = () => {
                                                 </button>
                                             )}
                                         </div>
-                                        {!personalInfo.isEmailVerified && personalInfo.email && (
+                                        {errors.emailVerified && (
+                                            <p className="text-xs text-red-600 flex items-center gap-1">
+                                                <AlertCircle className="w-3 h-3" />
+                                                {errors.emailVerified}
+                                            </p>
+                                        )}
+                                        {!personalInfo.isEmailVerified && personalInfo.email && !errors.email && (
                                             <p className="text-xs text-slate-500">Click "Verify" to send a confirmation email</p>
                                         )}
                                     </div>
@@ -308,10 +490,44 @@ const OnboardingPage = () => {
                                     <Upload className="h-12 w-12 text-slate-400 mx-auto mb-3" />
                                     <p className="text-sm font-medium text-slate-700 mb-2">Upload Aadhar Card</p>
                                     <p className="text-xs text-slate-500 mb-4">Do you have a valid Aadhar card for identity verification?</p>
-                                    <input type="file" accept="image/*" onChange={handleFileUpload('aadhar')} className="hidden" id="aadhar-upload" />
-                                    <label htmlFor="aadhar-upload" className="cursor-pointer bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
-                                        Choose File
-                                    </label>
+                                    
+                                    {!documents.aadhar ? (
+                                        <>
+                                            {uploadProgress.aadhar !== undefined ? (
+                                                <div className="space-y-3">
+                                                    <div className="w-full bg-slate-200 rounded-full h-2">
+                                                        <div 
+                                                            className="bg-teal-600 h-2 rounded-full transition-all duration-300"
+                                                            style={{ width: `${uploadProgress.aadhar}%` }}
+                                                        />
+                                                    </div>
+                                                    <p className="text-xs text-slate-500">Uploading... {uploadProgress.aadhar}%</p>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <input type="file" accept="image/*" onChange={handleFileUpload('aadhar')} className="hidden" id="aadhar-upload" />
+                                                    <label htmlFor="aadhar-upload" className="cursor-pointer bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
+                                                        Choose File
+                                                    </label>
+                                                </>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-center gap-2 text-green-600">
+                                                <CheckCircle2 className="w-5 h-5" />
+                                                <span className="text-sm font-medium">{documents.aadhar.name}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveFile('aadhar')}
+                                                className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 mx-auto"
+                                            >
+                                                <X className="w-4 h-4" />
+                                                Remove
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -451,12 +667,6 @@ const OnboardingPage = () => {
         }
     };
 
-    const handleNext = () => {
-        if (currentStep < 4) {
-            setCurrentStep(currentStep + 1);
-        }
-    };
-
     const handlePrevious = () => {
         if (currentStep > 1) {
             setCurrentStep(currentStep - 1);
@@ -467,6 +677,14 @@ const OnboardingPage = () => {
         <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
                 <div className="bg-white rounded-2xl shadow-xl p-8">
+                    {/* Save Indicator */}
+                    {showSaveIndicator && (
+                        <div className="fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg z-50">
+                            <Save className="w-4 h-4 text-green-600" />
+                            <span className="text-sm text-green-700 font-medium">Draft saved</span>
+                        </div>
+                    )}
+                    
                     {/* Progress Steps */}
                     <div className="flex items-center justify-between mb-8">
                         {[1, 2, 3, 4].map((step, index) => (
