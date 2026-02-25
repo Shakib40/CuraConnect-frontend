@@ -14,7 +14,10 @@ import {
   ChevronRight,
   Heart,
   Award,
-  Users
+  Users,
+  Video,
+  Building,
+  Navigation
 } from "lucide-react";
 import { Formik, Form } from "formik";
 import Button from "components/UI/Button";
@@ -71,7 +74,9 @@ const DoctorSearch = () => {
       image: "/api/placeholder/100/100",
       languages: ["English", "Spanish"],
       isAvailable: true,
-      type: "hospital"
+      type: "hospital",
+      availabilityMode: "both", // online, offline, both
+      distance: 2.5 // in km
     },
     {
       id: 2,
@@ -88,7 +93,9 @@ const DoctorSearch = () => {
       image: "/api/placeholder/100/100",
       languages: ["English"],
       isAvailable: true,
-      type: "solo"
+      type: "solo",
+      availabilityMode: "online",
+      distance: 5.2
     },
     {
       id: 3,
@@ -105,7 +112,9 @@ const DoctorSearch = () => {
       image: "/api/placeholder/100/100",
       languages: ["English", "Mandarin"],
       isAvailable: true,
-      type: "hospital"
+      type: "hospital",
+      availabilityMode: "offline",
+      distance: 3.8
     },
     {
       id: 4,
@@ -122,7 +131,9 @@ const DoctorSearch = () => {
       image: "/api/placeholder/100/100",
       languages: ["English", "French"],
       isAvailable: false,
-      type: "hospital"
+      type: "hospital",
+      availabilityMode: "both",
+      distance: 7.1
     },
   ];
 
@@ -165,7 +176,24 @@ const DoctorSearch = () => {
     navigate(`/patient/appointments/book?doctor=${doctorId}`);
   };
 
-  const renderDoctorCard = (doctor) => (
+  const renderDoctorCard = (doctor) => {
+  const getAvailabilityDisplay = (mode) => {
+    switch(mode) {
+      case 'online':
+        return { icon: Video, text: 'Online Only', color: 'text-blue-600 bg-blue-50' };
+      case 'offline':
+        return { icon: Building, text: 'In-Person Only', color: 'text-green-600 bg-green-50' };
+      case 'both':
+        return { icon: Video, text: 'Online & In-Person', color: 'text-purple-600 bg-purple-50' };
+      default:
+        return { icon: Building, text: 'In-Person Only', color: 'text-green-600 bg-green-50' };
+    }
+  };
+
+  const availability = getAvailabilityDisplay(doctor.availabilityMode);
+  const AvailabilityIcon = availability.icon;
+
+  return (
     <div key={doctor.id} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-shadow">
       <div className="flex gap-6">
         {/* Doctor Image */}
@@ -206,6 +234,18 @@ const DoctorSearch = () => {
               <MapPin className="w-4 h-4" />
               <span>{doctor.location}</span>
             </div>
+            <div className="flex items-center gap-1">
+              <Navigation className="w-4 h-4" />
+              <span>{doctor.distance} km</span>
+            </div>
+          </div>
+
+          {/* Availability Mode Badge */}
+          <div className="mb-3">
+            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${availability.color}`}>
+              <AvailabilityIcon className="w-3 h-3" />
+              {availability.text}
+            </span>
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm mb-3">
@@ -217,6 +257,11 @@ const DoctorSearch = () => {
               <span className="text-slate-500">Consultation:</span>
               <span className="ml-2 font-medium">₹{doctor.consultationFee}</span>
             </div>
+          </div>
+
+          <div className="text-sm text-slate-600 mb-3">
+            <span className="text-slate-500">Education:</span>
+            <span className="ml-2 font-medium">{doctor.education}</span>
           </div>
 
           <div className="text-sm text-slate-600 mb-3">
@@ -250,6 +295,7 @@ const DoctorSearch = () => {
       </div>
     </div>
   );
+};
 
   return (
     <div className="min-h-screen bg-slate-50">

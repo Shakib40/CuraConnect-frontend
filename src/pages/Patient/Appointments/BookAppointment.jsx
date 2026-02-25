@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Formik, Form } from "formik";
 import { 
   Calendar, 
   Clock, 
@@ -12,7 +13,9 @@ import {
   ChevronLeft,
   Heart,
   CreditCard,
-  FileText
+  FileText,
+  Video,
+  Building
 } from "lucide-react";
 import Button from "../../../components/UI/Button";
 import Input from "../../../components/Form/Input";
@@ -22,10 +25,22 @@ const BookAppointment = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const doctorId = searchParams.get('doctor');
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (values) => {
+    if (!values.selectedDate || !values.selectedTime) {
+      alert("Please select both date and time for your appointment");
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/patient/appointments");
+    }, 2000);
+  };
 
   // Mock doctor data (in real app, this would be fetched based on doctorId)
   const doctor = {
@@ -61,60 +76,54 @@ const BookAppointment = () => {
     { id: 12, time: "04:30 PM", available: true },
   ];
 
-  // Generate dates for next 7 days
-  const generateDates = () => {
+  // Generate dates for current to next 2 weeks
+  const generateDateOptions = () => {
     const dates = [];
     const today = new Date();
     
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       
       dates.push({
-        id: i,
-        date: date,
-        formatted: date.toLocaleDateString('en-US', { 
+        value: date.toLocaleDateString('en-US', { 
           weekday: 'short', 
           month: 'short', 
           day: 'numeric' 
         }),
-        isToday: i === 0
+        label: i === 0 
+          ? `Today - ${date.toLocaleDateString('en-US', { 
+              weekday: 'short', 
+              month: 'short', 
+              day: 'numeric' 
+            })}`
+          : date.toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              month: 'long', 
+              day: 'numeric' 
+            })
       });
     }
     
     return dates;
   };
 
-  const availableDates = generateDates();
+  const dateOptions = generateDateOptions();
 
-  const handleDateSelect = (date) => {
-    setSelectedDate(date.formatted);
-    setSelectedTime("");
-    setSelectedSlot(null);
+  const handleDateSelect = (setFieldValue, selectedValue) => {
+    setFieldValue('selectedDate', selectedValue);
+    setFieldValue('selectedTime', '');
+    setFieldValue('selectedSlot', null);
   };
 
-  const handleTimeSelect = (slot) => {
+  const handleTimeSelect = (setFieldValue, slot) => {
     if (slot.available) {
-      setSelectedTime(slot.time);
-      setSelectedSlot(slot.id);
+      setFieldValue('selectedTime', slot.time);
+      setFieldValue('selectedSlot', slot.id);
     }
   };
 
-  const handleBookAppointment = () => {
-    if (!selectedDate || !selectedTime) {
-      alert("Please select both date and time for your appointment");
-      return;
-    }
-
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/patient/appointments");
-    }, 2000);
-  };
-
+  
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -178,9 +187,13 @@ const BookAppointment = () => {
                   <span className="text-slate-600">Consultation Fee</span>
                   <span className="font-semibold text-slate-900">₹{doctor.consultationFee}</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                   <span className="text-slate-600">Experience</span>
                   <span className="font-medium text-slate-900">{doctor.experience}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600">Education</span>
+                  <span className="font-medium text-slate-900">{doctor.education}</span>
                 </div>
               </div>
             </div>
@@ -188,85 +201,152 @@ const BookAppointment = () => {
 
           {/* Booking Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-6">Select Date & Time</h2>
+            <Formik
+              initialValues={{
+                selectedDate: "",
+                selectedTime: "",
+                selectedSlot: null,
+                appointmentMode: "offline", // online or offline
+                description: "" // patient description/notes
+              }}
+              onSubmit={handleSubmit}
+            >
+              {({ values, setFieldValue }) => (
+                <Form>
+                  <div className="bg-white rounded-xl border border-slate-200 p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 mb-6">Select Date & Time</h2>
 
-              {/* Date Selection */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-700 mb-3">Select Date</label>
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                  {availableDates.map((date) => (
-                    <button
-                      key={date.id}
-                      onClick={() => handleDateSelect(date)}
-                      className={`p-3 text-center rounded-lg border transition-colors ${
-                        selectedDate === date.formatted
-                          ? "bg-teal-600 text-white border-teal-600"
-                          : date.isToday
-                          ? "bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100"
-                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div className="text-xs font-medium">{date.formatted.split(',')[0]}</div>
-                      <div className="text-sm font-semibold">{date.formatted.split(',')[1]}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                    {/* Date Selection */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-slate-700 mb-3">Select Date</label>
+                      <Select
+                        name="selectedDate"
+                        value={values.selectedDate}
+                        onChange={(e) => handleDateSelect(setFieldValue, e.target.value)}
+                        options={dateOptions}
+                        placeholder="Choose a date"
+                      />
+                    </div>
 
-              {/* Time Selection */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-700 mb-3">Select Time</label>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {timeSlots.map((slot) => (
-                    <button
-                      key={slot.id}
-                      onClick={() => handleTimeSelect(slot)}
-                      disabled={!slot.available}
-                      className={`p-3 text-center rounded-lg border transition-colors ${
-                        selectedSlot === slot.id
-                          ? "bg-teal-600 text-white border-teal-600"
-                          : slot.available
-                          ? "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                          : "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
-                      }`}
-                    >
-                      {slot.time}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                    {/* Appointment Mode Toggle */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-slate-700 mb-3">Appointment Mode</label>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="offline"
+                            name="appointmentMode"
+                            value="offline"
+                            checked={values.appointmentMode === "offline"}
+                            onChange={() => setFieldValue("appointmentMode", "offline")}
+                            className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                          />
+                          <label htmlFor="offline" className="ml-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                            <Building className="w-4 h-4" />
+                            Offline (In-Person)
+                          </label>
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="online"
+                            name="appointmentMode"
+                            value="online"
+                            checked={values.appointmentMode === "online"}
+                            onChange={() => setFieldValue("appointmentMode", "online")}
+                            className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                          />
+                          <label htmlFor="online" className="ml-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                            <Video className="w-4 h-4" />
+                            Online (Video Call)
+                          </label>
+                        </div>
+                      </div>
+                    </div>
 
-              {/* Appointment Details */}
-              {selectedDate && selectedTime && (
-                <div className="mb-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                  <h3 className="font-medium text-teal-900 mb-2">Appointment Summary</h3>
-                  <div className="space-y-1 text-sm text-teal-700">
-                    <div>Date: {selectedDate}</div>
-                    <div>Time: {selectedTime}</div>
-                    <div>Doctor: {doctor.name}</div>
-                    <div>Fee: ₹{doctor.consultationFee}</div>
+                    {/* Time Selection */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-slate-700 mb-3">Select Time</label>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {timeSlots.map((slot) => (
+                          <button
+                            key={slot.id}
+                            type="button"
+                            onClick={() => handleTimeSelect(setFieldValue, slot)}
+                            disabled={!slot.available}
+                            className={`p-3 text-center rounded-lg border transition-colors ${
+                              values.selectedSlot === slot.id
+                                ? "bg-teal-600 text-white border-teal-600"
+                                : slot.available
+                                ? "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                                : "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                            }`}
+                          >
+                            {slot.time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Description/Notes */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-slate-700 mb-3">
+                        Description / Notes <span className="text-slate-400 font-normal">(Optional)</span>
+                      </label>
+                      <Input
+                        name="description"
+                        type="textarea"
+                        placeholder="Please describe your symptoms or reason for visit..."
+                        value={values.description}
+                        onChange={(e) => setFieldValue('description', e.target.value)}
+                        className="w-full"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">
+                        Help your doctor prepare for your appointment by describing your symptoms or concerns
+                      </p>
+                    </div>
+
+                    {/* Appointment Details */}
+                    {values.selectedDate && values.selectedTime && (
+                      <div className="mb-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                        <h3 className="font-medium text-teal-900 mb-2">Appointment Summary</h3>
+                        <div className="space-y-1 text-sm text-teal-700">
+                          <div>Date: {values.selectedDate}</div>
+                          <div>Time: {values.selectedTime}</div>
+                          <div>Mode: {values.appointmentMode === "online" ? "Online (Video Call)" : "Offline (In-Person)"}</div>
+                          <div>Doctor: {doctor.name}</div>
+                          <div>Fee: ₹{doctor.consultationFee}</div>
+                          {values.description && (
+                            <div className="pt-2 mt-2 border-t border-teal-200">
+                              <div className="font-medium">Notes:</div>
+                              <div className="text-xs mt-1">{values.description}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3">
+                      <Button
+                        type="submit"
+                        disabled={!values.selectedDate || !values.selectedTime || isLoading}
+                        variant="primary"
+                        className="flex-1"
+                      >
+                        {isLoading ? "Booking..." : "Confirm Appointment"}
+                      </Button>
+                      <Link to="/patient/appointments/search">
+                        <Button type="button" variant="outline">
+                          Cancel
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </Form>
               )}
-
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleBookAppointment}
-                  disabled={!selectedDate || !selectedTime || isLoading}
-                  variant="primary"
-                  className="flex-1"
-                >
-                  {isLoading ? "Booking..." : "Confirm Appointment"}
-                </Button>
-                <Link to="/patient/appointments/search">
-                  <Button variant="outline">
-                    Cancel
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            </Formik>
           </div>
         </div>
       </div>

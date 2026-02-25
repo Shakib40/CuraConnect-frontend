@@ -35,8 +35,7 @@ const Input = ({
             focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500
             disabled:bg-slate-50 disabled:text-slate-500
             transition-colors
-            ${type === "textarea" ? "resize-y" : ""}
-            h-[48px]
+            ${type === "textarea" ? "resize-y min-h-[120px]" : "h-[48px]"}
           `}
         />
       </div>
