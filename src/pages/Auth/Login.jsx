@@ -127,7 +127,9 @@ const Login = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500"
+            onClick={() => navigate('/auth/register')}
+            >
               Register
             </p>
           </div>

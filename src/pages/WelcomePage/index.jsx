@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Carousel } from "flowbite-react";
 import { ChevronLeft, ChevronRight, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star, Users, Shield, Zap, Clock, CheckCircle, Quote, Send } from "lucide-react";
 import HeroBackground from "../../components/animations/HeroBackground";
@@ -186,12 +187,12 @@ const WelcomePage = () => {
                             <a href="#suppliers" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">For Suppliers</a>
                             <a href="#testimonials" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">Testimonials</a>
                             <a href="#contact" className="text-slate-600 hover:text-teal-600 transition-colors font-medium">Contact</a>
-                            <a
-                                href="/login"
+                            <Link
+                                to="/auth/login"
                                 className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors font-medium ml-4"
                             >
                                 Login
-                            </a>
+                            </Link>
                         </nav>
                     </div>
                 </div>
@@ -232,12 +233,12 @@ const WelcomePage = () => {
                                         </p>
 
                                         <div className="flex justify-center space-x-6 mt-4">
-                                            <a
-                                                href="/login"
+                                            <Link
+                                                to="/auth/login"
                                                 className="bg-gradient-to-r from-teal-500 to-teal-600 shadow-teal-500/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-xl hover:from-teal-400 hover:to-teal-500 shadow-xl transition-all hover:-translate-y-1 text-lg font-bold"
                                             >
                                                 Get Started
-                                            </a>
+                                            </Link>
                                             <a
                                                 href="#features"
                                                 className="bg-white/10 backdrop-blur-md border-[1px] border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-xl hover:bg-white/20 transition-all hover:-translate-y-1 text-lg font-bold"
@@ -556,7 +557,7 @@ const WelcomePage = () => {
                             <ul className="space-y-2">
                                 <li><a href="#features" className="text-slate-400 hover:text-white transition-colors">Features</a></li>
                                 <li><a href="#testimonials" className="text-slate-400 hover:text-white transition-colors">Testimonials</a></li>
-                                <li><a href="/login" className="text-slate-400 hover:text-white transition-colors">Login</a></li>
+                                <li><Link to="/auth/login" className="text-slate-400 hover:text-white transition-colors">Login</Link></li>
                                 <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a></li>
                             </ul>
                         </div>

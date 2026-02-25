@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { MailCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const VerifyAccount = () => {
+    const navigate = useNavigate();
     const [code, setCode] = useState(["", "", "", "", "", ""]);
 
     const handleChange = (index, value) => {
@@ -28,6 +29,8 @@ const VerifyAccount = () => {
         e.preventDefault();
         const verificationCode = code.join('');
         console.log("Verifying code:", verificationCode);
+        // Navigate to onboarding after successful verification
+        navigate('/auth/onboarding');
     };
 
     return (
@@ -40,7 +43,7 @@ const VerifyAccount = () => {
                     Verify Your Account
                 </h2>
                 <p className="text-md text-slate-600 max-w-sm mx-auto mb-8">
-                    We've sent a 6-digit verification code to your email address.
+                    We've sent a 6-digit verification code to your phone number.
                 </p>
 
                 <div className="bg-white py-8 px-6 shadow-xl rounded-2xl border border-slate-100">
