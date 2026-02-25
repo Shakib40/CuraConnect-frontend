@@ -14,7 +14,7 @@ const PatientRoutes = () => {
       <Route element={<PatientLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="appointments/*" element={<Appointments />} />
-        <Route path="reports" element={<Reports />} />
+        <Route path="reports/*" element={<Reports />} />
         <Route path="prescriptions" element={<Prescriptions />} />
         <Route path="billing" element={<Billing />} />
         <Route path="profile" element={<Profile />} />
