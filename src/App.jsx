@@ -36,9 +36,8 @@ function App() {
   return (
     <>
       <Routes>
-        {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
-        <Route path="/auth" element={<AuthRoutes />} />
-        <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/auth/*" element={<AuthRoutes />} />
 
         {/* Patient Routes */}
         <Route

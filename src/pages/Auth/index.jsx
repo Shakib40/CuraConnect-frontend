@@ -8,12 +8,10 @@ import Login from "./Login";
 const AuthRoutes = () => {
     return (
         <Routes>
-            <Route>
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-                <Route path="onboarding" element={<OnboardingPage />} />
-                <Route path="verify-account" element={<VerifyAccount />} />
-            </Route>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="onboarding" element={<OnboardingPage />} />
+            <Route path="verify-account" element={<VerifyAccount />} />
         </Routes>
     );
 };

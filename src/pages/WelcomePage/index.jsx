@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Carousel } from "flowbite-react";
 import { ChevronLeft, ChevronRight, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Star, Users, Shield, Zap, Clock, CheckCircle, Quote, Send } from "lucide-react";
+import HeroBackground from "../../components/animations/HeroBackground";
 
 const WelcomePage = () => {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -197,58 +198,58 @@ const WelcomePage = () => {
             </header>
 
             {/* Hero Section with Carousel */}
-            <section className="relative h-screen flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-black bg-opacity-40 z-10"></div>
-                <div className="relative z-20 text-center px-6">
-                    <div className="max-w-4xl mx-auto">
-                        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-                            Connecting Healthcare, Simplifying Supply Chains
-                        </h1>
-                        <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
-                            The comprehensive platform for medical suppliers, hospitals, and healthcare facilities
-                        </p>
+            <section className="relative min-h-[500px] h-[70vh] flex items-center justify-center overflow-hidden">
+                <HeroBackground />
+                <div className="absolute inset-0 bg-slate-900/40 z-10 backdrop-blur-sm"></div>
+                <div className="relative z-20 w-full h-full">
+                    {/* Flowbite Carousel */}
+                    <Carousel
+                        slideInterval={5000}
+                        slide={true}
+                        indicators={true}
+                        leftControl={<ChevronLeft className="w-8 h-8 text-white drop-shadow-md" />}
+                        rightControl={<ChevronRight className="w-8 h-8 text-white drop-shadow-md" />}
+                        className="h-full w-full object-cover"
+                    >
+                        {carouselImages.map((image, index) => (
+                            <div key={index} className="relative w-full h-full">
+                                <img
+                                    src={image.url}
+                                    alt={image.title}
+                                    className="w-full h-full object-cover object-center"
+                                />
+                                {/* Gradient overlay for text readability */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
 
-                        {/* Flowbite Carousel */}
-                        <div className="relative mx-auto h-96">
-                            <Carousel
-                                slideInterval={5000}
-                                slide={false}
-                                indicators={true}
-                                leftControl={<ChevronLeft className="w-6 h-6" />}
-                                rightControl={<ChevronRight className="w-6 h-6" />}
-                                className="rounded-lg overflow-hidden"
-                            >
-                                {carouselImages.map((image, index) => (
-                                    <div key={index} className="relative h-96">
-                                        <img
-                                            src={image.url}
-                                            alt={image.title}
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                                            <h3 className="text-white text-xl font-semibold mb-2">{image.title}</h3>
-                                            <p className="text-white text-sm">{image.description}</p>
+                                {/* Content centered on the slide */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center mt-16 shadow-lg shadow-black/20">
+                                    <div className="max-w-5xl mx-auto backdrop-blur-md bg-white/5 p-8 md:p-12 rounded-2xl border border-white/10">
+                                        <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
+                                            {index === 0 ? "Connecting Healthcare, Simplifying Supply Chains" : image.title}
+                                        </h1>
+                                        <p className="text-xl md:text-2xl text-slate-200 mb-8 max-w-3xl mx-auto drop-shadow-md font-light">
+                                            {index === 0 ? "The comprehensive platform for medical suppliers, hospitals, and healthcare facilities" : image.description}
+                                        </p>
+
+                                        <div className="flex justify-center space-x-6 mt-4">
+                                            <a
+                                                href="/login"
+                                                className="bg-gradient-to-r from-teal-500 to-teal-600 shadow-teal-500/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-xl hover:from-teal-400 hover:to-teal-500 shadow-xl transition-all hover:-translate-y-1 text-lg font-bold"
+                                            >
+                                                Get Started
+                                            </a>
+                                            <a
+                                                href="#features"
+                                                className="bg-white/10 backdrop-blur-md border-[1px] border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-xl hover:bg-white/20 transition-all hover:-translate-y-1 text-lg font-bold"
+                                            >
+                                                Learn More
+                                            </a>
                                         </div>
                                     </div>
-                                ))}
-                            </Carousel>
-                        </div>
-
-                        <div className="flex justify-center space-x-4 mt-8">
-                            <a
-                                href="/login"
-                                className="bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition-colors text-lg font-semibold"
-                            >
-                                Get Started
-                            </a>
-                            <a
-                                href="#features"
-                                className="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-teal-600 transition-colors text-lg font-semibold"
-                            >
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </Carousel>
                 </div>
             </section>
 
