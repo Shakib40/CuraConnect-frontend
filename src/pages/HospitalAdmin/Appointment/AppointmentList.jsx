@@ -277,20 +277,7 @@ const AppointmentList = () => {
       accessor: 'actions',
       render: (row) => (
         <div className='flex items-center gap-2'>
-          <button
-            onClick={() => navigate(`/hospital-admin/appointment/patient/${row.id}`)}
-            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors'
-          >
-            <User className='w-4 h-4' />
-            Patient View
-          </button>
-          <button
-            onClick={() => navigate(`/hospital-admin/appointment/doctor/${row.id}`)}
-            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors'
-          >
-            <Stethoscope className='w-4 h-4' />
-            Doctor View
-          </button>
+
           <button className='p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'>
             <MoreHorizontal className='w-4 h-4' />
           </button>
@@ -307,7 +294,7 @@ const AppointmentList = () => {
           <Button
             variant='primary'
             icon={Plus}
-            onClick={() => navigate('/hospital-admin/appointment/add')}
+            onClick={() => navigate('/hospital-admin/appointments/add')}
           >
             Schedule Appointment
           </Button>
