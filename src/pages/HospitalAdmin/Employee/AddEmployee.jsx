@@ -481,7 +481,7 @@ const AddEmployee = () => {
               type='submit'
               variant='primary'
               size='md'
-              icon={<Save className='w-4 h-4' />}
+              icon={Save}
               loading={formik.isSubmitting}
             >
               Save Employee Member

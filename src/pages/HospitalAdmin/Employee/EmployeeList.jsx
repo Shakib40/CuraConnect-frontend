@@ -19,8 +19,8 @@ import {
   Calendar,
   MoreHorizontal,
 } from 'lucide-react'
-import Table from 'components/UI/Table'
-import Button from 'components/UI/Button'
+import Table from '../../../components/UI/Table'
+import Button from '../../../components/UI/Button'
 
 const EmployeeList = () => {
   const navigate = useNavigate()

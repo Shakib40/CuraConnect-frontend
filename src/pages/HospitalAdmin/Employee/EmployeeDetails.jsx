@@ -20,7 +20,7 @@ import {
 } from 'lucide-react'
 import Button from 'components/UI/Button'
 
-const StaffDetails = () => {
+const EmployeeDetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -53,22 +53,6 @@ const StaffDetails = () => {
 
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState({})
-
-  const categories = [
-    { value: 'Doctor', label: 'Doctor', icon: Stethoscope },
-    { value: 'Laboratorist', label: 'Laboratorist', icon: FlaskConical },
-    { value: 'Pharmacy', label: 'Pharmacy', icon: Pill },
-    { value: 'Reception', label: 'Reception', icon: Phone },
-    { value: 'Accountant', label: 'Accountant', icon: Calculator },
-    { value: 'Cleaner', label: 'Cleaner', icon: User },
-    { value: 'Support', label: 'Support', icon: User },
-    { value: 'Others', label: 'Others', icon: User },
-  ]
-
-  const getCategoryIcon = (category) => {
-    const categoryData = categories.find((cat) => cat.value === category)
-    return categoryData?.icon || User
-  }
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -383,4 +367,4 @@ const StaffDetails = () => {
   )
 }
 
-export default StaffDetails
+export default EmployeeDetails

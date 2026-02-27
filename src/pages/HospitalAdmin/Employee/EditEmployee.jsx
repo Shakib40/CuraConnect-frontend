@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import Button from 'components/UI/Button'
 import StaffForm from './EmployeeForm'
 
-const EditStaff = () => {
+const EditEmployee = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -83,4 +83,4 @@ const EditStaff = () => {
   )
 }
 
-export default EditStaff
+export default EditEmployee
