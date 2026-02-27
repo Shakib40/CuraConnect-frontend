@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import LeaveList from './LeaveList'
 import EmployeeLeaveDetails from './EmployeeLeaveDetails'
 
-const LeaveRoutes = () => {
+const LeaveTracker = () => {
   return (
     <Routes>
       <Route path='/' element={<LeaveList />} />
@@ -11,4 +11,4 @@ const LeaveRoutes = () => {
   )
 }
 
-export default LeaveRoutes
+export default LeaveTracker

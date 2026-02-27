@@ -13,11 +13,11 @@ import {
   AlertCircle,
   MoreHorizontal,
 } from 'lucide-react'
-import Table from '../../../components/UI/Table'
-import Button from '../../../components/UI/Button'
-import NoRecords from '../../../components/UI/NoRecords'
-import Input from '../../../components/Form/Input'
-import Select from '../../../components/Form/Select'
+import Table from 'components/UI/Table'
+import Button from 'components/UI/Button'
+import NoRecords from 'components/UI/NoRecords'
+import Input from 'components/Form/Input'
+import Select from 'components/Form/Select'
 
 const AttendanceList = () => {
   const navigate = useNavigate()
@@ -213,7 +213,7 @@ const AttendanceList = () => {
             <StatusIcon className='w-4 h-4 text-slate-400' />
             <span
               className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                row.status
+                row.status,
               )}`}
             >
               {row.status}
