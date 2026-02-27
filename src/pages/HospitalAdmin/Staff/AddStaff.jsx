@@ -1,5 +1,6 @@
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   Save,
@@ -17,6 +18,7 @@ import {
 import Button from 'components/UI/Button'
 
 const AddStaff = () => {
+  const navigate = useNavigate()
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .required('Full name is required')
@@ -166,13 +168,13 @@ const AddStaff = () => {
     <div className='p-6'>
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
-          <a
-            href='/hospital-admin/staff'
+          <button
+            onClick={() => navigate('/hospital-admin/staff')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
             Back to Staff List
-          </a>
+          </button>
           <h1 className='text-2xl font-bold text-slate-800'>Add New Staff Member</h1>
         </div>
       </div>
@@ -484,11 +486,7 @@ const AddStaff = () => {
             >
               Save Staff Member
             </Button>
-            <Button
-              variant='outline'
-              size='md'
-              onClick={() => (window.location.href = '/hospital-admin/staff')}
-            >
+            <Button variant='outline' size='md' onClick={() => navigate('/hospital-admin/staff')}>
               Cancel
             </Button>
           </div>

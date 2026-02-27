@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import HospitalAdminLayout from '../../components/Layouts/HospitalAdminLayout'
 
 import Dashboard from './Dashboard'
-import Staff from './Staff'
+import Staff from './Staff/index'
 import Doctors from './Doctors'
 import Billing from './Billing'
 import Reports from './Reports'
