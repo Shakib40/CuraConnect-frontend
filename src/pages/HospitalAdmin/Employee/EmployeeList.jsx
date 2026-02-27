@@ -105,14 +105,14 @@ const EmployeeList = () => {
 
   const [filters, setFilters] = useState({
     searchTerm: '',
-    category: 'All',
-    status: 'All',
+    category: ['All'],
+    status: ['All'],
   })
 
   const filterValidationSchema = Yup.object({
     searchTerm: Yup.string(),
-    category: Yup.string(),
-    status: Yup.string(),
+    category: Yup.array().of(Yup.string()),
+    status: Yup.array().of(Yup.string()),
   })
 
   const categories = [
@@ -142,8 +142,10 @@ const EmployeeList = () => {
       staffMember.email.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
       staffMember.specialization.toLowerCase().includes(filters.searchTerm.toLowerCase())
 
-    const matchesCategory = filters.category === 'All' || staffMember.category === filters.category
-    const matchesStatus = filters.status === 'All' || staffMember.status === filters.status
+    const matchesCategory =
+      filters.category.includes('All') || filters.category.includes(staffMember.category)
+    const matchesStatus =
+      filters.status.includes('All') || filters.status.includes(staffMember.status)
 
     return matchesSearch && matchesCategory && matchesStatus
   })
@@ -287,45 +289,46 @@ const EmployeeList = () => {
         validationSchema={filterValidationSchema}
         onSubmit={(values) => setFilters(values)}
       >
-        {({ setFieldValue }) => (
-          <Form className='bg-white rounded-lg border border-slate-200 p-4 mb-6'>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-              {/* Search */}
-              <Input
-                name='searchTerm'
-                type='text'
-                placeholder='Search employees by name, email, or specialization...'
-                icon={Search}
-                onChange={(e) => {
-                  setFieldValue('searchTerm', e.target.value)
-                  setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
-                }}
-              />
-
-              {/* Category Filter */}
-              <Select
-                name='category'
-                label='Category'
-                options={categories}
-                onChange={(value) => {
-                  setFieldValue('category', value)
-                  setFilters((prev) => ({ ...prev, category: value }))
-                }}
-              />
-
-              {/* Status Filter */}
-              <Select
-                name='status'
-                label='Status'
-                options={statusOptions}
-                onChange={(value) => {
-                  setFieldValue('status', value)
-                  setFilters((prev) => ({ ...prev, status: value }))
-                }}
-              />
-            </div>
-          </Form>
-        )}
+        {({ setFieldValue, values }) => {
+          console.log('values', values)
+          return (
+            <Form className='bg-white rounded-lg border border-slate-200 p-4 mb-6'>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4 align-center'>
+                <Input
+                  name='searchTerm'
+                  type='text'
+                  placeholder='Search employees by name, email, or specialization...'
+                  label='Search'
+                  icon={Search}
+                  onChange={(e) => {
+                    setFieldValue('searchTerm', e.target.value)
+                    setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
+                  }}
+                />
+                <Select
+                  isMulti
+                  name='category'
+                  label='Category'
+                  options={categories}
+                  onChange={(value) => {
+                    setFieldValue('category', value)
+                    setFilters((prev) => ({ ...prev, category: value }))
+                  }}
+                />
+                <Select
+                  isMulti
+                  name='status'
+                  label='Status'
+                  options={statusOptions}
+                  onChange={(value) => {
+                    setFieldValue('status', value)
+                    setFilters((prev) => ({ ...prev, status: value }))
+                  }}
+                />
+              </div>
+            </Form>
+          )
+        }}
       </Formik>
 
       {/* Staff Table */}
@@ -345,7 +348,9 @@ const EmployeeList = () => {
           </div>
           <h3 className='text-lg font-semibold text-slate-800 mb-2'>No employees found</h3>
           <p className='text-slate-600'>
-            {filters.searchTerm || filters.category !== 'All' || filters.status !== 'All'
+            {filters.searchTerm ||
+            !filters.category.includes('All') ||
+            !filters.status.includes('All')
               ? 'Try adjusting your filters or search terms'
               : 'No employees have been added yet'}
           </p>
