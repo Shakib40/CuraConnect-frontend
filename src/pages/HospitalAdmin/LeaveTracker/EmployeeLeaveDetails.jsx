@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   Calendar,
@@ -13,10 +13,8 @@ import {
   AlertCircle,
   FileText,
 } from 'lucide-react'
-import Button from '../../../components/UI/Button'
 
 const EmployeeLeaveDetails = () => {
-  const { id } = useParams()
   const navigate = useNavigate()
 
   const [leave] = useState({
@@ -31,7 +29,7 @@ const EmployeeLeaveDetails = () => {
     startDate: '2024-02-25',
     endDate: '2024-02-27',
     totalDays: 3,
-    reason: 'Family vacation - attending sister\'s wedding out of state',
+    reason: "Family vacation - attending sister's wedding out of state",
     status: 'Approved',
     appliedDate: '2024-02-15',
     approvedBy: 'Dr. Michael Chen',
@@ -81,19 +79,6 @@ const EmployeeLeaveDetails = () => {
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-slate-100 text-slate-800'
-    }
-  }
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'Approved':
-        return CheckCircle
-      case 'Pending':
-        return AlertCircle
-      case 'Rejected':
-        return XCircle
-      default:
-        return AlertCircle
     }
   }
 
@@ -178,21 +163,16 @@ const EmployeeLeaveDetails = () => {
             <div>
               <label className='block text-sm font-medium text-slate-700 mb-1'>Status</label>
               <div className='flex items-center gap-2'>
-                {(() => {
-                  const StatusIcon = getStatusIcon(leave.status)
-                  return (
-                    <>
-                      <StatusIcon className='w-4 h-4 text-slate-400' />
-                      <span
-                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                          leave.status
-                        )}`}
-                      >
-                        {leave.status}
-                      </span>
-                    </>
-                  )
-                })()}
+                {leave.status === 'Approved' && <CheckCircle className='w-4 h-4 text-slate-400' />}
+                {leave.status === 'Pending' && <AlertCircle className='w-4 h-4 text-slate-400' />}
+                {leave.status === 'Rejected' && <XCircle className='w-4 h-4 text-slate-400' />}
+                <span
+                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                    leave.status,
+                  )}`}
+                >
+                  {leave.status}
+                </span>
               </div>
             </div>
             <div>
@@ -267,40 +247,43 @@ const EmployeeLeaveDetails = () => {
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-slate-200'>
-              {leave.leaveHistory.map((record) => {
-                const StatusIcon = getStatusIcon(record.status)
-                return (
-                  <tr key={record.id} className='hover:bg-slate-50'>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-900'>
-                      {record.leaveType}
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-600'>
-                      <div className='flex items-center gap-2'>
-                        <Calendar className='w-4 h-4 text-slate-400' />
-                        {record.startDate} - {record.endDate}
-                      </div>
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900'>
-                      {record.totalDays} days
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap'>
-                      <div className='flex items-center gap-2'>
-                        <StatusIcon className='w-4 h-4 text-slate-400' />
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            record.status
-                          )}`}
-                        >
-                          {record.status}
-                        </span>
-                      </div>
-                    </td>
-                    <td className='px-6 py-4 text-sm text-slate-600'>
-                      {record.reason}
-                    </td>
-                  </tr>
-                )
-              })}
+              {leave.leaveHistory.map((record) => (
+                <tr key={record.id} className='hover:bg-slate-50'>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-900'>
+                    {record.leaveType}
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-600'>
+                    <div className='flex items-center gap-2'>
+                      <Calendar className='w-4 h-4 text-slate-400' />
+                      {record.startDate} - {record.endDate}
+                    </div>
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900'>
+                    {record.totalDays} days
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap'>
+                    <div className='flex items-center gap-2'>
+                      {record.status === 'Approved' && (
+                        <CheckCircle className='w-4 h-4 text-slate-400' />
+                      )}
+                      {record.status === 'Pending' && (
+                        <AlertCircle className='w-4 h-4 text-slate-400' />
+                      )}
+                      {record.status === 'Rejected' && (
+                        <XCircle className='w-4 h-4 text-slate-400' />
+                      )}
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          record.status,
+                        )}`}
+                      >
+                        {record.status}
+                      </span>
+                    </div>
+                  </td>
+                  <td className='px-6 py-4 text-sm text-slate-600'>{record.reason}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

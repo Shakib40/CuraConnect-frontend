@@ -12,6 +12,15 @@ import {
   AlertTriangle,
   Star,
   Eye,
+  ArrowLeft,
+  Calendar,
+  MapPin,
+  User,
+  Mail,
+  Phone,
+  XCircle,
+  AlertCircle,
+  FileText,
 } from 'lucide-react'
 
 // Icon definitions with their styling
@@ -34,4 +43,15 @@ export const iconDefinitions = {
   alert: { icon: AlertTriangle, bgColor: 'bg-red-50', iconColor: 'text-red-600' },
   star: { icon: Star, bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
   eye: { icon: Eye, bgColor: 'bg-blue-50', iconColor: 'text-blue-600' },
+
+  // Leave tracker and employee related icons
+  arrowLeft: { icon: ArrowLeft, bgColor: 'bg-gray-50', iconColor: 'text-gray-600' },
+  calendar: { icon: Calendar, bgColor: 'bg-blue-50', iconColor: 'text-blue-600' },
+  mapPin: { icon: MapPin, bgColor: 'bg-red-50', iconColor: 'text-red-600' },
+  user: { icon: User, bgColor: 'bg-indigo-50', iconColor: 'text-indigo-600' },
+  mail: { icon: Mail, bgColor: 'bg-blue-50', iconColor: 'text-blue-600' },
+  phone: { icon: Phone, bgColor: 'bg-green-50', iconColor: 'text-green-600' },
+  xCircle: { icon: XCircle, bgColor: 'bg-red-50', iconColor: 'text-red-600' },
+  alertCircle: { icon: AlertCircle, bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
+  fileText: { icon: FileText, bgColor: 'bg-gray-50', iconColor: 'text-gray-600' },
 }

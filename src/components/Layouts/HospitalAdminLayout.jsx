@@ -25,7 +25,7 @@ const adminMenuItems = [
   { label: 'Overview', path: '/hospital-admin/dashboard', icon: LayoutGrid },
   { label: 'Employees', path: '/hospital-admin/employee', icon: UsersRound },
   { label: 'Attendance', path: '/hospital-admin/attendance', icon: Clock },
-  { label: 'Leave Tracker', path: '/hospital-admin/leave', icon: Calendar },
+  { label: 'Leave Tracker', path: '/hospital-admin/leave-tracker', icon: Calendar },
   { label: 'Appointment', path: '/hospital-admin/appointment', icon: Stethoscope },
   { label: 'Surgery', path: '/hospital-admin/surgery', icon: Stethoscope },
   { label: 'Prescription', path: '/hospital-admin/prescription', icon: FileText },

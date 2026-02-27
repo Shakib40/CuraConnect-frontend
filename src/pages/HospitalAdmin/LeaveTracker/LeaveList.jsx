@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
 import {
   Users,
   Plus,
@@ -12,11 +14,11 @@ import {
   AlertCircle,
   MoreHorizontal,
 } from 'lucide-react'
-import Table from '../../../components/UI/Table'
-import Button from '../../../components/UI/Button'
-import NoRecords from '../../../components/UI/NoRecords'
-import Input from '../../../components/Form/Input'
-import Select from '../../../components/Form/Select'
+import Table from 'components/UI/Table'
+import Button from 'components/UI/Button'
+import NoRecords from 'components/UI/NoRecords'
+import Input from 'components/Form/Input'
+import Select from 'components/Form/Select'
 
 const LeaveList = () => {
   const navigate = useNavigate()
@@ -101,10 +103,25 @@ const LeaveList = () => {
     },
   ])
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterDepartment, setFilterDepartment] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
-  const [filterLeaveType, setFilterLeaveType] = useState('')
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    department: '',
+    status: '',
+    leaveType: '',
+  })
+
+  const handleFilterSubmit = (values) => {
+    setFilters(values)
+  }
+
+  const handleResetFilters = () => {
+    setFilters({
+      searchTerm: '',
+      department: '',
+      status: '',
+      leaveType: '',
+    })
+  }
 
   const departments = [
     { value: '', label: 'All Departments' },
@@ -159,11 +176,12 @@ const LeaveList = () => {
   }
 
   const filteredLeaves = leaves.filter((leave) => {
-    const matchesSearch = leave.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         leave.employeeId.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesDepartment = !filterDepartment || leave.department === filterDepartment
-    const matchesStatus = !filterStatus || leave.status === filterStatus
-    const matchesLeaveType = !filterLeaveType || leave.leaveType === filterLeaveType
+    const matchesSearch =
+      leave.employeeName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      leave.employeeId.toLowerCase().includes(filters.searchTerm.toLowerCase())
+    const matchesDepartment = !filters.department || leave.department === filters.department
+    const matchesStatus = !filters.status || leave.status === filters.status
+    const matchesLeaveType = !filters.leaveType || leave.leaveType === filters.leaveType
     return matchesSearch && matchesDepartment && matchesStatus && matchesLeaveType
   })
 
@@ -203,7 +221,9 @@ const LeaveList = () => {
     {
       header: 'Total Days',
       accessor: 'totalDays',
-      render: (row) => <div className='text-sm font-medium text-slate-900'>{row.totalDays} days</div>,
+      render: (row) => (
+        <div className='text-sm font-medium text-slate-900'>{row.totalDays} days</div>
+      ),
     },
     {
       header: 'Applied Date',
@@ -225,7 +245,7 @@ const LeaveList = () => {
             <StatusIcon className='w-4 h-4 text-slate-400' />
             <span
               className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                row.status
+                row.status,
               )}`}
             >
               {row.status}
@@ -259,41 +279,49 @@ const LeaveList = () => {
       <div className='mb-6'>
         <div className='flex items-center justify-between mb-6'>
           <h1 className='text-2xl font-bold text-slate-800'>Leave Tracker</h1>
-          <Button variant='primary' icon={Plus}>
+          <Button
+            variant='primary'
+            icon={Plus}
+            onClick={() => navigate('/hospital-admin/leave-tracker/apply')}
+          >
             Request Leave
           </Button>
         </div>
 
         {/* Filters */}
-        <div className='grid grid-cols-1 md:grid-cols-5 gap-4 mb-6'>
-          <Input
-            placeholder='Search by name or ID...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            prefix={<Search className='w-4 h-4 text-slate-400' />}
-          />
-          <Select
-            placeholder='Filter by Department'
-            value={filterDepartment}
-            onChange={(e) => setFilterDepartment(e.target.value)}
-            options={departments}
-          />
-          <Select
-            placeholder='Filter by Status'
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            options={statusOptions}
-          />
-          <Select
-            placeholder='Filter by Leave Type'
-            value={filterLeaveType}
-            onChange={(e) => setFilterLeaveType(e.target.value)}
-            options={leaveTypes}
-          />
-          <Button variant='outline' icon={Filter}>
-            More Filters
-          </Button>
-        </div>
+        <Formik initialValues={filters} onSubmit={handleFilterSubmit} enableReinitialize>
+          {({ values, resetForm }) => {
+            // Update filters in real-time
+            setFilters(values)
+            return (
+              <Form className='grid grid-cols-1 md:grid-cols-5 gap-4 mb-6'>
+                <Input
+                  name='searchTerm'
+                  placeholder='Search by name or ID...'
+                  prefix={<Search className='w-4 h-4 text-slate-400' />}
+                />
+                <Select
+                  name='department'
+                  placeholder='Filter by Department'
+                  options={departments}
+                />
+                <Select name='status' placeholder='Filter by Status' options={statusOptions} />
+                <Select name='leaveType' placeholder='Filter by Leave Type' options={leaveTypes} />
+                <Button
+                  type='button'
+                  variant='outline'
+                  icon={Filter}
+                  onClick={() => {
+                    resetForm()
+                    handleResetFilters()
+                  }}
+                >
+                  Reset Filters
+                </Button>
+              </Form>
+            )
+          }}
+        </Formik>
       </div>
 
       {/* Leave Table */}
