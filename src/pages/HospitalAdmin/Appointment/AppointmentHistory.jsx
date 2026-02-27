@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
   Calendar,
@@ -12,70 +12,69 @@ import {
   XCircle,
   AlertCircle,
   FileText,
+  Stethoscope
 } from 'lucide-react'
 
-const EmployeeLeaveDetails = () => {
+const AppointmentHistory = () => {
   const navigate = useNavigate()
+  const { id } = useParams()
 
-  const [leave] = useState({
-    id: 1,
-    employeeName: 'Dr. Sarah Johnson',
-    employeeId: 'EMP001',
+  // Mock appointment data based on ID
+  const [appointment] = useState({
+    id: id || 1,
+    patientName: 'John Smith',
+    patientId: 'PAT001',
+    email: 'john.smith@gmail.com',
+    phone: '+1 (555) 987-6543',
     department: 'Cardiology',
-    email: 'sarah.johnson@hospital.com',
-    phone: '+1 (555) 123-4567',
-    avatar: 'SJ',
-    leaveType: 'Annual Leave',
-    startDate: '2024-02-25',
-    endDate: '2024-02-27',
-    totalDays: 3,
-    reason: "Family vacation - attending sister's wedding out of state",
-    status: 'Approved',
-    appliedDate: '2024-02-15',
-    approvedBy: 'Dr. Michael Chen',
-    approvedDate: '2024-02-16',
-    documents: [
-      { name: 'Leave Application Form.pdf', size: '245 KB' },
-      { name: 'Wedding Invitation.pdf', size: '1.2 MB' },
-    ],
-    leaveHistory: [
+    doctorName: 'Dr. Sarah Johnson',
+    appointmentDate: '2024-02-25',
+    appointmentTime: '10:00 AM',
+    status: 'Scheduled',
+    bookingDate: '2024-02-15',
+    type: 'Consultation',
+    reason: 'Regular heart checkup and blood pressure monitoring.',
+    notes: 'Patient advised to fast for 12 hours before the appointment.',
+    pastAppointments: [
       {
-        id: 1,
-        leaveType: 'Sick Leave',
-        startDate: '2024-01-10',
-        endDate: '2024-01-12',
-        totalDays: 3,
-        status: 'Approved',
-        reason: 'Medical treatment',
+        id: 101,
+        date: '2023-08-10',
+        doctor: 'Dr. Sarah Johnson',
+        department: 'Cardiology',
+        type: 'Consultation',
+        status: 'Completed',
+        diagnosis: 'Mild hypertension',
       },
       {
-        id: 2,
-        leaveType: 'Personal Leave',
-        startDate: '2023-12-20',
-        endDate: '2023-12-22',
-        totalDays: 3,
-        status: 'Approved',
-        reason: 'Personal work',
+        id: 102,
+        date: '2023-02-15',
+        doctor: 'Dr. Sarah Johnson',
+        department: 'Cardiology',
+        type: 'Test',
+        status: 'Completed',
+        diagnosis: 'Normal ECG',
       },
       {
-        id: 3,
-        leaveType: 'Annual Leave',
-        startDate: '2023-11-15',
-        endDate: '2023-11-20',
-        totalDays: 6,
-        status: 'Approved',
-        reason: 'Annual vacation',
+        id: 103,
+        date: '2022-09-05',
+        doctor: 'Dr. Michael Chen',
+        department: 'General',
+        type: 'Consultation',
+        status: 'Cancelled',
+        diagnosis: '-',
       },
     ],
   })
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Approved':
+      case 'Completed':
         return 'bg-green-100 text-green-800'
+      case 'Scheduled':
+        return 'bg-blue-100 text-blue-800'
       case 'Pending':
         return 'bg-amber-100 text-amber-800'
-      case 'Rejected':
+      case 'Cancelled':
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-slate-100 text-slate-800'
@@ -87,191 +86,141 @@ const EmployeeLeaveDetails = () => {
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
           <button
-            onClick={() => navigate('/hospital-admin/leave-tracker')}
+            onClick={() => navigate('/hospital-admin/appointment')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
-            Back to Leave Tracker
+            Back to Appointments
           </button>
-          <h1 className='text-2xl font-bold text-slate-800'>Employee Leave Details</h1>
+          <h1 className='text-2xl font-bold text-slate-800'>Appointment Details</h1>
         </div>
       </div>
 
-      {/* Employee Information */}
+      {/* Patient Information */}
       <div className='bg-white rounded-lg border border-slate-200 p-6 mb-6'>
         <div className='flex items-start gap-6'>
-          <div className='w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-semibold text-2xl'>
-            {leave.avatar}
+          <div className='w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-2xl uppercase'>
+            {appointment.patientName.charAt(0)}
           </div>
           <div className='flex-1'>
-            <h2 className='text-xl font-bold text-slate-800 mb-2'>{leave.employeeName}</h2>
+            <h2 className='text-xl font-bold text-slate-800 mb-2'>{appointment.patientName}</h2>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
               <div className='flex items-center gap-2'>
                 <User className='w-4 h-4 text-slate-400' />
-                <span className='text-slate-600'>ID: {leave.employeeId}</span>
+                <span className='text-slate-600'>ID: {appointment.patientId}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <Mail className='w-4 h-4 text-slate-400' />
-                <span className='text-slate-600'>{leave.email}</span>
+                <span className='text-slate-600'>{appointment.email}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <Phone className='w-4 h-4 text-slate-400' />
-                <span className='text-slate-600'>{leave.phone}</span>
-              </div>
-              <div className='flex items-center gap-2'>
-                <MapPin className='w-4 h-4 text-slate-400' />
-                <span className='text-slate-600'>{leave.department}</span>
+                <span className='text-slate-600'>{appointment.phone}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Current Leave Details */}
+      {/* Appointment Summary */}
       <div className='bg-white rounded-lg border border-slate-200 p-6 mb-6'>
-        <h3 className='text-lg font-semibold text-slate-800 mb-4'>Current Leave Request</h3>
+        <h3 className='text-lg font-semibold text-slate-800 mb-4'>Current Appointment</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='space-y-4'>
             <div>
-              <label className='block text-sm font-medium text-slate-700 mb-1'>Leave Type</label>
-              <div className='text-sm text-slate-900'>{leave.leaveType}</div>
-            </div>
-            <div>
-              <label className='block text-sm font-medium text-slate-700 mb-1'>Start Date</label>
+              <label className='block text-sm font-medium text-slate-700 mb-1'>Doctor</label>
               <div className='flex items-center gap-2 text-sm text-slate-900'>
-                <Calendar className='w-4 h-4 text-slate-400' />
-                {leave.startDate}
+                <Stethoscope className='w-4 h-4 text-slate-400' />
+                {appointment.doctorName} ({appointment.department})
               </div>
             </div>
             <div>
-              <label className='block text-sm font-medium text-slate-700 mb-1'>End Date</label>
+              <label className='block text-sm font-medium text-slate-700 mb-1'>Date & Time</label>
               <div className='flex items-center gap-2 text-sm text-slate-900'>
                 <Calendar className='w-4 h-4 text-slate-400' />
-                {leave.endDate}
+                {appointment.appointmentDate} at {appointment.appointmentTime}
               </div>
             </div>
             <div>
-              <label className='block text-sm font-medium text-slate-700 mb-1'>Total Days</label>
-              <div className='text-sm font-medium text-slate-900'>{leave.totalDays} days</div>
+              <label className='block text-sm font-medium text-slate-700 mb-1'>Type</label>
+              <div className='text-sm text-slate-900'>{appointment.type}</div>
             </div>
           </div>
           <div className='space-y-4'>
             <div>
               <label className='block text-sm font-medium text-slate-700 mb-1'>Reason</label>
-              <div className='text-sm text-slate-900'>{leave.reason}</div>
+              <div className='text-sm text-slate-900'>{appointment.reason}</div>
             </div>
             <div>
               <label className='block text-sm font-medium text-slate-700 mb-1'>Status</label>
               <div className='flex items-center gap-2'>
-                {leave.status === 'Approved' && <CheckCircle className='w-4 h-4 text-slate-400' />}
-                {leave.status === 'Pending' && <AlertCircle className='w-4 h-4 text-slate-400' />}
-                {leave.status === 'Rejected' && <XCircle className='w-4 h-4 text-slate-400' />}
+                {appointment.status === 'Completed' && <CheckCircle className='w-4 h-4 text-slate-400' />}
+                {appointment.status === 'Scheduled' && <Clock className='w-4 h-4 text-slate-400' />}
+                {appointment.status === 'Pending' && <AlertCircle className='w-4 h-4 text-slate-400' />}
+                {appointment.status === 'Cancelled' && <XCircle className='w-4 h-4 text-slate-400' />}
                 <span
                   className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    leave.status,
+                    appointment.status,
                   )}`}
                 >
-                  {leave.status}
+                  {appointment.status}
                 </span>
               </div>
             </div>
             <div>
-              <label className='block text-sm font-medium text-slate-700 mb-1'>Applied Date</label>
+              <label className='block text-sm font-medium text-slate-700 mb-1'>Booking Date</label>
               <div className='flex items-center gap-2 text-sm text-slate-900'>
                 <Calendar className='w-4 h-4 text-slate-400' />
-                {leave.appliedDate}
+                {appointment.bookingDate}
               </div>
             </div>
-            {leave.status === 'Approved' && (
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Approved By</label>
-                <div className='text-sm text-slate-900'>{leave.approvedBy}</div>
-                <div className='flex items-center gap-2 text-sm text-slate-600'>
-                  <Calendar className='w-4 h-4 text-slate-400' />
-                  {leave.approvedDate}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Supporting Documents */}
-      <div className='bg-white rounded-lg border border-slate-200 p-6 mb-6'>
-        <h3 className='text-lg font-semibold text-slate-800 mb-4'>Supporting Documents</h3>
-        <div className='space-y-3'>
-          {leave.documents.map((doc, index) => (
-            <div
-              key={index}
-              className='flex items-center justify-between p-3 border border-slate-200 rounded-lg hover:bg-slate-50'
-            >
-              <div className='flex items-center gap-3'>
-                <FileText className='w-5 h-5 text-slate-400' />
-                <div>
-                  <div className='text-sm font-medium text-slate-900'>{doc.name}</div>
-                  <div className='text-xs text-slate-500'>{doc.size}</div>
-                </div>
-              </div>
-              <button className='text-teal-600 hover:text-teal-800 text-sm font-medium'>
-                Download
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Leave History */}
+      {/* Appointment History */}
       <div className='bg-white rounded-lg border border-slate-200'>
         <div className='p-6 border-b border-slate-200'>
-          <h3 className='text-lg font-semibold text-slate-800'>Leave History</h3>
+          <h3 className='text-lg font-semibold text-slate-800'>Past Appointments</h3>
         </div>
         <div className='overflow-x-auto'>
           <table className='w-full'>
             <thead className='bg-slate-50 border-b border-slate-200'>
               <tr>
                 <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Leave Type
+                  Date
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Duration
+                  Doctor
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Total Days
+                  Type
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
                   Status
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Reason
+                  Diagnosis / Notes
                 </th>
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-slate-200'>
-              {leave.leaveHistory.map((record) => (
+              {appointment.pastAppointments.map((record) => (
                 <tr key={record.id} className='hover:bg-slate-50'>
                   <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-900'>
-                    {record.leaveType}
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-600'>
                     <div className='flex items-center gap-2'>
                       <Calendar className='w-4 h-4 text-slate-400' />
-                      {record.startDate} - {record.endDate}
+                      {record.date}
                     </div>
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900'>
-                    {record.totalDays} days
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-600'>
+                    {record.doctor} ({record.department})
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-slate-900'>
+                    {record.type}
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='flex items-center gap-2'>
-                      {record.status === 'Approved' && (
-                        <CheckCircle className='w-4 h-4 text-slate-400' />
-                      )}
-                      {record.status === 'Pending' && (
-                        <AlertCircle className='w-4 h-4 text-slate-400' />
-                      )}
-                      {record.status === 'Rejected' && (
-                        <XCircle className='w-4 h-4 text-slate-400' />
-                      )}
                       <span
                         className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                           record.status,
@@ -281,7 +230,7 @@ const EmployeeLeaveDetails = () => {
                       </span>
                     </div>
                   </td>
-                  <td className='px-6 py-4 text-sm text-slate-600'>{record.reason}</td>
+                  <td className='px-6 py-4 text-sm text-slate-600'>{record.diagnosis}</td>
                 </tr>
               ))}
             </tbody>
@@ -292,4 +241,4 @@ const EmployeeLeaveDetails = () => {
   )
 }
 
-export default EmployeeLeaveDetails
+export default AppointmentHistory

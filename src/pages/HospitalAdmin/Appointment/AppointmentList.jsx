@@ -15,6 +15,8 @@ import {
   MoreHorizontal,
   Clock,
   MapPin,
+  User,
+  Stethoscope,
 } from 'lucide-react'
 import Table from 'components/UI/Table'
 import Button from 'components/UI/Button'
@@ -193,7 +195,12 @@ const AppointmentList = () => {
       accessor: 'patientName',
       render: (row) => (
         <div>
-          <div className='font-medium text-slate-900'>{row.patientName}</div>
+          <button
+            onClick={() => navigate(`/hospital-admin/appointments/patient-appointment/${row.id}`)}
+            className='font-medium text-slate-900 hover:text-blue-600 hover:underline transition-colors'
+          >
+            {row.patientName}
+          </button>
           <div className='text-sm text-slate-500'>{row.patientId}</div>
         </div>
       ),
@@ -201,7 +208,14 @@ const AppointmentList = () => {
     {
       header: 'Doctor',
       accessor: 'doctorName',
-      render: (row) => <div className='text-sm text-slate-600'>{row.doctorName}</div>,
+      render: (row) => (
+        <button
+          onClick={() => navigate(`/hospital-admin/appointments/doctor-appointment/${row.id}`)}
+          className='text-sm text-slate-600 hover:text-purple-600 hover:underline transition-colors'
+        >
+          {row.doctorName}
+        </button>
+      ),
     },
     {
       header: 'Department',
@@ -264,11 +278,18 @@ const AppointmentList = () => {
       render: (row) => (
         <div className='flex items-center gap-2'>
           <button
-            onClick={() => navigate(`/hospital-admin/appointments/history/${row.id}`)}
-            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors'
+            onClick={() => navigate(`/hospital-admin/appointments/patient-appointment/${row.id}`)}
+            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors'
           >
-            <Eye className='w-4 h-4' />
-            View
+            <User className='w-4 h-4' />
+            Patient View
+          </button>
+          <button
+            onClick={() => navigate(`/hospital-admin/appointments/doctor-appointment/${row.id}`)}
+            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors'
+          >
+            <Stethoscope className='w-4 h-4' />
+            Doctor View
           </button>
           <button className='p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'>
             <MoreHorizontal className='w-4 h-4' />
@@ -286,7 +307,7 @@ const AppointmentList = () => {
           <Button
             variant='primary'
             icon={Plus}
-            onClick={() => navigate('/hospital-admin/appointments/add')}
+            onClick={() => navigate('/hospital-admin/appointment/add')}
           >
             Schedule Appointment
           </Button>
