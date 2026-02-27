@@ -11,7 +11,7 @@ import {
 const Table = ({ columns, data, currentPage, totalPages, onPageChange }) => {
   return (
     <div className='overflow-x-auto shadow-sm rounded-lg border border-slate-200 bg-white'>
-      <FlowbiteTable hoverable>
+      <FlowbiteTable>
         <TableHead>
           <TableRow>
             {columns.map((col, index) => (
@@ -23,7 +23,7 @@ const Table = ({ columns, data, currentPage, totalPages, onPageChange }) => {
         </TableHead>
         <TableBody className='divide-y'>
           {data.map((row, rowIndex) => (
-            <TableRow key={rowIndex} className='bg-white hover:bg-white transition-colors'>
+            <TableRow key={rowIndex} className='bg-white transition-colors'>
               {columns.map((col, colIndex) => (
                 <TableCell key={colIndex} className='text-slate-800'>
                   {col.render ? col.render(row) : row[col.accessor]}

@@ -17,10 +17,14 @@ import {
   MapPin,
   User,
   Stethoscope,
+  ExternalLink,
+  ArrowRight,
+  Edit,
 } from 'lucide-react'
 import Table from 'components/UI/Table'
 import Button from 'components/UI/Button'
 import NoRecords from 'components/UI/NoRecords'
+import Modal from 'components/UI/Modal'
 import Input from 'components/Form/Input'
 import Select from 'components/Form/Select'
 import { useFormikContext } from 'formik'
@@ -36,6 +40,16 @@ const FormObserver = ({ setFilters }) => {
 
 const AppointmentList = () => {
   const navigate = useNavigate()
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
+
+  // Validation schema for edit form
+  const editValidationSchema = Yup.object({
+    appointmentDate: Yup.string().required('Date is required'),
+    appointmentTime: Yup.string().required('Time is required'),
+    status: Yup.string().required('Status is required'),
+    notes: Yup.string().optional(),
+  })
   const [appointments] = useState([
     {
       id: 1,
@@ -197,9 +211,10 @@ const AppointmentList = () => {
         <div>
           <button
             onClick={() => navigate(`/hospital-admin/appointments/patient/${row.id}`)}
-            className='font-medium text-slate-900 hover:text-blue-600 hover:underline transition-colors'
+            className='font-medium text-slate-900 hover:text-blue-600 hover:underline transition-colors inline-flex items-center gap-1'
           >
             {row.patientName}
+            <ExternalLink className='w-4 h-4 text-blue-500' />
           </button>
           <div className='text-sm text-slate-500'>{row.patientId}</div>
         </div>
@@ -211,9 +226,10 @@ const AppointmentList = () => {
       render: (row) => (
         <button
           onClick={() => navigate(`/hospital-admin/appointments/doctor/${row.id}`)}
-          className='text-sm text-slate-600 hover:text-purple-600 hover:underline transition-colors'
+          className='text-sm text-slate-600 hover:text-purple-600 hover:underline transition-colors inline-flex items-center gap-1'
         >
           {row.doctorName}
+          <ExternalLink className='w-4 h-4 text-purple-500' />
         </button>
       ),
     },
@@ -277,9 +293,15 @@ const AppointmentList = () => {
       accessor: 'actions',
       render: (row) => (
         <div className='flex items-center gap-2'>
-
-          <button className='p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'>
-            <MoreHorizontal className='w-4 h-4' />
+          <button
+            onClick={() => {
+              setSelectedAppointment(row)
+              setShowEditModal(true)
+            }}
+            className='p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors'
+            title='Edit appointment'
+          >
+            <Edit className='w-4 h-4' />
           </button>
         </div>
       ),
@@ -294,7 +316,7 @@ const AppointmentList = () => {
           <Button
             variant='primary'
             icon={Plus}
-            onClick={() => navigate('/hospital-admin/appointments/add')}
+            onClick={() => navigate('/hospital-admin/appointment/add')}
           >
             Schedule Appointment
           </Button>
@@ -302,7 +324,7 @@ const AppointmentList = () => {
 
         {/* Filters */}
         <Formik initialValues={filters} onSubmit={handleFilterSubmit} enableReinitialize>
-          {({ values, resetForm }) => {
+          {({ resetForm }) => {
             return (
               <Form className='grid grid-cols-1 md:grid-cols-5 gap-4 mb-6'>
                 <FormObserver setFilters={setFilters} />
@@ -348,6 +370,122 @@ const AppointmentList = () => {
           />
         )}
       </div>
+
+      {/* Edit Appointment Modal */}
+      <Modal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title='Edit Scheduled Appointment'
+        size='md'
+      >
+        {selectedAppointment && (
+          <Formik
+            initialValues={{
+              appointmentDate: selectedAppointment.appointmentDate,
+              appointmentTime: selectedAppointment.appointmentTime,
+              status: selectedAppointment.status,
+              notes: '',
+            }}
+            validationSchema={editValidationSchema}
+            onSubmit={(values) => {
+              console.log('Saving appointment:', { ...selectedAppointment, ...values })
+              setShowEditModal(false)
+            }}
+          >
+            {({ values, errors, touched, handleChange, handleBlur }) => (
+              <Form className='space-y-4'>
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>Patient</label>
+                  <div className='text-sm text-slate-900'>{selectedAppointment.patientName}</div>
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>Doctor</label>
+                  <div className='text-sm text-slate-900'>{selectedAppointment.doctorName}</div>
+                </div>
+
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-slate-700 mb-1'>
+                      Appointment Date
+                    </label>
+                    <Input
+                      name='appointmentDate'
+                      type='date'
+                      value={values.appointmentDate}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.appointmentDate && errors.appointmentDate}
+                    />
+                  </div>
+
+                  <div>
+                    <label className='block text-sm font-medium text-slate-700 mb-1'>
+                      Appointment Time
+                    </label>
+                    <Input
+                      name='appointmentTime'
+                      type='time'
+                      value={values.appointmentTime}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.appointmentTime && errors.appointmentTime}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>
+                    Current Status
+                  </label>
+                  <div className='text-sm text-slate-900'>{selectedAppointment.status}</div>
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>
+                    Change Status
+                  </label>
+                  <Select
+                    name='status'
+                    value={values.status}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.status && errors.status}
+                    options={[
+                      { value: 'Scheduled', label: 'Scheduled' },
+                      { value: 'Completed', label: 'Completed' },
+                      { value: 'Cancelled', label: 'Cancelled' },
+                      { value: 'Pending', label: 'Pending' },
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>Notes</label>
+                  <Input
+                    name='notes'
+                    type='textarea'
+                    value={values.notes}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder='Add any notes about this appointment...'
+                    rows={3}
+                  />
+                </div>
+
+                <div className='flex justify-end gap-3 pt-4'>
+                  <Button type='button' variant='outline' onClick={() => setShowEditModal(false)}>
+                    Cancel
+                  </Button>
+                  <Button type='submit' variant='primary'>
+                    Save Changes
+                  </Button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        )}
+      </Modal>
     </div>
   )
 }
