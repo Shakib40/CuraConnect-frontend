@@ -132,10 +132,14 @@ const PatientSurgery = () => {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='space-y-4'>
             <div>
+              <label className='block text-sm font-medium text-slate-700 mb-1'>Department</label>
+              <div className='text-sm text-slate-900'>{surgery.department}</div>
+            </div>
+            <div>
               <label className='block text-sm font-medium text-slate-700 mb-1'>Surgeon</label>
               <div className='flex items-center gap-2 text-sm text-slate-900'>
                 <Stethoscope className='w-4 h-4 text-slate-400' />
-                {surgery.doctorName} ({surgery.department})
+                {surgery.doctorName}
               </div>
             </div>
             <div>

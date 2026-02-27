@@ -277,18 +277,10 @@ const SurgeryList = () => {
       accessor: 'status',
       render: (row) => (
         <div className='flex items-center gap-2'>
-          {row.status === 'Completed' && (
-            <CheckCircle className='w-4 h-4 text-slate-400' />
-          )}
-          {row.status === 'Scheduled' && (
-            <Calendar className='w-4 h-4 text-slate-400' />
-          )}
-          {row.status === 'Pending' && (
-            <AlertCircle className='w-4 h-4 text-slate-400' />
-          )}
-          {row.status === 'Cancelled' && (
-            <XCircle className='w-4 h-4 text-slate-400' />
-          )}
+          {row.status === 'Completed' && <CheckCircle className='w-4 h-4 text-slate-400' />}
+          {row.status === 'Scheduled' && <Calendar className='w-4 h-4 text-slate-400' />}
+          {row.status === 'Pending' && <AlertCircle className='w-4 h-4 text-slate-400' />}
+          {row.status === 'Cancelled' && <XCircle className='w-4 h-4 text-slate-400' />}
           <span
             className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
               row.status,
@@ -304,6 +296,13 @@ const SurgeryList = () => {
       accessor: 'actions',
       render: (row) => (
         <div className='flex items-center gap-2'>
+          <button
+            onClick={() => navigate(`/hospital-admin/surgery/detail/${row.id}`)}
+            className='p-1 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors'
+            title='View surgery details'
+          >
+            <Eye className='w-4 h-4' />
+          </button>
           <button
             onClick={() => {
               setSelectedSurgery(row)
@@ -346,11 +345,7 @@ const SurgeryList = () => {
                 placeholder='Search by patient, doctor, or ID...'
                 prefix={<Search className='w-4 h-4 text-slate-400' />}
               />
-              <Select
-                name='department'
-                placeholder='Filter by Department'
-                options={departments}
-              />
+              <Select name='department' placeholder='Filter by Department' options={departments} />
               <Select name='status' placeholder='Filter by Status' options={statusOptions} />
               <Select name='surgeryType' placeholder='Filter by Type' options={surgeryTypes} />
               <Button
@@ -418,7 +413,9 @@ const SurgeryList = () => {
 
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
-                    <label className='block text-sm font-medium text-slate-700 mb-1'>Surgery Date</label>
+                    <label className='block text-sm font-medium text-slate-700 mb-1'>
+                      Surgery Date
+                    </label>
                     <Input
                       name='surgeryDate'
                       type='date'
@@ -430,7 +427,9 @@ const SurgeryList = () => {
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-slate-700 mb-1'>Surgery Time</label>
+                    <label className='block text-sm font-medium text-slate-700 mb-1'>
+                      Surgery Time
+                    </label>
                     <Input
                       name='surgeryTime'
                       type='time'
@@ -443,12 +442,16 @@ const SurgeryList = () => {
                 </div>
 
                 <div>
-                  <label className='block text-sm font-medium text-slate-700 mb-1'>Current Status</label>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>
+                    Current Status
+                  </label>
                   <div className='text-sm text-slate-900'>{selectedSurgery.status}</div>
                 </div>
 
                 <div>
-                  <label className='block text-sm font-medium text-slate-700 mb-1'>Change Status</label>
+                  <label className='block text-sm font-medium text-slate-700 mb-1'>
+                    Change Status
+                  </label>
                   <Select
                     name='status'
                     value={values.status}
@@ -478,17 +481,10 @@ const SurgeryList = () => {
                 </div>
 
                 <div className='flex justify-end gap-3 pt-4'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={() => setShowEditModal(false)}
-                  >
+                  <Button type='button' variant='outline' onClick={() => setShowEditModal(false)}>
                     Cancel
                   </Button>
-                  <Button
-                    type='submit'
-                    variant='primary'
-                  >
+                  <Button type='submit' variant='primary'>
                     Save Changes
                   </Button>
                 </div>
