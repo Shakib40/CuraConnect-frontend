@@ -1,4 +1,4 @@
-import { useFormik } from 'formik'
+import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -10,20 +10,48 @@ import {
   Phone,
   Calculator,
   Users,
+  Plus,
+  Trash2,
+  GraduationCap,
+  FileText,
+  Building,
 } from 'lucide-react'
 import Button from 'components/UI/Button'
+import Input from 'components/Form/Input'
+import Select from 'components/Form/Select'
+import FileSelect from 'components/Form/FileSelect'
 
 const AddEmployee = () => {
   const navigate = useNavigate()
+
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Full name is required')
-      .min(2, 'Full name must be at least 2 characters')
-      .max(50, 'Full name cannot exceed 50 characters'),
+    // Personal Information
+    firstName: Yup.string()
+      .required('First name is required')
+      .min(2, 'First name must be at least 2 characters')
+      .max(30, 'First name cannot exceed 30 characters'),
+    middleName: Yup.string().max(30, 'Middle name cannot exceed 30 characters'),
+    lastName: Yup.string()
+      .required('Last name is required')
+      .min(2, 'Last name must be at least 2 characters')
+      .max(30, 'Last name cannot exceed 30 characters'),
     email: Yup.string().required('Email address is required').email('Invalid email address'),
     phone: Yup.string()
       .required('Phone number is required')
-      .matches(/^[+]?[\d\s-()]*[\d\s-()]*[\d\s-()]*[\d\s-()]*[\d]$/, 'Invalid phone number'),
+      .matches(/^[+]?[\d\s-()]*$/, 'Invalid phone number'),
+
+    // Address
+    houseFlat: Yup.string().required('House/Flat number is required'),
+    streetRoad: Yup.string().required('Street/Road is required'),
+    city: Yup.string().required('City is required'),
+    district: Yup.string().required('District is required'),
+    state: Yup.string().required('State is required'),
+    country: Yup.string().required('Country is required'),
+    pincode: Yup.string()
+      .required('Pincode is required')
+      .matches(/^\d{6}$/, 'Pincode must be 6 digits'),
+
+    // Professional Information
     category: Yup.string().required('Category is required'),
     specialization: Yup.string().when('category', (category) =>
       category === 'Doctor'
@@ -32,48 +60,92 @@ const AddEmployee = () => {
           ? Yup.string().required('Specialization is required for laboratory staff')
           : Yup.string().required('Specialization is required'),
     ),
-    department: Yup.string(),
-    status: Yup.string().oneOf(['Active', 'Inactive', 'On Leave']),
     joinDate: Yup.date().required('Join date is required'),
-    address: Yup.string().min(5, 'Address must be at least 5 characters'),
-    emergencyContact: Yup.string().required('Emergency contact is required'),
+    workSchedule: Yup.string().required('Work schedule is required'),
+
+    // Emergency Contacts
+    emergencyContacts: Yup.array()
+      .of(
+        Yup.object().shape({
+          name: Yup.string().required('Emergency contact name is required'),
+          phone: Yup.string()
+            .required('Emergency contact phone is required')
+            .matches(/^[+]?[\d\s-()]*$/, 'Invalid phone number'),
+        }),
+      )
+      .min(1, 'At least one emergency contact is required'),
+
+    // Education
+    highestDegree: Yup.string().required('Highest degree is required'),
+    degreeCertificate: Yup.mixed().required('Degree certificate is required'),
+
+    // Documents
+    aadhaarCard: Yup.mixed().required('Aadhaar card is required'),
+    panCard: Yup.mixed().required('PAN card is required'),
+
+    // Bank Details
+    bankName: Yup.string().required('Bank name is required'),
+    accountNumber: Yup.string().required('Account number is required'),
+    ifscCode: Yup.string()
+      .required('IFSC code is required')
+      .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFSC code'),
+    accountHolderName: Yup.string().required('Account holder name is required'),
+
+    // Other fields
     salary: Yup.string(),
-    workSchedule: Yup.string(),
-    education: Yup.string(),
     experience: Yup.string(),
-    licenseNumber: Yup.string().matches(
-      /^[A-Za-z0-9]*$/,
-      'License number must contain only letters and numbers',
-    ),
-    isPrimary: Yup.boolean(),
   })
 
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      email: '',
-      phone: '',
-      category: 'Doctor',
-      specialization: '',
-      department: '',
-      status: 'Active',
-      joinDate: '',
-      address: '',
-      emergencyContact: '',
-      salary: '',
-      workSchedule: '',
-      education: '',
-      experience: '',
-      licenseNumber: '',
-      isPrimary: false,
-    },
-    validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      console.log('Form submitted:', values)
-      // API call here
-      resetForm()
-    },
-  })
+  const initialValues = {
+    // Personal Information
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+
+    // Address
+    houseFlat: '',
+    streetRoad: '',
+    city: '',
+    district: '',
+    state: '',
+    country: '',
+    pincode: '',
+
+    // Professional Information
+    category: 'Doctor',
+    specialization: '',
+    joinDate: '',
+    workSchedule: '',
+
+    // Emergency Contacts
+    emergencyContacts: [{ name: '', phone: '' }],
+
+    // Education
+    highestDegree: '',
+    degreeCertificate: null,
+
+    // Documents
+    aadhaarCard: null,
+    panCard: null,
+
+    // Bank Details
+    bankName: '',
+    accountNumber: '',
+    ifscCode: '',
+    accountHolderName: '',
+
+    // Other fields
+    salary: '',
+    experience: '',
+  }
+
+  const handleSubmit = (values, { resetForm }) => {
+    console.log('Form submitted:', values)
+    // API call here
+    resetForm()
+  }
 
   const categories = [
     { value: 'Doctor', label: 'Doctor', icon: Stethoscope },
@@ -84,6 +156,17 @@ const AddEmployee = () => {
     { value: 'Cleaner', label: 'Cleaner', icon: Users },
     { value: 'Support', label: 'Support', icon: Users },
     { value: 'Others', label: 'Others', icon: Users },
+  ]
+
+  const workSchedules = [
+    'Morning Shift (6AM - 2PM)',
+    'Afternoon Shift (2PM - 10PM)',
+    'Night Shift (10PM - 6AM)',
+    'Flexible Shift',
+    'Rotating Shift',
+    'Weekend Shift',
+    'Part-time Morning',
+    'Part-time Evening',
   ]
 
   const specializations = {
@@ -176,321 +259,293 @@ const AddEmployee = () => {
       </div>
 
       <div className='bg-white rounded-lg border border-slate-200'>
-        <form onSubmit={formik.handleSubmit} className='p-6'>
-          {/* Personal Information */}
-          <div className='mb-8'>
-            <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
-              <Stethoscope className='w-5 h-5' />
-              Personal Information
-            </h2>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          enableReinitialize
+        >
+          {({ values, setFieldValue, isSubmitting }) => {
+            const addEmergencyContact = () => {
+              setFieldValue('emergencyContacts', [
+                ...values.emergencyContacts,
+                { name: '', phone: '' },
+              ])
+            }
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Full Name *</label>
-                <input
-                  type='text'
-                  name='name'
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.name && formik.touched.name
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.name && formik.touched.name && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.name}</p>
-                )}
-              </div>
+            const removeEmergencyContact = (index) => {
+              const newContacts = values.emergencyContacts.filter((_, i) => i !== index)
+              setFieldValue('emergencyContacts', newContacts)
+            }
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  Email Address *
-                </label>
-                <input
-                  type='email'
-                  name='email'
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.email && formik.touched.email
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.email && formik.touched.email && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.email}</p>
-                )}
-              </div>
+            return (
+              <Form className='p-6'>
+                {/* Personal Information */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <Stethoscope className='w-5 h-5' />
+                    Personal Information
+                  </h2>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  Phone Number *
-                </label>
-                <input
-                  type='tel'
-                  name='phone'
-                  value={formik.values.phone}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.phone && formik.touched.phone
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.phone && formik.touched.phone && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.phone}</p>
-                )}
-              </div>
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                    <Input label='First Name *' name='firstName' placeholder='Enter first name' />
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Address</label>
-                <textarea
-                  name='address'
-                  value={formik.values.address}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  rows={3}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.address && formik.touched.address
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.address && formik.touched.address && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.address}</p>
-                )}
-              </div>
-            </div>
-          </div>
+                    <Input label='Middle Name' name='middleName' placeholder='Enter middle name' />
 
-          {/* Professional Information */}
-          <div className='mb-8'>
-            <h2 className='text-lg font-semibold text-slate-800 mb-4'>Professional Information</h2>
+                    <Input label='Last Name *' name='lastName' placeholder='Enter last name' />
+                  </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Category *</label>
-                <select
-                  name='category'
-                  value={formik.values.category}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.category && formik.touched.category
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                >
-                  {categories.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+                    <Input
+                      label='Email Address *'
+                      name='email'
+                      type='email'
+                      placeholder='Enter email address'
+                    />
+
+                    <Input
+                      label='Phone Number *'
+                      name='phone'
+                      type='tel'
+                      placeholder='Enter phone number'
+                    />
+                  </div>
+                </div>
+
+                {/* Address Information */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <Building className='w-5 h-5' />
+                    Address Information
+                  </h2>
+
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <Input
+                      label='House/Flat *'
+                      name='houseFlat'
+                      placeholder='Enter house/flat number'
+                    />
+
+                    <Input
+                      label='Street/Road *'
+                      name='streetRoad'
+                      placeholder='Enter street/road name'
+                    />
+
+                    <Input label='City *' name='city' placeholder='Enter city name' />
+
+                    <Input label='District *' name='district' placeholder='Enter district name' />
+
+                    <Input label='State *' name='state' placeholder='Enter state name' />
+
+                    <Input label='Country *' name='country' placeholder='Enter country name' />
+
+                    <Input label='Pincode *' name='pincode' placeholder='Enter 6-digit pincode' />
+                  </div>
+                </div>
+
+                {/* Professional Information */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4'>
+                    Professional Information
+                  </h2>
+
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <Select
+                      label='Category *'
+                      name='category'
+                      options={categories.map((cat) => ({ value: cat.value, label: cat.label }))}
+                      placeholder='Select category'
+                    />
+
+                    <Select
+                      label='Specialization *'
+                      name='specialization'
+                      options={
+                        specializations[values.category]?.map((spec) => ({
+                          value: spec,
+                          label: spec,
+                        })) || []
+                      }
+                      placeholder='Select specialization'
+                      isDisabled={!values.category}
+                    />
+
+                    <Input label='Join Date *' name='joinDate' type='date' />
+
+                    <Select
+                      label='Work Schedule *'
+                      name='workSchedule'
+                      options={workSchedules.map((schedule) => ({
+                        value: schedule,
+                        label: schedule,
+                      }))}
+                      placeholder='Select work schedule'
+                    />
+                  </div>
+                </div>
+
+                {/* Emergency Contacts */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <Phone className='w-5 h-5' />
+                    Emergency Contacts
+                  </h2>
+
+                  {values.emergencyContacts.map((contact, index) => (
+                    <div key={index} className='mb-4 p-4 border border-slate-200 rounded-lg'>
+                      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <Input
+                          label='Contact Name *'
+                          name={`emergencyContacts[${index}].name`}
+                          placeholder='Enter contact name'
+                        />
+
+                        <Input
+                          label='Contact Number *'
+                          name={`emergencyContacts[${index}].phone`}
+                          type='tel'
+                          placeholder='Enter contact number'
+                        />
+                      </div>
+
+                      {values.emergencyContacts.length > 1 && (
+                        <Button
+                          type='button'
+                          variant='ghost'
+                          size='sm'
+                          icon={Trash2}
+                          onClick={() => removeEmergencyContact(index)}
+                          className='mt-3 text-red-600 hover:text-red-800'
+                        >
+                          Remove Contact
+                        </Button>
+                      )}
+                    </div>
                   ))}
-                </select>
-                {formik.errors.category && formik.touched.category && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.category}</p>
-                )}
-              </div>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  Specialization *
-                </label>
-                <select
-                  name='specialization'
-                  value={formik.values.specialization}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  disabled={!formik.values.category}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.specialization && formik.touched.specialization
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                >
-                  <option value=''>Select specialization</option>
-                  {specializations[formik.values.category]?.map((spec) => (
-                    <option key={spec} value={spec}>
-                      {spec}
-                    </option>
-                  ))}
-                </select>
-                {formik.errors.specialization && formik.touched.specialization && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.specialization}</p>
-                )}
-              </div>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    icon={Plus}
+                    onClick={addEmergencyContact}
+                    className='text-teal-600 hover:text-teal-800'
+                  >
+                    Add Emergency Contact
+                  </Button>
+                </div>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Department</label>
-                <input
-                  type='text'
-                  name='department'
-                  value={formik.values.department}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                />
-              </div>
+                {/* Education */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <GraduationCap className='w-5 h-5' />
+                    Education
+                  </h2>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Status</label>
-                <select
-                  name='status'
-                  value={formik.values.status}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                >
-                  <option value='Active'>Active</option>
-                  <option value='Inactive'>Inactive</option>
-                  <option value='On Leave'>On Leave</option>
-                </select>
-              </div>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <Input
+                      label='Highest Degree *'
+                      name='highestDegree'
+                      placeholder='Enter highest degree'
+                    />
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Join Date</label>
-                <input
-                  type='date'
-                  name='joinDate'
-                  value={formik.values.joinDate}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.joinDate && formik.touched.joinDate
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.joinDate && formik.touched.joinDate && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.joinDate}</p>
-                )}
-              </div>
-            </div>
-          </div>
+                    <FileSelect
+                      label='Degree Certificate *'
+                      name='degreeCertificate'
+                      accept='.pdf,.jpg,.jpeg,.png'
+                    />
+                  </div>
+                </div>
 
-          {/* Additional Information */}
-          <div className='mb-8'>
-            <h2 className='text-lg font-semibold text-slate-800 mb-4'>Additional Information</h2>
+                {/* Documents */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <FileText className='w-5 h-5' />
+                    Documents
+                  </h2>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  Emergency Contact *
-                </label>
-                <input
-                  type='text'
-                  name='emergencyContact'
-                  value={formik.values.emergencyContact}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.emergencyContact && formik.touched.emergencyContact
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.emergencyContact && formik.touched.emergencyContact && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.emergencyContact}</p>
-                )}
-              </div>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <FileSelect
+                      label='Aadhaar Card *'
+                      name='aadhaarCard'
+                      accept='.pdf,.jpg,.jpeg,.png'
+                    />
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Salary</label>
-                <input
-                  type='text'
-                  name='salary'
-                  value={formik.values.salary}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                />
-              </div>
+                    <FileSelect label='PAN Card *' name='panCard' accept='.pdf,.jpg,.jpeg,.png' />
+                  </div>
+                </div>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  Work Schedule
-                </label>
-                <input
-                  type='text'
-                  name='workSchedule'
-                  value={formik.values.workSchedule}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                />
-              </div>
+                {/* Bank Details */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
+                    <Building className='w-5 h-5' />
+                    Bank Details
+                  </h2>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Education</label>
-                <input
-                  type='text'
-                  name='education'
-                  value={formik.values.education}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                />
-              </div>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <Input label='Bank Name *' name='bankName' placeholder='Enter bank name' />
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>Experience</label>
-                <textarea
-                  name='experience'
-                  value={formik.values.experience}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  rows={3}
-                  className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-                />
-              </div>
+                    <Input
+                      label='Account Number *'
+                      name='accountNumber'
+                      placeholder='Enter account number'
+                    />
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 mb-1'>
-                  License Number
-                </label>
-                <input
-                  type='text'
-                  name='licenseNumber'
-                  value={formik.values.licenseNumber}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
-                    formik.errors.licenseNumber && formik.touched.licenseNumber
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  }`}
-                />
-                {formik.errors.licenseNumber && formik.touched.licenseNumber && (
-                  <p className='text-red-500 text-xs mt-1'>{formik.errors.licenseNumber}</p>
-                )}
-              </div>
-            </div>
-          </div>
+                    <Input label='IFSC Code *' name='ifscCode' placeholder='Enter IFSC code' />
 
-          {/* Form Actions */}
-          <div className='flex gap-3 pt-6 border-t border-slate-200'>
-            <Button
-              type='submit'
-              variant='primary'
-              size='md'
-              icon={Save}
-              loading={formik.isSubmitting}
-            >
-              Save Employee Member
-            </Button>
-            <Button
-              variant='outline'
-              size='md'
-              onClick={() => navigate('/hospital-admin/employee')}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
+                    <Input
+                      label='Account Holder Name *'
+                      name='accountHolderName'
+                      placeholder='Enter account holder name'
+                    />
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                <div className='mb-8'>
+                  <h2 className='text-lg font-semibold text-slate-800 mb-4'>
+                    Additional Information
+                  </h2>
+
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <Input label='Salary' name='salary' placeholder='Enter salary' />
+
+                    <div className='md:col-span-2'>
+                      <Input
+                        label='Experience'
+                        name='experience'
+                        type='textarea'
+                        rows={3}
+                        placeholder='Enter work experience'
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Form Actions */}
+                <div className='flex gap-3 pt-6 border-t border-slate-200'>
+                  <Button
+                    type='submit'
+                    variant='primary'
+                    size='md'
+                    icon={Save}
+                    loading={isSubmitting}
+                  >
+                    Save Employee Member
+                  </Button>
+                  <Button
+                    variant='outline'
+                    size='md'
+                    onClick={() => navigate('/hospital-admin/employee')}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Form>
+            )
+          }}
+        </Formik>
       </div>
     </div>
   )
