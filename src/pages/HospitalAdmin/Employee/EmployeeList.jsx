@@ -24,7 +24,7 @@ import Button from 'components/UI/Button'
 
 const StaffList = () => {
   const navigate = useNavigate()
-  const [staff, setStaff] = useState([
+  const [staff] = useState([
     {
       id: 1,
       name: 'Dr. Sarah Johnson',
