@@ -8,6 +8,34 @@ import Input from 'components/Form/Input'
 import Select from 'components/Form/Select'
 import FileSelect from 'components/Form/FileSelect'
 import Checkbox from 'components/Form/Checkbox'
+import { useFormikContext } from 'formik'
+import { useEffect } from 'react'
+
+const FormObserver = ({ leaveDates, setLeaveDates, setShowDurationOptions, calculateLeaveDates }) => {
+  const { values, setFieldValue } = useFormikContext()
+
+  useEffect(() => {
+    if (values.startDate && values.endDate) {
+      const dates = calculateLeaveDates(values.startDate, values.endDate)
+      if (JSON.stringify(dates) !== JSON.stringify(leaveDates)) {
+        setLeaveDates(dates)
+        setShowDurationOptions(true)
+        if (values.dailyDurations.length === 0) {
+          setFieldValue('dailyDurations', dates)
+        }
+      }
+    } else {
+      if (leaveDates.length > 0) {
+        setLeaveDates([])
+        setShowDurationOptions(false)
+        setFieldValue('dailyDurations', [])
+        setFieldValue('leaveDuration', '')
+      }
+    }
+  }, [values.startDate, values.endDate, leaveDates, setLeaveDates, setShowDurationOptions, setFieldValue, calculateLeaveDates, values.dailyDurations.length])
+
+  return null
+}
 
 const ApplyLeave = () => {
   const navigate = useNavigate()
@@ -163,28 +191,15 @@ const ApplyLeave = () => {
           onSubmit={handleSubmit}
           enableReinitialize
         >
-          {({ values, isSubmitting, setFieldValue }) => {
-            // Update leave dates when start or end date changes
-            if (values.startDate && values.endDate) {
-              const dates = calculateLeaveDates(values.startDate, values.endDate)
-              if (JSON.stringify(dates) !== JSON.stringify(leaveDates)) {
-                setLeaveDates(dates)
-                setShowDurationOptions(true)
-                if (values.dailyDurations.length === 0) {
-                  setFieldValue('dailyDurations', dates)
-                }
-              }
-            } else {
-              if (leaveDates.length > 0) {
-                setLeaveDates([])
-                setShowDurationOptions(false)
-                setFieldValue('dailyDurations', [])
-                setFieldValue('leaveDuration', '')
-              }
-            }
-
+          {({ values, isSubmitting }) => {
             return (
               <Form className='p-6'>
+                <FormObserver
+                  leaveDates={leaveDates}
+                  setLeaveDates={setLeaveDates}
+                  setShowDurationOptions={setShowDurationOptions}
+                  calculateLeaveDates={calculateLeaveDates}
+                />
                 {/* Employee Information */}
                 <div className='mb-8'>
                   <h2 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>

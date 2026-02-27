@@ -21,6 +21,16 @@ import Button from 'components/UI/Button'
 import NoRecords from 'components/UI/NoRecords'
 import Input from 'components/Form/Input'
 import Select from 'components/Form/Select'
+import { useFormikContext } from 'formik'
+import { useEffect } from 'react'
+
+const FormObserver = ({ setFilters }) => {
+  const { values } = useFormikContext()
+  useEffect(() => {
+    setFilters(values)
+  }, [values, setFilters])
+  return null
+}
 
 const AppointmentList = () => {
   const navigate = useNavigate()
@@ -285,9 +295,9 @@ const AppointmentList = () => {
         {/* Filters */}
         <Formik initialValues={filters} onSubmit={handleFilterSubmit} enableReinitialize>
           {({ values, resetForm }) => {
-            setFilters(values)
             return (
               <Form className='grid grid-cols-1 md:grid-cols-5 gap-4 mb-6'>
+                <FormObserver setFilters={setFilters} />
                 <Input
                   name='searchTerm'
                   placeholder='Search by patient, doctor, or ID...'

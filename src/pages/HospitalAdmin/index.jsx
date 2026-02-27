@@ -5,6 +5,7 @@ import Dashboard from './Dashboard'
 import Employee from './Employee/index'
 import Attendance from './Attendance/index'
 import LeaveTracker from './LeaveTracker/Index'
+import Appointment from './Appointment/Index'
 import Settings from './Settings'
 
 const AdminRoutes = () => {
@@ -15,6 +16,7 @@ const AdminRoutes = () => {
         <Route path='employee/*' element={<Employee />} />
         <Route path='attendance/*' element={<Attendance />} />
         <Route path='leave-tracker/*' element={<LeaveTracker />} />
+        <Route path='appointment/*' element={<Appointment />} />
         <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>
