@@ -68,7 +68,7 @@ const AddAppointment = () => {
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
           <button
-            onClick={() => navigate('/hospital-admin/appointment')}
+            onClick={() => navigate('/hospital-admin/appointments')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />

@@ -196,7 +196,7 @@ const AppointmentList = () => {
       render: (row) => (
         <div>
           <button
-            onClick={() => navigate(`/hospital-admin/appointments/patient-appointment/${row.id}`)}
+            onClick={() => navigate(`/hospital-admin/appointments/patient/${row.id}`)}
             className='font-medium text-slate-900 hover:text-blue-600 hover:underline transition-colors'
           >
             {row.patientName}
@@ -210,7 +210,7 @@ const AppointmentList = () => {
       accessor: 'doctorName',
       render: (row) => (
         <button
-          onClick={() => navigate(`/hospital-admin/appointments/doctor-appointment/${row.id}`)}
+          onClick={() => navigate(`/hospital-admin/appointments/doctor/${row.id}`)}
           className='text-sm text-slate-600 hover:text-purple-600 hover:underline transition-colors'
         >
           {row.doctorName}
@@ -278,14 +278,14 @@ const AppointmentList = () => {
       render: (row) => (
         <div className='flex items-center gap-2'>
           <button
-            onClick={() => navigate(`/hospital-admin/appointments/patient-appointment/${row.id}`)}
+            onClick={() => navigate(`/hospital-admin/appointment/patient/${row.id}`)}
             className='inline-flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors'
           >
             <User className='w-4 h-4' />
             Patient View
           </button>
           <button
-            onClick={() => navigate(`/hospital-admin/appointments/doctor-appointment/${row.id}`)}
+            onClick={() => navigate(`/hospital-admin/appointment/doctor/${row.id}`)}
             className='inline-flex items-center gap-1 px-3 py-1 text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors'
           >
             <Stethoscope className='w-4 h-4' />

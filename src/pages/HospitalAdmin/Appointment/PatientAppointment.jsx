@@ -12,7 +12,7 @@ import {
   XCircle,
   AlertCircle,
   FileText,
-  Stethoscope
+  Stethoscope,
 } from 'lucide-react'
 
 const AppointmentHistory = () => {
@@ -86,7 +86,7 @@ const AppointmentHistory = () => {
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
           <button
-            onClick={() => navigate('/hospital-admin/appointment')}
+            onClick={() => navigate('/hospital-admin/appointments')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
@@ -154,10 +154,18 @@ const AppointmentHistory = () => {
             <div>
               <label className='block text-sm font-medium text-slate-700 mb-1'>Status</label>
               <div className='flex items-center gap-2'>
-                {appointment.status === 'Completed' && <CheckCircle className='w-4 h-4 text-slate-400' />}
-                {appointment.status === 'Scheduled' && <Clock className='w-4 h-4 text-slate-400' />}
-                {appointment.status === 'Pending' && <AlertCircle className='w-4 h-4 text-slate-400' />}
-                {appointment.status === 'Cancelled' && <XCircle className='w-4 h-4 text-slate-400' />}
+                {appointment.status === 'Completed' && (
+                  <CheckCircle className='w-4 h-4 text-slate-400' />
+                )}
+                {appointment.status === 'Scheduled' && (
+                  <Calendar className='w-4 h-4 text-slate-400' />
+                )}
+                {appointment.status === 'Pending' && (
+                  <AlertCircle className='w-4 h-4 text-slate-400' />
+                )}
+                {appointment.status === 'Cancelled' && (
+                  <XCircle className='w-4 h-4 text-slate-400' />
+                )}
                 <span
                   className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                     appointment.status,
