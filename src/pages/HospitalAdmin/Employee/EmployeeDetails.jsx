@@ -120,12 +120,7 @@ const EmployeeDetails = () => {
             <div className='flex items-center gap-2'>
               {!isEditing && (
                 <>
-                  <Button
-                    variant='primary'
-                    size='sm'
-                    icon={<Edit className='w-4 h-4' />}
-                    onClick={handleEdit}
-                  >
+                  <Button variant='primary' size='sm' icon={Edit} onClick={handleEdit}>
                     Edit
                   </Button>
                   <button
