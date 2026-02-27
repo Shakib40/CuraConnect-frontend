@@ -19,6 +19,7 @@ import {
   Phone,
   Mail,
   Calendar,
+  Clock,
   MoreHorizontal,
 } from 'lucide-react'
 import Table from '../../../components/UI/Table'
@@ -40,6 +41,7 @@ const EmployeeList = () => {
       department: 'Cardiology',
       status: 'Active',
       joinDate: '2020-03-15',
+      workSchedule: 'Morning Shift (6AM - 2PM)',
       avatar: 'SJ',
     },
     {
@@ -52,6 +54,7 @@ const EmployeeList = () => {
       department: 'Neurosurgery',
       status: 'Active',
       joinDate: '2019-07-22',
+      workSchedule: 'Afternoon Shift (2PM - 10PM)',
       avatar: 'MC',
     },
     {
@@ -64,6 +67,7 @@ const EmployeeList = () => {
       department: 'Laboratory',
       status: 'Active',
       joinDate: '2021-01-10',
+      workSchedule: 'Morning Shift (6AM - 2PM)',
       avatar: 'ER',
     },
     {
@@ -76,6 +80,7 @@ const EmployeeList = () => {
       department: 'Pharmacy',
       status: 'Active',
       joinDate: '2020-11-05',
+      workSchedule: 'Flexible Shift',
       avatar: 'JW',
     },
     {
@@ -88,6 +93,7 @@ const EmployeeList = () => {
       department: 'Reception',
       status: 'Active',
       joinDate: '2022-02-18',
+      workSchedule: 'Part-time Morning',
       avatar: 'LT',
     },
     {
@@ -211,22 +217,22 @@ const EmployeeList = () => {
       render: (row) => <div className='text-sm text-slate-600'>{row.specialization}</div>,
     },
     {
-      header: 'Contact',
-      accessor: 'email',
-      render: (row) => (
-        <div className='flex items-center gap-2'>
-          <Mail className='w-4 h-4 text-slate-400' />
-          <span className='text-sm text-slate-600'>{row.email}</span>
-        </div>
-      ),
-    },
-    {
       header: 'Phone',
       accessor: 'phone',
       render: (row) => (
         <div className='flex items-center gap-2'>
           <Phone className='w-4 h-4 text-slate-400' />
           <span className='text-sm text-slate-600'>{row.phone}</span>
+        </div>
+      ),
+    },
+    {
+      header: 'Shift Timing',
+      accessor: 'workSchedule',
+      render: (row) => (
+        <div className='flex items-center gap-2'>
+          <Clock className='w-4 h-4 text-slate-400' />
+          <span className='text-sm text-slate-600'>{row.workSchedule}</span>
         </div>
       ),
     },

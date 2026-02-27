@@ -86,13 +86,13 @@ const EmployeeDetails = () => {
     <div className='p-6'>
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
-          <a
-            href='/hospital-admin/staff'
+          <button
+            onClick={() => navigate('/hospital-admin/employee')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
             Back to Staff List
-          </a>
+          </button>
           <h1 className='text-2xl font-bold text-slate-800'>Staff Details</h1>
         </div>
       </div>
