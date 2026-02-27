@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { ArrowLeft, Save, Calendar, User, Mail, Phone, FileText, Upload, Clock } from 'lucide-react'
-import Button from '../../../components/UI/Button'
-import Input from '../../../components/Form/Input'
-import Select from '../../../components/Form/Select'
-import FileSelect from '../../../components/Form/FileSelect'
-import Checkbox from '../../../components/Form/Checkbox'
+import Button from 'components/UI/Button'
+import Input from 'components/Form/Input'
+import Select from 'components/Form/Select'
+import FileSelect from 'components/Form/FileSelect'
+import Checkbox from 'components/Form/Checkbox'
 
 const ApplyLeave = () => {
   const navigate = useNavigate()
@@ -76,20 +76,6 @@ const ApplyLeave = () => {
     }
 
     return dates
-  }
-
-  const handleDateChange = (startDate, endDate, setFieldValue) => {
-    if (startDate && endDate) {
-      const dates = calculateLeaveDates(startDate, endDate)
-      setLeaveDates(dates)
-      setShowDurationOptions(true)
-      setFieldValue('dailyDurations', dates)
-    } else {
-      setLeaveDates([])
-      setShowDurationOptions(false)
-      setFieldValue('dailyDurations', [])
-      setFieldValue('leaveDuration', '')
-    }
   }
 
   const handleSubmit = (values, { resetForm }) => {
