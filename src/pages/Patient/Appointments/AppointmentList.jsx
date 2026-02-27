@@ -1,129 +1,124 @@
-import React, { useState } from "react";
-import Table from "components/UI/Table";
-import Modal from "components/UI/CustomModal";
-import { Plus, CalendarIcon, Clock, Pencil, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Formik, Form } from "formik";
-import Input from "../../../components/Form/Input";
-import Select from "../../../components/Form/Select";
-import DatePicker from "../../../components/Form/DatePicker";
-import Textarea from "../../../components/Form/Textarea";
-import Button from "../../../components/UI/Button";
+import React, { useState } from 'react'
+import Table from 'components/UI/Table'
+import Modal from 'components/UI/CustomModal'
+import { Plus, CalendarIcon, Clock, Pencil, Trash2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Formik, Form } from 'formik'
+import Input from '../../../components/Form/Input'
+import Select from '../../../components/Form/Select'
+import DatePicker from '../../../components/Form/DatePicker'
+import Textarea from '../../../components/Form/Textarea'
+import Button from '../../../components/UI/Button'
 
 const mockAppointments = [
   {
     id: 1,
-    doctor: "Dr. Sarah Jenkins",
-    hospital: "City General Hospital",
-    specialty: "Cardiology",
-    date: "2026-03-01",
-    time: "10:00 AM",
-    status: "Confirmed",
+    doctor: 'Dr. Sarah Jenkins',
+    hospital: 'City General Hospital',
+    specialty: 'Cardiology',
+    date: '2026-03-01',
+    time: '10:00 AM',
+    status: 'Confirmed',
   },
   {
     id: 2,
-    doctor: "Dr. Mike Ross",
-    hospital: "Solo Practice",
-    specialty: "Orthopedics",
-    date: "2026-03-05",
-    time: "02:30 PM",
-    status: "Pending",
+    doctor: 'Dr. Mike Ross',
+    hospital: 'Solo Practice',
+    specialty: 'Orthopedics',
+    date: '2026-03-05',
+    time: '02:30 PM',
+    status: 'Pending',
   },
   {
     id: 3,
-    doctor: "Dr. Emily Chen",
-    hospital: "Memorial Medical Center",
-    specialty: "General Practice",
-    date: "2026-02-15",
-    time: "09:15 AM",
-    status: "Completed",
+    doctor: 'Dr. Emily Chen',
+    hospital: 'Memorial Medical Center',
+    specialty: 'General Practice',
+    date: '2026-02-15',
+    time: '09:15 AM',
+    status: 'Completed',
   },
-];
+]
 
 const mockDoctors = [
-  { value: "dr_jenkins", label: "Dr. Sarah Jenkins - Cardiology" },
-  { value: "dr_ross", label: "Dr. Mike Ross - Orthopedics" },
-  { value: "dr_chen", label: "Dr. Emily Chen - General Practice" },
-];
+  { value: 'dr_jenkins', label: 'Dr. Sarah Jenkins - Cardiology' },
+  { value: 'dr_ross', label: 'Dr. Mike Ross - Orthopedics' },
+  { value: 'dr_chen', label: 'Dr. Emily Chen - General Practice' },
+]
 
 const Appointments = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
 
   const columns = [
-    { header: "Doctor", accessor: "doctor" },
-    { header: "Hospital/Clinic", accessor: "hospital" },
-    { header: "Specialty", accessor: "specialty" },
+    { header: 'Doctor', accessor: 'doctor' },
+    { header: 'Hospital/Clinic', accessor: 'hospital' },
+    { header: 'Specialty', accessor: 'specialty' },
     {
-      header: "Date & Time",
+      header: 'Date & Time',
       render: (row) => (
-        <div className="flex flex-col">
-          <span className="flex items-center gap-1">
-            <CalendarIcon className="w-3 h-3" /> {row.date}
+        <div className='flex flex-col'>
+          <span className='flex items-center gap-1'>
+            <CalendarIcon className='w-3 h-3' /> {row.date}
           </span>
-          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-            <Clock className="w-3 h-3" /> {row.time}
+          <span className='text-xs text-slate-500 flex items-center gap-1 mt-0.5'>
+            <Clock className='w-3 h-3' /> {row.time}
           </span>
         </div>
       ),
     },
     {
-      header: "Status",
+      header: 'Status',
       render: (row) => (
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${row.status === "Confirmed"
-            ? "bg-green-100 text-green-700"
-            : row.status === "Pending"
-              ? "bg-amber-100 text-amber-700"
-              : "bg-slate-100 text-slate-700"
-            }`}
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            row.status === 'Confirmed'
+              ? 'bg-green-100 text-green-700'
+              : row.status === 'Pending'
+                ? 'bg-amber-100 text-amber-700'
+                : 'bg-slate-100 text-slate-700'
+          }`}
         >
           {row.status}
         </span>
       ),
     },
     {
-      header: "Actions",
+      header: 'Actions',
       render: (row) => (
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <button
             onClick={() => {
-              setSelectedAppointment(row);
-              setIsEditModalOpen(true);
+              setSelectedAppointment(row)
+              setIsEditModalOpen(true)
             }}
-            className="p-1.5 text-sky-600 hover:bg-sky-50 rounded transition-colors"
-            title="Edit"
+            className='p-1.5 text-sky-600 hover:bg-sky-50 rounded transition-colors'
+            title='Edit'
           >
-            <Pencil className="w-4 h-4" />
+            <Pencil className='w-4 h-4' />
           </button>
           <button
-            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-            title="Cancel"
+            className='p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors'
+            title='Cancel'
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className='w-4 h-4' />
           </button>
         </div>
       ),
     },
-  ];
+  ]
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className='p-6'>
+      <div className='flex justify-between items-center mb-6'>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">My Appointments</h1>
-          <p className="text-slate-500 mt-1">
-            Manage your upcoming and past visits.
-          </p>
+          <h1 className='text-2xl font-bold text-slate-800'>My Appointments</h1>
+          <p className='text-slate-500 mt-1'>Manage your upcoming and past visits.</p>
         </div>
-        <Link to="/patient/appointments/search">
-          <Button
-            variant="primary"
-            icon={Plus}
-            className="shadow-sm"
-          >
+        <Link to='/patient/appointments/search'>
+          <Button variant='primary' icon={Plus} className='shadow-sm'>
             Book Appointment
           </Button>
         </Link>
@@ -141,48 +136,48 @@ const Appointments = () => {
       <Modal
         show={isBookModalOpen}
         onClose={() => setIsBookModalOpen(false)}
-        title="Book New Appointment"
-        size="lg"
+        title='Book New Appointment'
+        size='lg'
       >
         <Formik
-          initialValues={{ doctor: "", date: "", notes: "" }}
+          initialValues={{ doctor: '', date: '', notes: '' }}
           onSubmit={(values, { setSubmitting }) => {
-            console.log("Booking:", values);
+            console.log('Booking:', values)
             setTimeout(() => {
-              setSubmitting(false);
-              setIsBookModalOpen(false);
-            }, 1000);
+              setSubmitting(false)
+              setIsBookModalOpen(false)
+            }, 1000)
           }}
         >
           {({ isSubmitting }) => (
-            <Form className="space-y-4">
+            <Form className='space-y-4'>
               <Select
-                name="doctor"
-                label="Select Doctor"
+                name='doctor'
+                label='Select Doctor'
                 options={mockDoctors}
-                placeholder="Choose a physician..."
+                placeholder='Choose a physician...'
               />
-              <DatePicker name="date" label="Preferred Date" />
+              <DatePicker name='date' label='Preferred Date' />
               <Textarea
-                name="notes"
-                label="Reason for Visit (Optional)"
-                placeholder="Briefly describe your symptoms or reason for visit."
+                name='notes'
+                label='Reason for Visit (Optional)'
+                placeholder='Briefly describe your symptoms or reason for visit.'
                 rows={3}
               />
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+              <div className='flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6'>
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => setIsBookModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className='px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'
                 >
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type='submit'
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                  className='px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50'
                 >
-                  {isSubmitting ? "Booking..." : "Confirm Request"}
+                  {isSubmitting ? 'Booking...' : 'Confirm Request'}
                 </button>
               </div>
             </Form>
@@ -194,14 +189,14 @@ const Appointments = () => {
       <Modal
         show={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        title="Reschedule Appointment"
-        size="lg"
+        title='Reschedule Appointment'
+        size='lg'
       >
-        <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100 mb-4 flex items-start gap-2">
-          <Clock className="w-4 h-4 shrink-0 mt-0.5" />
+        <div className='text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100 mb-4 flex items-start gap-2'>
+          <Clock className='w-4 h-4 shrink-0 mt-0.5' />
           <p>
-            Rescheduling is subject to doctor availability. The clinic will
-            confirm your new request.
+            Rescheduling is subject to doctor availability. The clinic will confirm your new
+            request.
           </p>
         </div>
 
@@ -209,40 +204,36 @@ const Appointments = () => {
           <Formik
             initialValues={{ date: selectedAppointment.date }}
             onSubmit={(values, { setSubmitting }) => {
-              console.log("Rescheduling:", values);
+              console.log('Rescheduling:', values)
               setTimeout(() => {
-                setSubmitting(false);
-                setIsEditModalOpen(false);
-              }, 1000);
+                setSubmitting(false)
+                setIsEditModalOpen(false)
+              }, 1000)
             }}
           >
             {({ isSubmitting }) => (
-              <Form className="space-y-4">
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 mb-2">
-                  <p className="font-medium text-slate-800">
-                    {selectedAppointment.doctor}
-                  </p>
-                  <p className="text-sm text-slate-500">
-                    {selectedAppointment.specialty}
-                  </p>
+              <Form className='space-y-4'>
+                <div className='bg-slate-50 p-3 rounded-lg border border-slate-200 mb-2'>
+                  <p className='font-medium text-slate-800'>{selectedAppointment.doctor}</p>
+                  <p className='text-sm text-slate-500'>{selectedAppointment.specialty}</p>
                 </div>
 
-                <DatePicker name="date" label="New Requested Date" />
+                <DatePicker name='date' label='New Requested Date' />
 
-                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+                <div className='flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6'>
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => setIsEditModalOpen(false)}
-                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                    className='px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'
                   >
                     Cancel
                   </button>
                   <button
-                    type="submit"
+                    type='submit'
                     disabled={isSubmitting}
-                    className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                    className='px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50'
                   >
-                    {isSubmitting ? "Updating..." : "Request Reschedule"}
+                    {isSubmitting ? 'Updating...' : 'Request Reschedule'}
                   </button>
                 </div>
               </Form>
@@ -251,7 +242,7 @@ const Appointments = () => {
         )}
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default Appointments;
+export default Appointments

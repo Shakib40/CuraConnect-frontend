@@ -1,16 +1,16 @@
-import { Tooltip as FlowbiteTooltip } from "flowbite-react";
+import { Tooltip as FlowbiteTooltip } from 'flowbite-react'
 
-const Tooltip = ({ content, children, placement = "top", className = "" }) => {
+const Tooltip = ({ content, children, placement = 'top', className = '' }) => {
   return (
     <FlowbiteTooltip
       content={content}
       placement={placement}
-      animation="duration-300"
+      animation='duration-300'
       className={className}
     >
       {children}
     </FlowbiteTooltip>
-  );
-};
+  )
+}
 
-export default Tooltip;
+export default Tooltip

@@ -1,48 +1,47 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
   loading: true,
-};
+}
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setAuth: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.isAuthenticated = true;
-      state.loading = false;
+      state.user = action.payload.user
+      state.token = action.payload.token
+      state.isAuthenticated = true
+      state.loading = false
     },
     logout: (state) => {
-      state.user = null;
-      state.token = null;
-      state.isAuthenticated = false;
-      state.loading = false;
-      localStorage.removeItem("token");
-      localStorage.removeItem("userRole");
+      state.user = null
+      state.token = null
+      state.isAuthenticated = false
+      state.loading = false
+      localStorage.removeItem('token')
+      localStorage.removeItem('userRole')
     },
     setLoading: (state, action) => {
-      state.loading = action.payload;
+      state.loading = action.payload
     },
     initializeAuth: (state) => {
-      const storedRole = localStorage.getItem("userRole");
-      const storedToken = localStorage.getItem("token");
+      const storedRole = localStorage.getItem('userRole')
+      const storedToken = localStorage.getItem('token')
 
       if (storedRole && storedToken) {
-        state.user = { role: storedRole, name: "Mock User" };
-        state.token = storedToken;
-        state.isAuthenticated = true;
+        state.user = { role: storedRole, name: 'Mock User' }
+        state.token = storedToken
+        state.isAuthenticated = true
       }
-      state.loading = false;
+      state.loading = false
     },
   },
-});
+})
 
-export const { setAuth, logout, setLoading, initializeAuth } =
-  authSlice.actions;
+export const { setAuth, logout, setLoading, initializeAuth } = authSlice.actions
 
-export default authSlice.reducer;
+export default authSlice.reducer

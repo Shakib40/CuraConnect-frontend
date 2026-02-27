@@ -1,6 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import { Outlet } from 'react-router-dom'
+import Header from './Header'
+import Sidebar from './Sidebar'
 import {
   LayoutGrid,
   Package,
@@ -14,33 +14,33 @@ import {
   TrendingUp,
   Users,
   DollarSign,
-  HelpCircle
-} from "lucide-react";
+  HelpCircle,
+} from 'lucide-react'
 
 const medicineSupplierMenuItems = [
-  { label: "Dashboard", path: "/medicine-supplier/dashboard", icon: LayoutGrid },
-  { label: "Products", path: "/medicine-supplier/products", icon: Package },
-  { label: "Orders", path: "/medicine-supplier/orders", icon: ShoppingCart },
-  { label: "Reports", path: "/medicine-supplier/reports", icon: FileText },
-  { label: "Chat", path: "/medicine-supplier/chat", icon: MessageSquare },
-  { label: "Notifications", path: "/medicine-supplier/notifications", icon: Bell },
-  { label: "Settings", path: "/medicine-supplier/settings", icon: Settings },
-  { label: "Ask Help", path: "/medicine-supplier/ask-help", icon: HelpCircle },
-  { label: "Profile", path: "/medicine-supplier/profile", icon: User },
-];
+  { label: 'Dashboard', path: '/medicine-supplier/dashboard', icon: LayoutGrid },
+  { label: 'Products', path: '/medicine-supplier/products', icon: Package },
+  { label: 'Orders', path: '/medicine-supplier/orders', icon: ShoppingCart },
+  { label: 'Reports', path: '/medicine-supplier/reports', icon: FileText },
+  { label: 'Chat', path: '/medicine-supplier/chat', icon: MessageSquare },
+  { label: 'Notifications', path: '/medicine-supplier/notifications', icon: Bell },
+  { label: 'Settings', path: '/medicine-supplier/settings', icon: Settings },
+  { label: 'Ask Help', path: '/medicine-supplier/ask-help', icon: HelpCircle },
+  { label: 'Profile', path: '/medicine-supplier/profile', icon: User },
+]
 
 const MedicineSupplierLayout = () => {
-    return (
-        <div className="flex bg-slate-50 min-h-screen">
-            <Sidebar menuItems={medicineSupplierMenuItems} role="Medicine Supplier" />
-            <div className="flex-1 flex flex-col min-w-0">
-                <Header title="MediSupply Portal" showSearch={true} showEarnings={true} />
-                <main className="flex-1 p-6 overflow-y-auto w-full">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    );
-};
+  return (
+    <div className='flex bg-slate-50 min-h-screen'>
+      <Sidebar menuItems={medicineSupplierMenuItems} role='Medicine Supplier' />
+      <div className='flex-1 flex flex-col min-w-0'>
+        <Header title='MediSupply Portal' showSearch={true} showEarnings={true} />
+        <main className='flex-1 p-6 overflow-y-auto w-full'>
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  )
+}
 
-export default MedicineSupplierLayout;
+export default MedicineSupplierLayout

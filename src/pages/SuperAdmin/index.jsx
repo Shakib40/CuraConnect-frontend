@@ -1,42 +1,42 @@
-import { Routes, Route } from "react-router-dom";
-import SuperAdminLayout from "../../components/Layouts/SuperAdminLayout";
+import { Routes, Route } from 'react-router-dom'
+import SuperAdminLayout from '../../components/Layouts/SuperAdminLayout'
 
-import Dashboard from "./Dashboard";
-import HospitalList from "./HospitalList";
-import Subscriptions from "./Subscriptions";
-import Profile from "./Profile";
-import InsuranceProviders from "./InsuranceProviders";
-import MedicineSupplier from "./MedicineSupplier";
-import DocumentVerification from "./DocumentVerification";
-import PatientList from "./PatientList";
-import ActivityLogs from "./ActivityLogs";
-import Chat from "./Chat";
-import Cases from "./Cases";
-import Notifications from "./Notifications";
-import Offers from "./Offer";
-import AddOffer from "./AddOffer";
+import Dashboard from './Dashboard'
+import HospitalList from './HospitalList'
+import Subscriptions from './Subscriptions'
+import Profile from './Profile'
+import InsuranceProviders from './InsuranceProviders'
+import MedicineSupplier from './MedicineSupplier'
+import DocumentVerification from './DocumentVerification'
+import PatientList from './PatientList'
+import ActivityLogs from './ActivityLogs'
+import Chat from './Chat'
+import Cases from './Cases'
+import Notifications from './Notifications'
+import Offers from './Offer'
+import AddOffer from './AddOffer'
 
 const SuperAdminRoutes = () => {
-    return (
-        <Routes>
-            <Route element={<SuperAdminLayout />}>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="hospitals/*" element={<HospitalList />} />
-                <Route path="insurance/*" element={<InsuranceProviders />} />
-                <Route path="suppliers/*" element={<MedicineSupplier />} />
-                <Route path="document-verification/*" element={<DocumentVerification />} />
-                <Route path="patients" element={<PatientList />} />
-                <Route path="chat" element={<Chat />} />
-                <Route path="cases" element={<Cases />} />
-                <Route path="notifications" element={<Notifications />} />
-                <Route path="offers" element={<Offers />} />
-                <Route path="offers/add" element={<AddOffer />} />
-                <Route path="activity-logs" element={<ActivityLogs />} />
-                <Route path="subscriptions" element={<Subscriptions />} />
-                <Route path="profile" element={<Profile />} />
-            </Route>
-        </Routes>
-    );
-};
+  return (
+    <Routes>
+      <Route element={<SuperAdminLayout />}>
+        <Route path='dashboard' element={<Dashboard />} />
+        <Route path='hospitals/*' element={<HospitalList />} />
+        <Route path='insurance/*' element={<InsuranceProviders />} />
+        <Route path='suppliers/*' element={<MedicineSupplier />} />
+        <Route path='document-verification/*' element={<DocumentVerification />} />
+        <Route path='patients' element={<PatientList />} />
+        <Route path='chat' element={<Chat />} />
+        <Route path='cases' element={<Cases />} />
+        <Route path='notifications' element={<Notifications />} />
+        <Route path='offers' element={<Offers />} />
+        <Route path='offers/add' element={<AddOffer />} />
+        <Route path='activity-logs' element={<ActivityLogs />} />
+        <Route path='subscriptions' element={<Subscriptions />} />
+        <Route path='profile' element={<Profile />} />
+      </Route>
+    </Routes>
+  )
+}
 
-export default SuperAdminRoutes;
+export default SuperAdminRoutes

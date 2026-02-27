@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite-react/**/*.js";
 
@@ -94,7 +94,7 @@
     color: var(--color-text-main);
     @apply antialiased h-full transition-colors duration-300;
     font-family:
-      "Inter",
+      'Inter',
       system-ui,
       -apple-system,
       sans-serif;
