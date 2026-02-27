@@ -3,7 +3,7 @@ import EmployeeList from './EmployeeList'
 import AddEmployee from './AddEmployee'
 import EmployeeDetails from './EmployeeDetails'
 
-const StaffsRoutes = () => {
+const EmployeeRoutes = () => {
   return (
     <Routes>
       <Route path='/' element={<EmployeeList />} />
@@ -14,4 +14,4 @@ const StaffsRoutes = () => {
   )
 }
 
-export default StaffsRoutes
+export default EmployeeRoutes
