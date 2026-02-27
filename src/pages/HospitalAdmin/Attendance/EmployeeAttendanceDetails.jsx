@@ -12,7 +12,6 @@ import {
   XCircle,
   AlertCircle,
 } from 'lucide-react'
-import Button from '../../../components/UI/Button'
 
 const EmployeeAttendanceDetails = () => {
   const navigate = useNavigate()

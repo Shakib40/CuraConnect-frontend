@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Formik, Form } from 'formik'
 import {
   Users,
   Plus,
@@ -21,6 +22,7 @@ import Select from 'components/Form/Select'
 
 const AttendanceList = () => {
   const navigate = useNavigate()
+  const [showPopup, setShowPopup] = useState(null)
   const [attendance] = useState([
     {
       id: 1,
@@ -96,12 +98,8 @@ const AttendanceList = () => {
     },
   ])
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterDepartment, setFilterDepartment] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
-
   const departments = [
-    { value: '', label: 'All Departments' },
+    { value: 'all', label: 'All Departments' },
     { value: 'Cardiology', label: 'Cardiology' },
     { value: 'Neurosurgery', label: 'Neurosurgery' },
     { value: 'Laboratory', label: 'Laboratory' },
@@ -111,7 +109,7 @@ const AttendanceList = () => {
   ]
 
   const statusOptions = [
-    { value: '', label: 'All Status' },
+    { value: 'all', label: 'All Status' },
     { value: 'Present', label: 'Present' },
     { value: 'Absent', label: 'Absent' },
     { value: 'On Leave', label: 'On Leave' },
@@ -143,14 +141,10 @@ const AttendanceList = () => {
     }
   }
 
-  const filteredAttendance = attendance.filter((record) => {
-    const matchesSearch =
-      record.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.employeeId.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesDepartment = !filterDepartment || record.department === filterDepartment
-    const matchesStatus = !filterStatus || record.status === filterStatus
-    return matchesSearch && matchesDepartment && matchesStatus
-  })
+  const handleFilterSubmit = (values) => {
+    console.log('Filter values:', values)
+    // Filtering logic is handled in real-time by the filteredAttendance variable
+  }
 
   const columns = [
     {
@@ -229,14 +223,52 @@ const AttendanceList = () => {
         <div className='flex items-center gap-2'>
           <button
             onClick={() => navigate(`/hospital-admin/attendance/details/${row.id}`)}
-            className='inline-flex items-center gap-1 px-3 py-1 text-sm text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors'
+            className='inline-flex items-center justify-center p-2 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors'
+            title='View Details'
           >
             <Eye className='w-4 h-4' />
-            View
           </button>
-          <button className='p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'>
-            <MoreHorizontal className='w-4 h-4' />
-          </button>
+          <div className='relative'>
+            <button
+              className='p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'
+              title='More Options'
+              onMouseEnter={() => setShowPopup(row.id)}
+              onMouseLeave={() => setShowPopup(null)}
+            >
+              <MoreHorizontal className='w-4 h-4' />
+            </button>
+
+            {showPopup === row.id && (
+              <div
+                className='absolute right-0 top-full mt-1 w-48 bg-white rounded-lg border border-slate-200 shadow-lg z-10'
+                onMouseEnter={() => setShowPopup(row.id)}
+                onMouseLeave={() => setShowPopup(null)}
+              >
+                <div className='py-1'>
+                  <button
+                    onClick={() => {
+                      console.log('Check In:', row.employeeName)
+                      setShowPopup(null)
+                    }}
+                    className='w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2'
+                  >
+                    <Clock className='w-4 h-4' />
+                    Check In
+                  </button>
+                  <button
+                    onClick={() => {
+                      console.log('Check Out:', row.employeeName)
+                      setShowPopup(null)
+                    }}
+                    className='w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2'
+                  >
+                    <Clock className='w-4 h-4' />
+                    Check Out
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       ),
     },
@@ -247,49 +279,84 @@ const AttendanceList = () => {
       <div className='mb-6'>
         <div className='flex items-center justify-between mb-6'>
           <h1 className='text-2xl font-bold text-slate-800'>Attendance Management</h1>
-          <Button variant='primary' icon={Plus}>
-            Mark Attendance
-          </Button>
+          <div className='flex items-center gap-3'>
+            <Button
+              variant='primary'
+              icon={Plus}
+              onClick={() => navigate('/hospital-admin/attendance/mark')}
+            >
+              Mark Attendance
+            </Button>
+            <Button
+              variant='outline'
+              icon={Calendar}
+              onClick={() => navigate('/hospital-admin/attendance/apply-leave')}
+            >
+              Apply for Leave
+            </Button>
+          </div>
         </div>
 
-        {/* Filters */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'>
-          <Input
-            placeholder='Search by name or ID...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            prefix={<Search className='w-4 h-4 text-slate-400' />}
-          />
-          <Select
-            placeholder='Filter by Department'
-            value={filterDepartment}
-            onChange={(e) => setFilterDepartment(e.target.value)}
-            options={departments}
-          />
-          <Select
-            placeholder='Filter by Status'
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            options={statusOptions}
-          />
-          <Button variant='outline' icon={Filter}>
-            More Filters
-          </Button>
-        </div>
-      </div>
+        {/* Filters Form */}
+        <Formik
+          initialValues={{
+            searchTerm: '',
+            filterDepartment: '',
+            filterStatus: '',
+          }}
+          onSubmit={handleFilterSubmit}
+        >
+          {({ values }) => {
+            const filteredAttendance = attendance.filter((record) => {
+              const matchesSearch =
+                record.employeeName.toLowerCase().includes(values.searchTerm.toLowerCase()) ||
+                record.employeeId.toLowerCase().includes(values.searchTerm.toLowerCase())
+              const matchesDepartment =
+                !values.filterDepartment || record.department === values.filterDepartment
+              const matchesStatus = !values.filterStatus || record.status === values.filterStatus
+              return matchesSearch && matchesDepartment && matchesStatus
+            })
 
-      {/* Attendance Table */}
-      <div className='bg-white rounded-lg border border-slate-200'>
-        {filteredAttendance.length > 0 ? (
-          <Table data={filteredAttendance} columns={columns} className='border-0' />
-        ) : (
-          <NoRecords
-            title='No attendance records found'
-            description='Try adjusting your search or filter criteria'
-            actionText='Mark Attendance'
-            onAction={() => console.log('Mark attendance')}
-          />
-        )}
+            return (
+              <Form>
+                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'>
+                  <Input
+                    placeholder='Search by name or ID...'
+                    name='searchTerm'
+                    prefix={<Search className='w-4 h-4 text-slate-400' />}
+                  />
+                  <Select
+                    placeholder='Filter by Department'
+                    name='filterDepartment'
+                    options={departments}
+                  />
+                  <Select
+                    placeholder='Filter by Status'
+                    name='filterStatus'
+                    options={statusOptions}
+                  />
+                  <Button variant='outline' icon={Filter} type='submit'>
+                    More Filters
+                  </Button>
+                </div>
+
+                {/* Attendance Table */}
+                <div className='bg-white rounded-lg border border-slate-200'>
+                  {filteredAttendance.length > 0 ? (
+                    <Table data={filteredAttendance} columns={columns} className='border-0' />
+                  ) : (
+                    <NoRecords
+                      title='No attendance records found'
+                      description='Try adjusting your search or filter criteria'
+                      actionText='Mark Attendance'
+                      onAction={() => navigate('/hospital-admin/attendance/mark')}
+                    />
+                  )}
+                </div>
+              </Form>
+            )
+          }}
+        </Formik>
       </div>
     </div>
   )
