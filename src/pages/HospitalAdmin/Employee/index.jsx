@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import EmployeeList from './EmployeeList'
-import AddStaff from './AddEmployee'
+import AddEmployee from './AddEmployee'
 import EmployeeDetails from './EmployeeDetails'
 
 const StaffsRoutes = () => {

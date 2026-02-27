@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import Button from 'components/UI/Button'
 
-const AddStaff = () => {
+const AddEmployee = () => {
   const navigate = useNavigate()
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -169,13 +169,13 @@ const AddStaff = () => {
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
           <button
-            onClick={() => navigate('/hospital-admin/staff')}
+            onClick={() => navigate('/hospital-admin/employee')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
-            Back to Staff List
+            Back to Employee List
           </button>
-          <h1 className='text-2xl font-bold text-slate-800'>Add New Staff Member</h1>
+          <h1 className='text-2xl font-bold text-slate-800'>Add New Employee Member</h1>
         </div>
       </div>
 
@@ -484,9 +484,9 @@ const AddStaff = () => {
               icon={<Save className='w-4 h-4' />}
               loading={formik.isSubmitting}
             >
-              Save Staff Member
+              Save Employee Member
             </Button>
-            <Button variant='outline' size='md' onClick={() => navigate('/hospital-admin/staff')}>
+            <Button variant='outline' size='md' onClick={() => navigate('/hospital-admin/employee')}>
               Cancel
             </Button>
           </div>
@@ -496,4 +496,4 @@ const AddStaff = () => {
   )
 }
 
-export default AddStaff
+export default AddEmployee

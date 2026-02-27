@@ -22,7 +22,7 @@ import {
 import Table from 'components/UI/Table'
 import Button from 'components/UI/Button'
 
-const StaffList = () => {
+const EmployeeList = () => {
   const navigate = useNavigate()
   const [staff] = useState([
     {
@@ -298,13 +298,13 @@ const StaffList = () => {
       render: (row) => (
         <div className='flex items-center gap-2'>
           <button
-            onClick={() => navigate(`/hospital-admin/staff/details/${row.id}`)}
+            onClick={() => navigate(`/hospital-admin/employee/details/${row.id}`)}
             className='text-teal-600 hover:text-teal-700 text-sm font-medium'
           >
             <Eye className='w-4 h-4' />
           </button>
           <button
-            onClick={() => navigate(`/hospital-admin/staff/edit/${row.id}`)}
+            onClick={() => navigate(`/hospital-admin/employee/edit/${row.id}`)}
             className='text-slate-600 hover:text-slate-800 text-sm font-medium'
           >
             <Edit className='w-4 h-4' />
@@ -320,8 +320,8 @@ const StaffList = () => {
   return (
     <div className='p-6'>
       <div className='mb-6'>
-        <h1 className='text-2xl font-bold text-slate-800 mb-2'>Staff Management</h1>
-        <p className='text-slate-600'>Manage hospital staff, doctors, and support personnel</p>
+        <h1 className='text-2xl font-bold text-slate-800 mb-2'>Employee Management</h1>
+        <p className='text-slate-600'>Manage hospital employees, doctors, and support personnel</p>
       </div>
 
       {/* Filters and Search */}
@@ -332,7 +332,7 @@ const StaffList = () => {
             <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
             <input
               type='text'
-              placeholder='Search staff by name, email, or specialization...'
+              placeholder='Search employees by name, email, or specialization...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className='w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
@@ -375,11 +375,11 @@ const StaffList = () => {
       {/* Add Staff Button */}
       <div className='mb-6'>
         <button
-          onClick={() => navigate('/hospital-admin/staff/create')}
+          onClick={() => navigate('/hospital-admin/employee/create')}
           className='inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors'
         >
           <UserPlus className='w-4 h-4' />
-          Add Staff Member
+          Add Employee Member
         </button>
       </div>
 
@@ -398,11 +398,11 @@ const StaffList = () => {
           <div className='w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4'>
             <Users className='w-8 h-8 text-slate-400' />
           </div>
-          <h3 className='text-lg font-semibold text-slate-800 mb-2'>No staff found</h3>
+          <h3 className='text-lg font-semibold text-slate-800 mb-2'>No employees found</h3>
           <p className='text-slate-600'>
             {searchTerm || selectedCategory !== 'All' || selectedStatus !== 'All'
               ? 'Try adjusting your filters or search terms'
-              : 'No staff members have been added yet'}
+              : 'No employees have been added yet'}
           </p>
         </div>
       )}
@@ -410,4 +410,4 @@ const StaffList = () => {
   )
 }
 
-export default StaffList
+export default EmployeeList

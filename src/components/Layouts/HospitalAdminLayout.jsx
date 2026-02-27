@@ -5,7 +5,7 @@ import { LayoutGrid, UsersRound, Stethoscope, Receipt, PieChart, Sliders } from 
 
 const adminMenuItems = [
   { label: 'Overview', path: '/hospital-admin/dashboard', icon: LayoutGrid },
-  { label: 'Staffs', path: '/hospital-admin/staff', icon: UsersRound },
+  { label: 'Employees', path: '/hospital-admin/employee', icon: UsersRound },
   { label: 'Doctors', path: '/hospital-admin/doctors', icon: Stethoscope },
   { label: 'Billing', path: '/hospital-admin/billing', icon: Receipt },
   { label: 'Reports', path: '/hospital-admin/reports', icon: PieChart },
