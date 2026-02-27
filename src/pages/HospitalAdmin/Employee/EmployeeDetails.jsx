@@ -1,30 +1,22 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   Edit,
   Trash2,
   Mail,
   Phone,
-  Calendar,
   MapPin,
   User,
-  Stethoscope,
-  FlaskConical,
-  Pill,
-  Calculator,
   FileText,
-  Clock,
   CheckCircle,
-  AlertCircle,
 } from 'lucide-react'
 import Button from 'components/UI/Button'
 
 const EmployeeDetails = () => {
-  const { id } = useParams()
   const navigate = useNavigate()
 
-  const [staff, setStaff] = useState({
+  const [staff] = useState({
     id: 1,
     name: 'Dr. Sarah Johnson',
     category: 'Doctor',

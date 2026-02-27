@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import Button from 'components/UI/Button'
 import StaffForm from './EmployeeForm'
 
 const EditEmployee = () => {

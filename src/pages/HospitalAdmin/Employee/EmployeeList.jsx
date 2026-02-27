@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
 import {
   Users,
   Plus,
@@ -21,6 +23,8 @@ import {
 } from 'lucide-react'
 import Table from '../../../components/UI/Table'
 import Button from '../../../components/UI/Button'
+import Input from '../../../components/Form/Input'
+import Select from '../../../components/Form/Select'
 
 const EmployeeList = () => {
   const navigate = useNavigate()
@@ -99,20 +103,47 @@ const EmployeeList = () => {
     },
   ])
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [selectedStatus, setSelectedStatus] = useState('All')
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    category: 'All',
+    status: 'All',
+  })
+
+  const filterValidationSchema = Yup.object({
+    searchTerm: Yup.string(),
+    category: Yup.string(),
+    status: Yup.string(),
+  })
+
+  const categories = [
+    { value: 'All', label: 'All Staff', icon: Users },
+    { value: 'Doctor', label: 'Doctors', icon: Stethoscope },
+    { value: 'Laboratorist', label: 'Laboratory', icon: FlaskConical },
+    { value: 'Pharmacy', label: 'Pharmacy', icon: Pill },
+    { value: 'Reception', label: 'Reception', icon: Phone },
+    { value: 'Accountant', label: 'Finance', icon: Calculator },
+    { value: 'Cleaner', label: 'Cleaning', icon: Users },
+    { value: 'Support', label: 'Support', icon: Users },
+    { value: 'Others', label: 'Others', icon: Users },
+  ]
+
+  const statusOptions = [
+    { value: 'All', label: 'All Status' },
+    { value: 'Active', label: 'Active' },
+    { value: 'Inactive', label: 'Inactive' },
+    { value: 'On Leave', label: 'On Leave' },
+  ]
 
   // Filter staff based on search and filters
   const filteredStaff = staff.filter((staffMember) => {
     const matchesSearch =
-      searchTerm === '' ||
-      staffMember.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      staffMember.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      staffMember.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+      filters.searchTerm === '' ||
+      staffMember.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      staffMember.email.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      staffMember.specialization.toLowerCase().includes(filters.searchTerm.toLowerCase())
 
-    const matchesCategory = selectedCategory === 'All' || staffMember.category === selectedCategory
-    const matchesStatus = selectedStatus === 'All' || staffMember.status === selectedStatus
+    const matchesCategory = filters.category === 'All' || staffMember.category === filters.category
+    const matchesStatus = filters.status === 'All' || staffMember.status === filters.status
 
     return matchesSearch && matchesCategory && matchesStatus
   })
@@ -133,92 +164,6 @@ const EmployeeList = () => {
       default:
         return 'bg-gray-100 text-gray-800'
     }
-  }
-
-  const categories = [
-    { value: 'All', label: 'All Staff', icon: Users },
-    { value: 'Doctor', label: 'Doctors', icon: Stethoscope },
-    { value: 'Laboratorist', label: 'Laboratory', icon: FlaskConical },
-    { value: 'Pharmacy', label: 'Pharmacy', icon: Pill },
-    { value: 'Reception', label: 'Reception', icon: Phone },
-    { value: 'Accountant', label: 'Finance', icon: Calculator },
-    { value: 'Cleaner', label: 'Cleaning', icon: Users },
-    { value: 'Support', label: 'Support', icon: Users },
-    { value: 'Others', label: 'Others', icon: Users },
-  ]
-
-  const specializations = {
-    Doctor: [
-      'General Practitioner',
-      'Cardiologist',
-      'Neurosurgeon',
-      'Dentist',
-      'Orthopedic Surgeon',
-      'Pediatrician',
-      'Gynecologist',
-      'Oncologist',
-      'Dermatologist',
-      'Psychiatrist',
-      'Anesthesiologist',
-      'Radiologist',
-      'Surgeon',
-      'Endocrinologist',
-    ],
-    Laboratorist: [
-      'Pathology',
-      'Biochemistry',
-      'Microbiology',
-      'Hematology',
-      'Immunology',
-      'Cytology',
-      'Molecular Biology',
-      'Cytogenetics',
-      'Histopathology',
-      'X-Ray Technician',
-      'MRI Technician',
-      'CT Scan Technician',
-      'Ultrasound Technician',
-    ],
-    Pharmacy: [
-      'Clinical Pharmacist',
-      'Hospital Pharmacist',
-      'Retail Pharmacist',
-      'Compounding Pharmacist',
-      'Clinical Pharmacy Specialist',
-      'Pharmacy Manager',
-    ],
-    Reception: [
-      'Front Desk Coordinator',
-      'Patient Registrar',
-      'Appointment Scheduler',
-      'Medical Receptionist',
-      'Hospital Operator',
-      'Admissions Coordinator',
-    ],
-    Accountant: [
-      'Medical Billing',
-      'Healthcare Accountant',
-      'Insurance Billing',
-      'Medical Coder',
-      'Revenue Cycle Manager',
-      'Financial Analyst',
-    ],
-    Cleaner: [
-      'Housekeeping Staff',
-      'Sanitation Worker',
-      'Environmental Services',
-      'Facility Maintenance',
-      'Waste Management',
-    ],
-    Support: [
-      'IT Support',
-      'Administrative Assistant',
-      'Medical Assistant',
-      'Patient Transport',
-      'Security Staff',
-      'Food Services',
-    ],
-    Others: ['Volunteer', 'Consultant', 'Researcher', 'Trainer', 'Quality Assurance'],
   }
 
   const tableColumns = [
@@ -319,69 +264,69 @@ const EmployeeList = () => {
 
   return (
     <div className='p-6'>
-      <div className='mb-6'>
-        <h1 className='text-2xl font-bold text-slate-800 mb-2'>Employee Management</h1>
-        <p className='text-slate-600'>Manage hospital employees, doctors, and support personnel</p>
+      <div className='flex items-center justify-between'>
+        <div className='mb-6'>
+          <h1 className='text-2xl font-bold text-slate-800 mb-2'>Employee Management</h1>
+          <p className='text-slate-600'>
+            Manage hospital employees, doctors, and support personnel
+          </p>
+        </div>
+        <Button
+          onClick={() => navigate('/hospital-admin/employee/create')}
+          variant='primary'
+          size='md'
+          icon={UserPlus}
+        >
+          Add Employee Member
+        </Button>
       </div>
 
       {/* Filters and Search */}
-      <div className='bg-white rounded-lg border border-slate-200 p-4 mb-6'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          {/* Search */}
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4' />
-            <input
-              type='text'
-              placeholder='Search employees by name, email, or specialization...'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className='w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-            />
-          </div>
+      <Formik
+        initialValues={filters}
+        validationSchema={filterValidationSchema}
+        onSubmit={(values) => setFilters(values)}
+      >
+        {({ setFieldValue }) => (
+          <Form className='bg-white rounded-lg border border-slate-200 p-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              {/* Search */}
+              <Input
+                name='searchTerm'
+                type='text'
+                placeholder='Search employees by name, email, or specialization...'
+                icon={Search}
+                onChange={(e) => {
+                  setFieldValue('searchTerm', e.target.value)
+                  setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
+                }}
+              />
 
-          {/* Category Filter */}
-          <div>
-            <label className='block text-sm font-medium text-slate-700 mb-1'>Category</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-            >
-              {categories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
-          </div>
+              {/* Category Filter */}
+              <Select
+                name='category'
+                label='Category'
+                options={categories}
+                onChange={(value) => {
+                  setFieldValue('category', value)
+                  setFilters((prev) => ({ ...prev, category: value }))
+                }}
+              />
 
-          {/* Status Filter */}
-          <div>
-            <label className='block text-sm font-medium text-slate-700 mb-1'>Status</label>
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className='w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-            >
-              <option value='All'>All Status</option>
-              <option value='Active'>Active</option>
-              <option value='Inactive'>Inactive</option>
-              <option value='On Leave'>On Leave</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Add Staff Button */}
-      <div className='mb-6'>
-        <button
-          onClick={() => navigate('/hospital-admin/employee/create')}
-          className='inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors'
-        >
-          <UserPlus className='w-4 h-4' />
-          Add Employee Member
-        </button>
-      </div>
+              {/* Status Filter */}
+              <Select
+                name='status'
+                label='Status'
+                options={statusOptions}
+                onChange={(value) => {
+                  setFieldValue('status', value)
+                  setFilters((prev) => ({ ...prev, status: value }))
+                }}
+              />
+            </div>
+          </Form>
+        )}
+      </Formik>
 
       {/* Staff Table */}
       <Table
@@ -400,7 +345,7 @@ const EmployeeList = () => {
           </div>
           <h3 className='text-lg font-semibold text-slate-800 mb-2'>No employees found</h3>
           <p className='text-slate-600'>
-            {searchTerm || selectedCategory !== 'All' || selectedStatus !== 'All'
+            {filters.searchTerm || filters.category !== 'All' || filters.status !== 'All'
               ? 'Try adjusting your filters or search terms'
               : 'No employees have been added yet'}
           </p>

@@ -4,14 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   Save,
-  User,
-  Phone,
-  Mail,
-  Calendar,
-  MapPin,
   Stethoscope,
   FlaskConical,
   Pill,
+  Phone,
   Calculator,
   Users,
 } from 'lucide-react'
@@ -486,7 +482,11 @@ const AddEmployee = () => {
             >
               Save Employee Member
             </Button>
-            <Button variant='outline' size='md' onClick={() => navigate('/hospital-admin/employee')}>
+            <Button
+              variant='outline'
+              size='md'
+              onClick={() => navigate('/hospital-admin/employee')}
+            >
               Cancel
             </Button>
           </div>
