@@ -32,13 +32,13 @@ const adminMenuItems = [
   { label: 'Lab Tests', path: '/hospital-admin/lab-tests', icon: TestTube },
   { label: 'Invoices', path: '/hospital-admin/invoices', icon: Receipt },
 
-  { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
-  { label: 'Patient List', path: '/hospital-admin/patient-list', icon: User },
-  { label: 'Order Medicine', path: '/hospital-admin/order-medicine', icon: ShoppingCart },
-  { label: 'Payroll', path: '/hospital-admin/payroll', icon: DollarSign },
-  { label: 'Notification', path: '/hospital-admin/notification', icon: Bell },
+  // { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
+  // { label: 'Patient List', path: '/hospital-admin/patient-list', icon: User },
+  // { label: 'Order Medicine', path: '/hospital-admin/order-medicine', icon: ShoppingCart },
+  // { label: 'Payroll', path: '/hospital-admin/payroll', icon: DollarSign },
+  // { label: 'Notification', path: '/hospital-admin/notification', icon: Bell },
   { label: 'Settings', path: '/hospital-admin/settings', icon: Sliders },
-  { label: 'Profile', path: '/hospital-admin/profile', icon: UserCircle },
+  // { label: 'Profile', path: '/hospital-admin/profile', icon: UserCircle },
 ]
 
 const AdminLayout = () => {
