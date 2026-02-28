@@ -9,6 +9,7 @@ import Appointment from './Appointment/Index'
 import Surgery from './Surgery/Index'
 import Settings from './Settings'
 import Bed from './Bed'
+import Prescription from './Prescription'
 
 const AdminRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const AdminRoutes = () => {
         <Route path='appointments/*' element={<Appointment />} />
         <Route path='surgery/*' element={<Surgery />} />
         <Route path='bed/*' element={<Bed />} />
+        <Route path='prescription/*' element={<Prescription />} />
         <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>

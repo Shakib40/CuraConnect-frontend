@@ -28,13 +28,13 @@ const adminMenuItems = [
   { label: 'Appointment', path: '/hospital-admin/appointments', icon: Stethoscope },
   { label: 'Surgery', path: '/hospital-admin/surgery', icon: Stethoscope },
   { label: 'Bed', path: '/hospital-admin/bed', icon: Bed },
-
   { label: 'Prescription', path: '/hospital-admin/prescription', icon: FileText },
-  { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
   { label: 'Lab Tests', path: '/hospital-admin/lab-tests', icon: TestTube },
+  { label: 'Invoices', path: '/hospital-admin/invoices', icon: Receipt },
+
+  { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
   { label: 'Patient List', path: '/hospital-admin/patient-list', icon: User },
   { label: 'Order Medicine', path: '/hospital-admin/order-medicine', icon: ShoppingCart },
-  { label: 'Invoices', path: '/hospital-admin/invoices', icon: Receipt },
   { label: 'Payroll', path: '/hospital-admin/payroll', icon: DollarSign },
   { label: 'Notification', path: '/hospital-admin/notification', icon: Bell },
   { label: 'Settings', path: '/hospital-admin/settings', icon: Sliders },

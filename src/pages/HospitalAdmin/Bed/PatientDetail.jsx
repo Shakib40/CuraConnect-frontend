@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
 import {
   ArrowLeft,
   Users,
@@ -11,12 +13,19 @@ import {
   Heart,
   Thermometer,
   Weight,
+  Plus,
+  X,
 } from 'lucide-react'
 import Button from 'components/UI/Button'
+import Input from 'components/Form/Input'
+import Select from 'components/Form/Select'
+import Modal from 'components/UI/Modal'
 
 const PatientDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false)
+  const [showLabTestModal, setShowLabTestModal] = useState(false)
 
   // Mock bed data based on ID
   const [bed] = useState({
@@ -152,6 +161,73 @@ const PatientDetail = () => {
       },
     ],
   })
+
+  // Prescription validation schema
+  const prescriptionValidationSchema = Yup.object({
+    medicationName: Yup.string().required('Medication name is required'),
+    dosage: Yup.string().required('Dosage is required'),
+    frequency: Yup.string().required('Frequency is required'),
+    duration: Yup.string().required('Duration is required'),
+    instructions: Yup.string().optional(),
+  })
+
+  // Lab test validation schema
+  const labTestValidationSchema = Yup.object({
+    testName: Yup.string().required('Test name is required'),
+    urgency: Yup.string().required('Urgency is required'),
+    instructions: Yup.string().optional(),
+  })
+
+  // Mock data for dropdowns
+  const medications = [
+    { value: '', label: 'Select Medication' },
+    { value: 'Lisinopril', label: 'Lisinopril' },
+    { value: 'Metoprolol', label: 'Metoprolol' },
+    { value: 'Aspirin', label: 'Aspirin' },
+    { value: 'Amoxicillin', label: 'Amoxicillin' },
+    { value: 'Ibuprofen', label: 'Ibuprofen' },
+  ]
+
+  const frequencies = [
+    { value: '', label: 'Select Frequency' },
+    { value: 'Once daily', label: 'Once daily' },
+    { value: 'Twice daily', label: 'Twice daily' },
+    { value: 'Three times daily', label: 'Three times daily' },
+    { value: 'Every 4 hours', label: 'Every 4 hours' },
+    { value: 'Every 6 hours', label: 'Every 6 hours' },
+    { value: 'As needed', label: 'As needed' },
+  ]
+
+  const urgencies = [
+    { value: '', label: 'Select Urgency' },
+    { value: 'Routine', label: 'Routine' },
+    { value: 'Urgent', label: 'Urgent' },
+    { value: 'Stat', label: 'Stat' },
+  ]
+
+  const labTests = [
+    { value: '', label: 'Select Test' },
+    { value: 'Complete Blood Count (CBC)', label: 'Complete Blood Count (CBC)' },
+    { value: 'Comprehensive Metabolic Panel', label: 'Comprehensive Metabolic Panel' },
+    { value: 'Lipid Panel', label: 'Lipid Panel' },
+    { value: 'Hemoglobin A1c', label: 'Hemoglobin A1c' },
+    { value: 'Urinalysis', label: 'Urinalysis' },
+    { value: 'Chest X-ray', label: 'Chest X-ray' },
+    { value: 'ECG', label: 'ECG' },
+    { value: 'CT Scan', label: 'CT Scan' },
+  ]
+
+  const handlePrescriptionSubmit = (values) => {
+    console.log('Adding prescription:', values)
+    // Here you would typically make an API call to add the prescription
+    setShowPrescriptionModal(false)
+  }
+
+  const handleLabTestSubmit = (values) => {
+    console.log('Adding lab test:', values)
+    // Here you would typically make an API call to add the lab test
+    setShowLabTestModal(false)
+  }
 
   return (
     <div className='p-6'>
@@ -383,12 +459,182 @@ const PatientDetail = () => {
         </div>
 
         {/* Actions */}
-        <div className='flex justify-end gap-4 pt-6 border-t border-slate-200'>
+        <div className='flex justify-between items-center pt-6 border-t border-slate-200'>
+          <div className='flex gap-4'>
+            <Button type='button' variant='primary' onClick={() => setShowPrescriptionModal(true)}>
+              Add Prescription
+            </Button>
+            <Button type='button' variant='primary' onClick={() => setShowLabTestModal(true)}>
+              Add Lab Test
+            </Button>
+          </div>
           <Button type='button' variant='outline' onClick={() => navigate('/hospital-admin/bed')}>
             Back to Beds
           </Button>
         </div>
       </div>
+
+      {/* Prescription Modal */}
+      <Modal
+        show={showPrescriptionModal}
+        onClose={() => setShowPrescriptionModal(false)}
+        title='Add Prescription'
+        size='md'
+      >
+        <Formik
+          initialValues={{
+            medicationName: '',
+            dosage: '',
+            frequency: '',
+            duration: '',
+            instructions: '',
+          }}
+          validationSchema={prescriptionValidationSchema}
+          onSubmit={handlePrescriptionSubmit}
+        >
+          {({ values, errors, touched, handleChange, handleBlur }) => (
+            <Form className='space-y-4'>
+              <div>
+                <Select
+                  name='medicationName'
+                  label='Medication'
+                  value={values.medicationName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.medicationName && errors.medicationName}
+                  options={medications}
+                />
+              </div>
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <Input
+                    name='dosage'
+                    label='Dosage'
+                    value={values.dosage}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.dosage && errors.dosage}
+                    placeholder='e.g., 10mg'
+                  />
+                </div>
+                <div>
+                  <Select
+                    name='frequency'
+                    label='Frequency'
+                    value={values.frequency}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.frequency && errors.frequency}
+                    options={frequencies}
+                  />
+                </div>
+              </div>
+              <div>
+                <Input
+                  name='duration'
+                  label='Duration'
+                  value={values.duration}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.duration && errors.duration}
+                  placeholder='e.g., 7 days'
+                />
+              </div>
+              <div>
+                <Input
+                  name='instructions'
+                  label='Instructions'
+                  type='textarea'
+                  value={values.instructions}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.instructions && errors.instructions}
+                  placeholder='Additional instructions...'
+                  rows={3}
+                />
+              </div>
+              <div className='flex justify-end gap-3 pt-4'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => setShowPrescriptionModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type='submit' variant='primary'>
+                  Add Prescription
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
+
+      {/* Lab Test Modal */}
+      <Modal
+        show={showLabTestModal}
+        onClose={() => setShowLabTestModal(false)}
+        title='Add Lab Test'
+        size='md'
+      >
+        <Formik
+          initialValues={{
+            testName: '',
+            urgency: '',
+            instructions: '',
+          }}
+          validationSchema={labTestValidationSchema}
+          onSubmit={handleLabTestSubmit}
+        >
+          {({ values, errors, touched, handleChange, handleBlur }) => (
+            <Form className='space-y-4'>
+              <div>
+                <Select
+                  name='testName'
+                  label='Test Name'
+                  value={values.testName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.testName && errors.testName}
+                  options={labTests}
+                />
+              </div>
+              <div>
+                <Select
+                  name='urgency'
+                  label='Urgency'
+                  value={values.urgency}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.urgency && errors.urgency}
+                  options={urgencies}
+                />
+              </div>
+              <div>
+                <Input
+                  name='instructions'
+                  label='Instructions'
+                  type='textarea'
+                  value={values.instructions}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.instructions && errors.instructions}
+                  placeholder='Special instructions for the lab...'
+                  rows={3}
+                />
+              </div>
+              <div className='flex justify-end gap-3 pt-4'>
+                <Button type='button' variant='outline' onClick={() => setShowLabTestModal(false)}>
+                  Cancel
+                </Button>
+                <Button type='submit' variant='primary'>
+                  Order Lab Test
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
     </div>
   )
 }
