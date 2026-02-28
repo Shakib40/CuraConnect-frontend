@@ -3,20 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import {
-  Search,
-  Filter,
-  Plus,
-  FileText,
-  Calendar,
   User,
   DollarSign,
+  Calendar,
+  Search,
+  Filter,
+  Eye,
   CheckCircle,
   Clock,
   AlertCircle,
+  FileText,
   Download,
-  Eye,
 } from 'lucide-react'
-import Button from 'components/UI/Button'
+import Button from '../../../components/UI/Button'
+import Table from '../../../components/UI/Table'
 import Input from 'components/Form/Input'
 import Select from 'components/Form/Select'
 
@@ -48,11 +48,11 @@ const BillingList = () => {
       visitDate: '2024-02-15',
       doctor: 'Dr. Sarah Johnson',
       services: [
-        { description: 'General Consultation', amount: 150.00 },
-        { description: 'Complete Blood Count (CBC)', amount: 50.00 },
-        { description: 'Medication - Antibiotics', amount: 75.00 }
+        { description: 'General Consultation', amount: 150.0 },
+        { description: 'Complete Blood Count (CBC)', amount: 50.0 },
+        { description: 'Medication - Antibiotics', amount: 75.0 },
       ],
-      totalAmount: 275.00,
+      totalAmount: 275.0,
       status: 'pending',
       paymentDue: true,
       notes: 'Patient visited for general consultation and follow-up tests',
@@ -67,12 +67,12 @@ const BillingList = () => {
       visitDate: '2024-02-10',
       doctor: 'Dr. Emily Rodriguez',
       services: [
-        { description: 'Surgery - Appendectomy', amount: 3500.00 },
-        { description: 'Hospital Stay - 3 days', amount: 1500.00 },
-        { description: 'Anesthesia', amount: 800.00 },
-        { description: 'Post-operative medication', amount: 150.00 }
+        { description: 'Surgery - Appendectomy', amount: 3500.0 },
+        { description: 'Hospital Stay - 3 days', amount: 1500.0 },
+        { description: 'Anesthesia', amount: 800.0 },
+        { description: 'Post-operative medication', amount: 150.0 },
       ],
-      totalAmount: 5950.00,
+      totalAmount: 5950.0,
       status: 'pending',
       paymentDue: true,
       notes: 'Emergency appendectomy surgery performed successfully',
@@ -87,12 +87,12 @@ const BillingList = () => {
       visitDate: '2024-02-05',
       doctor: 'Dr. Michael Chen',
       services: [
-        { description: 'Cardiology Consultation', amount: 250.00 },
-        { description: 'ECG', amount: 100.00 },
-        { description: 'Echocardiogram', amount: 300.00 },
-        { description: 'Blood Pressure Medication', amount: 45.00 }
+        { description: 'Cardiology Consultation', amount: 250.0 },
+        { description: 'ECG', amount: 100.0 },
+        { description: 'Echocardiogram', amount: 300.0 },
+        { description: 'Blood Pressure Medication', amount: 45.0 },
       ],
-      totalAmount: 695.00,
+      totalAmount: 695.0,
       status: 'completed',
       paymentDue: false,
       paidDate: '2024-02-08',
@@ -108,12 +108,12 @@ const BillingList = () => {
       visitDate: '2024-01-28',
       doctor: 'Dr. James Wilson',
       services: [
-        { description: 'Surgery - Gallbladder Removal', amount: 4200.00 },
-        { description: 'Hospital Stay - 4 days', amount: 2000.00 },
-        { description: 'Surgical Supplies', amount: 350.00 },
-        { description: 'Post-operative care', amount: 200.00 }
+        { description: 'Surgery - Gallbladder Removal', amount: 4200.0 },
+        { description: 'Hospital Stay - 4 days', amount: 2000.0 },
+        { description: 'Surgical Supplies', amount: 350.0 },
+        { description: 'Post-operative care', amount: 200.0 },
       ],
-      totalAmount: 6750.00,
+      totalAmount: 6750.0,
       status: 'completed',
       paymentDue: false,
       paidDate: '2024-02-02',
@@ -190,10 +190,10 @@ const BillingList = () => {
 
   // Calculate statistics
   const totalRecords = billingRecords.length
-  const pendingRecords = billingRecords.filter(record => record.status === 'pending').length
-  const completedRecords = billingRecords.filter(record => record.status === 'completed').length
+  const pendingRecords = billingRecords.filter((record) => record.status === 'pending').length
+  const completedRecords = billingRecords.filter((record) => record.status === 'completed').length
   const totalPendingAmount = billingRecords
-    .filter(record => record.status === 'pending')
+    .filter((record) => record.status === 'pending')
     .reduce((sum, record) => sum + record.totalAmount, 0)
 
   const handleView = (recordId) => {
@@ -205,18 +205,17 @@ const BillingList = () => {
     // Here you would typically make an API call to update status
   }
 
+  const handleDownload = (recordId) => {
+    console.log('Downloading billing record:', recordId)
+    // Here you would typically generate and download a PDF or export the billing record
+    // For now, we'll just log the action
+  }
+
   return (
     <div className='p-6'>
       <div className='mb-6'>
         <div className='flex items-center justify-between'>
           <h1 className='text-2xl font-bold text-slate-800'>Billing Records</h1>
-          <Button
-            variant='primary'
-            icon={Plus}
-            onClick={() => navigate('/hospital-admin/billing/add')}
-          >
-            Create Billing Record
-          </Button>
         </div>
       </div>
 
@@ -341,110 +340,110 @@ const BillingList = () => {
       </div>
 
       {/* Billing Records Table */}
-      <div className='bg-white rounded-lg border border-slate-200'>
-        <div className='overflow-x-auto'>
-          <table className='w-full'>
-            <thead className='bg-slate-50 border-b border-slate-200'>
-              <tr>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Billing Details
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Patient
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Visit Info
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Amount
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Status
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider'>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className='bg-white divide-y divide-slate-200'>
-              {filteredBillingRecords.map((record) => (
-                <tr key={record.id} className='hover:bg-slate-50'>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div>
-                      <div className='text-sm font-medium text-slate-900'>{record.id}</div>
-                      <div className='text-sm text-slate-500'>Dr. {record.doctor}</div>
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='flex items-center'>
-                      <div className='flex-shrink-0 h-10 w-10'>
-                        <div className='h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center'>
-                          <User className='h-5 w-5 text-slate-600' />
-                        </div>
-                      </div>
-                      <div className='ml-4'>
-                        <div className='text-sm font-medium text-slate-900'>
-                          {record.patientName}
-                        </div>
-                        <div className='text-sm text-slate-500'>{record.patientId}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div>
-                      <div className='text-sm text-slate-900'>{record.visitDate}</div>
-                      <div className='flex items-center gap-1 mt-1'>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getVisitTypeColor(
-                            record.visitType
-                          )}`}
-                        >
-                          {record.visitType === 'appointment' ? 'Appointment' : 'Surgery'}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-slate-900'>
-                      ${record.totalAmount.toFixed(2)}
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        record.status
-                      )}`}
-                    >
-                      {getStatusIcon(record.status)}
-                      {record.status}
-                    </span>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
-                    <div className='flex items-center gap-2'>
-                      <button
-                        onClick={() => handleView(record.id)}
-                        className='text-blue-600 hover:text-blue-900'
-                        title='View Details'
-                      >
-                        <Eye className='w-4 h-4' />
-                      </button>
-                      {record.status === 'pending' && (
-                        <button
-                          onClick={() => handleMarkCompleted(record.id)}
-                          className='text-green-600 hover:text-green-900'
-                          title='Mark as Completed'
-                        >
-                          <CheckCircle className='w-4 h-4' />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <Table
+        columns={[
+          {
+            header: 'Billing Details',
+            accessor: 'id',
+            render: (record) => (
+              <div>
+                <div className='text-sm font-medium text-slate-900'>{record.id}</div>
+                <div className='text-sm text-slate-500'>Dr. {record.doctor}</div>
+              </div>
+            ),
+          },
+          {
+            header: 'Patient',
+            accessor: 'patientName',
+            render: (record) => (
+              <div className='flex items-center'>
+                <div className='flex-shrink-0 h-10 w-10'>
+                  <div className='h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center'>
+                    <User className='h-5 w-5 text-slate-600' />
+                  </div>
+                </div>
+                <div className='ml-4'>
+                  <div className='text-sm font-medium text-slate-900'>{record.patientName}</div>
+                  <div className='text-sm text-slate-500'>{record.patientId}</div>
+                </div>
+              </div>
+            ),
+          },
+          {
+            header: 'Visit Info',
+            accessor: 'visitDate',
+            render: (record) => (
+              <div>
+                <div className='text-sm text-slate-900'>{record.visitDate}</div>
+                <div className='flex items-center gap-1 mt-1'>
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getVisitTypeColor(
+                      record.visitType,
+                    )}`}
+                  >
+                    {record.visitType === 'appointment' ? 'Appointment' : 'Surgery'}
+                  </span>
+                </div>
+              </div>
+            ),
+          },
+          {
+            header: 'Amount',
+            accessor: 'totalAmount',
+            render: (record) => (
+              <div className='text-sm font-medium text-slate-900'>
+                ${record.totalAmount.toFixed(2)}
+              </div>
+            ),
+          },
+          {
+            header: 'Status',
+            accessor: 'status',
+            render: (record) => (
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  record.status,
+                )}`}
+              >
+                {getStatusIcon(record.status)}
+                {record.status}
+              </span>
+            ),
+          },
+          {
+            header: 'Actions',
+            accessor: 'id',
+            render: (record) => (
+              <div className='flex items-center gap-2'>
+                <button
+                  onClick={() => handleView(record.id)}
+                  className='text-blue-600 hover:text-blue-900'
+                  title='View Details'
+                >
+                  <Eye className='w-5 h-5' />
+                </button>
+                <button
+                  onClick={() => handleDownload(record.id)}
+                  className='text-slate-600 hover:text-slate-900'
+                  title='Download Billing Record'
+                >
+                  <Download className='w-4 h-4' />
+                </button>
+                {record.status === 'pending' && (
+                  <button
+                    onClick={() => handleMarkCompleted(record.id)}
+                    className='text-green-600 hover:text-green-900'
+                    title='Mark as Completed'
+                  >
+                    <CheckCircle className='w-4 h-4' />
+                  </button>
+                )}
+              </div>
+            ),
+          },
+        ]}
+        data={filteredBillingRecords}
+      />
     </div>
   )
 }

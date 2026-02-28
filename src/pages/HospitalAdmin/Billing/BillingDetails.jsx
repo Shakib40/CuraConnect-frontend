@@ -901,9 +901,7 @@ const BillingDetails = () => {
 
         {/* Payment Mode */}
         <div className='mb-6'>
-          <label className='block text-sm font-medium text-slate-700 mb-2'>
-            Mode of Payment *
-          </label>
+          <label className='block text-sm font-medium text-slate-700 mb-2'>Mode of Payment *</label>
           <select
             value={paymentMode}
             onChange={(e) => setPaymentMode(e.target.value)}
@@ -935,9 +933,7 @@ const BillingDetails = () => {
 
         {/* Insurance Notes */}
         <div className='mb-6'>
-          <label className='block text-sm font-medium text-slate-700 mb-2'>
-            Insurance Notes
-          </label>
+          <label className='block text-sm font-medium text-slate-700 mb-2'>Insurance Notes</label>
           <textarea
             value={insuranceNotes}
             onChange={(e) => setInsuranceNotes(e.target.value)}
