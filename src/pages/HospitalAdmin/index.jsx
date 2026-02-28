@@ -8,6 +8,7 @@ import LeaveTracker from './LeaveTracker/Index'
 import Appointment from './Appointment/Index'
 import Surgery from './Surgery/Index'
 import Settings from './Settings'
+import Bed from './Bed'
 
 const AdminRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AdminRoutes = () => {
         <Route path='leave-tracker/*' element={<LeaveTracker />} />
         <Route path='appointments/*' element={<Appointment />} />
         <Route path='surgery/*' element={<Surgery />} />
+        <Route path='bed/*' element={<Bed />} />
         <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>

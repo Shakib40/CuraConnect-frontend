@@ -24,7 +24,7 @@ import {
 import Table from 'components/UI/Table'
 import Button from 'components/UI/Button'
 import NoRecords from 'components/UI/NoRecords'
-import Modal from 'components/UI/Modal'
+import Modal from 'components/UI/CustomModal'
 import Input from 'components/Form/Input'
 import Select from 'components/Form/Select'
 import { useFormikContext } from 'formik'
@@ -45,9 +45,10 @@ const SurgeryList = () => {
 
   // Validation schema for edit form
   const editValidationSchema = Yup.object({
-    surgeryDate: Yup.string().required('Date is required'),
-    surgeryTime: Yup.string().required('Time is required'),
+    surgeryDate: Yup.string().required('Surgery date is required'),
+    surgeryTime: Yup.string().required('Surgery time is required'),
     status: Yup.string().required('Status is required'),
+    bedNumber: Yup.string().optional(),
     notes: Yup.string().optional(),
   })
 
@@ -58,12 +59,12 @@ const SurgeryList = () => {
       patientId: 'PAT001',
       department: 'Cardiology',
       doctorName: 'Dr. Sarah Johnson',
+      surgeryType: 'Open Heart Surgery',
       surgeryDate: '2024-02-25',
       surgeryTime: '10:00 AM',
-      status: 'Scheduled',
       bookingDate: '2024-02-15',
-      surgeryType: 'Open Heart Surgery',
-      reason: 'Coronary artery bypass grafting',
+      status: 'Scheduled',
+      bedNumber: 'ICU-101',
     },
     {
       id: 2,
@@ -71,25 +72,25 @@ const SurgeryList = () => {
       patientId: 'PAT002',
       department: 'Neurosurgery',
       doctorName: 'Dr. Michael Chen',
-      surgeryDate: '2024-02-20',
-      surgeryTime: '2:30 PM',
-      status: 'Completed',
-      bookingDate: '2024-02-19',
       surgeryType: 'Brain Tumor Resection',
-      reason: 'Meningioma removal',
+      surgeryDate: '2024-02-26',
+      surgeryTime: '2:00 PM',
+      bookingDate: '2024-02-16',
+      status: 'Scheduled',
+      bedNumber: 'Ward-203',
     },
     {
       id: 3,
-      patientName: 'Robert Johnson',
+      patientName: 'Robert Wilson',
       patientId: 'PAT003',
       department: 'Orthopedics',
       doctorName: 'Dr. Emily Rodriguez',
-      surgeryDate: '2024-02-18',
-      surgeryTime: '9:00 AM',
-      status: 'Cancelled',
-      bookingDate: '2024-02-10',
       surgeryType: 'Knee Replacement',
-      reason: 'Severe osteoarthritis',
+      surgeryDate: '2024-02-24',
+      surgeryTime: '9:00 AM',
+      bookingDate: '2024-02-14',
+      status: 'Completed',
+      bedNumber: 'Ortho-305',
     },
     {
       id: 4,
@@ -97,38 +98,64 @@ const SurgeryList = () => {
       patientId: 'PAT004',
       department: 'General Surgery',
       doctorName: 'Dr. James Wilson',
-      surgeryDate: '2024-02-15',
-      surgeryTime: '11:00 AM',
-      status: 'Scheduled',
-      bookingDate: '2024-02-05',
       surgeryType: 'Appendectomy',
-      reason: 'Acute appendicitis',
+      surgeryDate: '2024-02-23',
+      surgeryTime: '11:30 AM',
+      bookingDate: '2024-02-13',
+      status: 'Completed',
+      bedNumber: null,
     },
     {
       id: 5,
-      patientName: 'David Lee',
+      patientName: 'David Brown',
       patientId: 'PAT005',
       department: 'Pediatrics',
       doctorName: 'Dr. Lisa Thompson',
-      surgeryDate: '2024-03-01',
-      surgeryTime: '3:00 PM',
-      status: 'Pending',
-      bookingDate: '2024-02-25',
       surgeryType: 'Tonsillectomy',
-      reason: 'Chronic tonsillitis',
+      surgeryDate: '2024-02-27',
+      surgeryTime: '8:00 AM',
+      bookingDate: '2024-02-17',
+      status: 'Pending',
+      bedNumber: 'Peds-102',
     },
     {
       id: 6,
-      patientName: 'Susan Martinez',
+      patientName: 'Jennifer Lee',
       patientId: 'PAT006',
       department: 'Plastic Surgery',
       doctorName: 'Dr. Robert Martinez',
-      surgeryDate: '2024-02-10',
-      surgeryTime: '1:00 PM',
-      status: 'Completed',
-      bookingDate: '2024-02-09',
       surgeryType: 'Rhinoplasty',
-      reason: 'Cosmetic reconstruction',
+      surgeryDate: '2024-02-28',
+      surgeryTime: '3:00 PM',
+      bookingDate: '2024-02-18',
+      status: 'Scheduled',
+      bedNumber: null,
+    },
+    {
+      id: 7,
+      patientName: 'William Taylor',
+      patientId: 'PAT007',
+      department: 'Urology',
+      doctorName: 'Dr. Sarah Johnson',
+      surgeryType: 'Kidney Stone Removal',
+      surgeryDate: '2024-02-22',
+      surgeryTime: '1:00 PM',
+      bookingDate: '2024-02-12',
+      status: 'Completed',
+      bedNumber: 'Urology-201',
+    },
+    {
+      id: 8,
+      patientName: 'Sophia Anderson',
+      patientId: 'PAT008',
+      department: 'Gynecology',
+      doctorName: 'Dr. Emily Rodriguez',
+      surgeryType: 'C-Section',
+      surgeryDate: '2024-02-21',
+      surgeryTime: '7:30 AM',
+      bookingDate: '2024-02-11',
+      status: 'Completed',
+      bedNumber: 'Maternity-401',
     },
   ])
 
@@ -263,6 +290,21 @@ const SurgeryList = () => {
       ),
     },
     {
+      header: 'Bed Number',
+      accessor: 'bedNumber',
+      render: (row) => (
+        <div className='text-sm text-slate-600'>
+          {row.bedNumber ? (
+            <span className='inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-md font-medium'>
+              {row.bedNumber}
+            </span>
+          ) : (
+            <span className='text-slate-400 italic'>Not assigned</span>
+          )}
+        </div>
+      ),
+    },
+    {
       header: 'Booking Date',
       accessor: 'bookingDate',
       render: (row) => (
@@ -364,7 +406,6 @@ const SurgeryList = () => {
         </Formik>
       </div>
 
-      {/* Surgeries Table */}
       <div className='bg-white rounded-lg border border-slate-200'>
         {filteredSurgeries.length > 0 ? (
           <Table data={filteredSurgeries} columns={columns} className='border-0' />
@@ -383,15 +424,16 @@ const SurgeryList = () => {
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
         title='Edit Scheduled Surgery'
-        size='md'
+        size='xl'
       >
         {selectedSurgery && (
           <Formik
             initialValues={{
-              surgeryDate: selectedSurgery.surgeryDate,
-              surgeryTime: selectedSurgery.surgeryTime,
-              status: selectedSurgery.status,
-              notes: '',
+              surgeryDate: selectedSurgery.surgeryDate || '',
+              surgeryTime: selectedSurgery.surgeryTime || '',
+              status: selectedSurgery.status || '',
+              bedNumber: selectedSurgery.bedNumber || '',
+              notes: selectedSurgery.notes || '',
             }}
             validationSchema={editValidationSchema}
             onSubmit={(values) => {
@@ -441,11 +483,20 @@ const SurgeryList = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className='block text-sm font-medium text-slate-700 mb-1'>
-                    Current Status
-                  </label>
-                  <div className='text-sm text-slate-900'>{selectedSurgery.status}</div>
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-slate-700 mb-1'>
+                      Bed Number
+                    </label>
+                    <Input
+                      name='bedNumber'
+                      value={values.bedNumber}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.bedNumber && errors.bedNumber}
+                      placeholder='Enter bed number...'
+                    />
+                  </div>
                 </div>
 
                 <div>
