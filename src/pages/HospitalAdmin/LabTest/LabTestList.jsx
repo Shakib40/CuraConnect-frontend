@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
 import {
   Search,
   Filter,
@@ -19,9 +21,19 @@ import Select from '../../../components/Form/Select'
 
 const LabTestList = () => {
   const navigate = useNavigate()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [patientFilter, setPatientFilter] = useState('')
+
+  // Formik validation schema for filters
+  const filterValidationSchema = Yup.object({
+    searchTerm: Yup.string().optional(),
+    status: Yup.string().optional(),
+    patientName: Yup.string().optional(),
+  })
+
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    status: '',
+    patientName: '',
+  })
 
   // Mock data for lab tests
   const [labTests] = useState([
@@ -100,11 +112,11 @@ const LabTestList = () => {
   // Filter lab tests based on search and filters
   const filteredLabTests = labTests.filter((test) => {
     const matchesSearch =
-      test.testName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      test.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      test.testType.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === '' || test.status === statusFilter
-    const matchesPatient = patientFilter === '' || test.patientName === patientFilter
+      test.testName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      test.patientName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      test.testType.toLowerCase().includes(filters.searchTerm.toLowerCase())
+    const matchesStatus = filters.status === '' || test.status === filters.status
+    const matchesPatient = filters.patientName === '' || test.patientName === filters.patientName
     return matchesSearch && matchesStatus && matchesPatient
   })
 
@@ -179,7 +191,7 @@ const LabTestList = () => {
   }
 
   const handleEdit = (testId) => {
-    navigate(`/hospital-admin/lab-test/update/${testId}`)
+    navigate(`/hospital-admin/lab-tests/update/${testId}`)
   }
 
   return (
@@ -193,7 +205,7 @@ const LabTestList = () => {
         <Button
           variant='primary'
           icon={Plus}
-          onClick={() => navigate('/hospital-admin/lab-test/add')}
+          onClick={() => navigate('/hospital-admin/lab-tests/add')}
         >
           Request New Lab Test
         </Button>
@@ -262,38 +274,67 @@ const LabTestList = () => {
           <Filter className='w-4 h-4 text-slate-600' />
           <h3 className='font-medium text-slate-800'>Filters</h3>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-          <div>
-            <Input
-              placeholder='Search tests, patients...'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              prefix={<Search className='w-4 h-4 text-slate-400' />}
-            />
-          </div>
-          <Select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            options={statusOptions}
-          />
-          <Select
-            value={patientFilter}
-            onChange={(e) => setPatientFilter(e.target.value)}
-            options={patientOptions}
-          />
-          <div className='flex items-end'>
-            <Button
-              variant='secondary'
-              onClick={() => {
-                setSearchTerm('')
-                setStatusFilter('')
-                setPatientFilter('')
-              }}
-            >
-              Clear Filters
-            </Button>
-          </div>
-        </div>
+        <Formik
+          initialValues={{
+            searchTerm: filters.searchTerm,
+            status: filters.status,
+            patientName: filters.patientName,
+          }}
+          validationSchema={filterValidationSchema}
+          onSubmit={(values) => {
+            setFilters(values)
+          }}
+        >
+          {({ values, handleChange, handleBlur }) => (
+            <Form>
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+                <div>
+                  <Input
+                    name='searchTerm'
+                    placeholder='Search tests, patients...'
+                    value={values.searchTerm}
+                    onChange={(e) => {
+                      handleChange(e)
+                      setFilters({ ...values, searchTerm: e.target.value })
+                    }}
+                    onBlur={handleBlur}
+                    prefix={<Search className='w-4 h-4 text-slate-400' />}
+                  />
+                </div>
+                <Select
+                  name='status'
+                  value={values.status}
+                  onChange={(value) => {
+                    setFilters({ ...values, status: value })
+                  }}
+                  options={statusOptions}
+                />
+                <Select
+                  name='patientName'
+                  value={values.patientName}
+                  onChange={(value) => {
+                    setFilters({ ...values, patientName: value })
+                  }}
+                  options={patientOptions}
+                />
+                <div className='flex items-end'>
+                  <Button
+                    variant='secondary'
+                    onClick={() => {
+                      setFilters({
+                        searchTerm: '',
+                        status: '',
+                        patientName: '',
+                      })
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
 
       {/* Lab Tests Table */}

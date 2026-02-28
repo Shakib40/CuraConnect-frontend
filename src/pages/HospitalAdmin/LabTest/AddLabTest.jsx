@@ -127,7 +127,7 @@ const AddLabTest = () => {
 
   const handleSuccessModalClose = () => {
     setShowSuccessModal(false)
-    navigate('/hospital-admin/lab-test')
+    navigate('/hospital-admin/lab-tests')
   }
 
   return (
@@ -135,7 +135,7 @@ const AddLabTest = () => {
       <div className='mb-6'>
         <div className='flex items-center gap-4'>
           <button
-            onClick={() => navigate('/hospital-admin/lab-test')}
+            onClick={() => navigate('/hospital-admin/lab-tests')}
             className='inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors'
           >
             <ArrowLeft className='w-4 h-4' />
@@ -323,7 +323,7 @@ const AddLabTest = () => {
               <div className='flex items-center justify-end gap-4 pt-6 border-t border-slate-200'>
                 <Button
                   variant='secondary'
-                  onClick={() => navigate('/hospital-admin/lab-test')}
+                  onClick={() => navigate('/hospital-admin/lab-tests')}
                   type='button'
                 >
                   Cancel
