@@ -12,6 +12,7 @@ import LabTest from './LabTest'
 import Attendance from './Attendance'
 import LeaveTracker from './LeaveTracker'
 import InvoicesRoutes from './Invoices'
+import BillingRoutes from './Billing'
 
 const AdminRoutes = () => {
   return (
@@ -27,6 +28,7 @@ const AdminRoutes = () => {
         <Route path='prescription/*' element={<Prescription />} />
         <Route path='lab-tests/*' element={<LabTest />} />
         <Route path='invoices/*' element={<InvoicesRoutes />} />
+        <Route path='billing/*' element={<BillingRoutes />} />
         <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>

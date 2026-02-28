@@ -31,6 +31,7 @@ const adminMenuItems = [
   { label: 'Prescription', path: '/hospital-admin/prescription', icon: FileText },
   { label: 'Lab Tests', path: '/hospital-admin/lab-tests', icon: TestTube },
   { label: 'Invoices', path: '/hospital-admin/invoices', icon: Receipt },
+  { label: 'Billing', path: '/hospital-admin/billing', icon: DollarSign },
 
   // { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
   // { label: 'Patient List', path: '/hospital-admin/patient-list', icon: User },
