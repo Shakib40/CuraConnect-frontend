@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Formik, Form } from 'formik'
+import { Formik, Form, FieldArray } from 'formik'
 import * as Yup from 'yup'
-import { ArrowLeft, Pill, Save, Users, Calendar, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Pill, Save, Users, Calendar, CheckCircle, Plus, Trash2 } from 'lucide-react'
 import Button from '../../../components/UI/Button'
 import Input from '../../../components/Form/Input'
 import Select from '../../../components/Form/Select'
@@ -13,16 +13,23 @@ const AddPrescription = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const isEditing = !!id
 
-  const validationSchema = Yup.object({
-    patientId: Yup.string().required('Patient is required'),
+  const medicationSchema = Yup.object({
     medicationName: Yup.string().required('Medication name is required'),
     dosage: Yup.string().required('Dosage is required'),
     frequency: Yup.string().required('Frequency is required'),
     duration: Yup.string().required('Duration is required'),
+    instructions: Yup.string().optional(),
+  })
+
+  const validationSchema = Yup.object({
+    patientId: Yup.string().required('Patient is required'),
     prescribedBy: Yup.string().required('Prescribing doctor is required'),
     startDate: Yup.string().required('Start date is required'),
     endDate: Yup.string().required('End date is required'),
-    instructions: Yup.string().optional(),
+    medications: Yup.array()
+      .of(medicationSchema)
+      .min(1, 'At least one medication is required')
+      .required('Medications are required'),
   })
 
   const patients = [
@@ -112,14 +119,18 @@ const AddPrescription = () => {
         <Formik
           initialValues={{
             patientId: '',
-            medicationName: '',
-            dosage: '',
-            frequency: '',
-            duration: '',
             prescribedBy: '',
             startDate: new Date().toISOString().split('T')[0],
             endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            instructions: '',
+            medications: [
+              {
+                medicationName: '',
+                dosage: '',
+                frequency: '',
+                duration: '',
+                instructions: '',
+              },
+            ],
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -149,59 +160,148 @@ const AddPrescription = () => {
 
               {/* Medication Details */}
               <div>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-slate-800 flex items-center gap-2'>
+                    <Pill className='w-5 h-5' />
+                    Medication Details
+                  </h3>
+                  <span className='text-sm text-slate-500'>
+                    {values.medications.length} medication
+                    {values.medications.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+
+                <FieldArray name='medications'>
+                  {({ push, remove }) => (
+                    <div className='space-y-4'>
+                      {values.medications.map((medication, index) => (
+                        <div
+                          key={index}
+                          className='border border-slate-200 rounded-lg p-4 bg-slate-50'
+                        >
+                          <div className='flex items-center justify-between mb-3'>
+                            <h4 className='font-medium text-slate-800'>Medication #{index + 1}</h4>
+                            {values.medications.length > 1 && (
+                              <button
+                                type='button'
+                                onClick={() => remove(index)}
+                                className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors'
+                                title='Remove medication'
+                              >
+                                <Trash2 className='w-4 h-4' />
+                              </button>
+                            )}
+                          </div>
+
+                          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                            <div>
+                              <Select
+                                name={`medications.${index}.medicationName`}
+                                label='Medication Name'
+                                value={medication.medicationName}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={
+                                  touched.medications?.[index]?.medicationName &&
+                                  errors.medications?.[index]?.medicationName
+                                }
+                                options={medications}
+                              />
+                            </div>
+
+                            <div>
+                              <Input
+                                name={`medications.${index}.dosage`}
+                                label='Dosage'
+                                value={medication.dosage}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={
+                                  touched.medications?.[index]?.dosage &&
+                                  errors.medications?.[index]?.dosage
+                                }
+                                placeholder='e.g., 10mg, 500mg'
+                              />
+                            </div>
+
+                            <div>
+                              <Select
+                                name={`medications.${index}.frequency`}
+                                label='Frequency'
+                                value={medication.frequency}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={
+                                  touched.medications?.[index]?.frequency &&
+                                  errors.medications?.[index]?.frequency
+                                }
+                                options={frequencies}
+                              />
+                            </div>
+
+                            <div>
+                              <Select
+                                name={`medications.${index}.duration`}
+                                label='Duration'
+                                value={medication.duration}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={
+                                  touched.medications?.[index]?.duration &&
+                                  errors.medications?.[index]?.duration
+                                }
+                                options={durations}
+                              />
+                            </div>
+                          </div>
+
+                          <div className='mt-3'>
+                            <Input
+                              name={`medications.${index}.instructions`}
+                              label='Instructions'
+                              type='textarea'
+                              value={medication.instructions}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={
+                                touched.medications?.[index]?.instructions &&
+                                errors.medications?.[index]?.instructions
+                              }
+                              placeholder='Enter any special instructions for this medication...'
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      ))}
+
+                      <button
+                        type='button'
+                        onClick={() =>
+                          push({
+                            medicationName: '',
+                            dosage: '',
+                            frequency: '',
+                            duration: '',
+                            instructions: '',
+                          })
+                        }
+                        className='w-full py-3 border-2 border-dashed border-slate-300 rounded-lg text-slate-600 hover:border-slate-400 hover:text-slate-800 transition-colors flex items-center justify-center gap-2'
+                      >
+                        <Plus className='w-4 h-4' />
+                        Add Another Medication
+                      </button>
+                    </div>
+                  )}
+                </FieldArray>
+              </div>
+
+              {/* Treatment Schedule */}
+              <div>
                 <h3 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
-                  <Pill className='w-5 h-5' />
-                  Medication Details
+                  <Calendar className='w-5 h-5' />
+                  Treatment Schedule
                 </h3>
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                  <div>
-                    <Select
-                      name='medicationName'
-                      label='Medication Name'
-                      value={values.medicationName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.medicationName && errors.medicationName}
-                      options={medications}
-                    />
-                  </div>
-
-                  <div>
-                    <Input
-                      name='dosage'
-                      label='Dosage'
-                      value={values.dosage}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.dosage && errors.dosage}
-                      placeholder='e.g., 10mg, 500mg'
-                    />
-                  </div>
-
-                  <div>
-                    <Select
-                      name='frequency'
-                      label='Frequency'
-                      value={values.frequency}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.frequency && errors.frequency}
-                      options={frequencies}
-                    />
-                  </div>
-
-                  <div>
-                    <Select
-                      name='duration'
-                      label='Duration'
-                      value={values.duration}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.duration && errors.duration}
-                      options={durations}
-                    />
-                  </div>
-
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                   <div>
                     <Select
                       name='prescribedBy'
@@ -213,16 +313,6 @@ const AddPrescription = () => {
                       options={doctors}
                     />
                   </div>
-                </div>
-              </div>
-
-              {/* Treatment Schedule */}
-              <div>
-                <h3 className='text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2'>
-                  <Calendar className='w-5 h-5' />
-                  Treatment Schedule
-                </h3>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                   <div>
                     <Input
                       name='startDate'
