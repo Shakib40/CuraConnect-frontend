@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (loading) return <div className='flex h-screen items-center justify-center'>Loading...</div>
 
   if (!isAuthenticated || !user) {
-    return <Navigate to='/login' replace />
+    return <Navigate to='/' replace />
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {

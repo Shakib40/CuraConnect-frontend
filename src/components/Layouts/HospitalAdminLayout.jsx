@@ -33,9 +33,7 @@ const adminMenuItems = [
   { label: 'Invoices', path: '/hospital-admin/invoices', icon: Receipt },
   { label: 'Billing', path: '/hospital-admin/billing', icon: DollarSign },
   { label: 'Insurance', path: '/hospital-admin/insurance', icon: DollarSign },
-
-  // { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
-  // { label: 'Patient List', path: '/hospital-admin/patient-list', icon: User },
+  { label: 'Medicine Stock', path: '/hospital-admin/medicine-stock', icon: Package },
   // { label: 'Order Medicine', path: '/hospital-admin/order-medicine', icon: ShoppingCart },
   // { label: 'Payroll', path: '/hospital-admin/payroll', icon: DollarSign },
   // { label: 'Notification', path: '/hospital-admin/notification', icon: Bell },

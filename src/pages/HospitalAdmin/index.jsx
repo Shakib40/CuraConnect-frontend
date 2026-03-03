@@ -14,6 +14,7 @@ import LeaveTracker from './LeaveTracker'
 import InvoicesRoutes from './Invoices'
 import BillingRoutes from './Billing'
 import InsuranceRoutes from './Insurance'
+import MedicineStockRoutes from './MedicineStock'
 
 const AdminRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const AdminRoutes = () => {
         <Route path='invoices/*' element={<InvoicesRoutes />} />
         <Route path='billing/*' element={<BillingRoutes />} />
         <Route path='insurance/*' element={<InsuranceRoutes />} />
+        <Route path='medicine-stock/*' element={<MedicineStockRoutes />} />
         <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>
